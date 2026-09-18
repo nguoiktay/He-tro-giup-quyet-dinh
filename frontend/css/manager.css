@@ -1,0 +1,120 @@
+
+
+.thongKeLuoi {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.theThongKe {
+  background-color: #ffffff;
+  border: 1px solid var(--vienKhung);
+  border-radius: var(--boGoc);
+  padding: 18px;
+  box-shadow: var(--bongThe);
+}
+
+.theThongKe .tieuDe {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--chuPhu);
+  text-transform: uppercase;
+}
+
+.theThongKe .conSo {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--mauChinhDam);
+  margin-top: 6px;
+}
+
+.thanhTabQuanTri {
+  display: flex;
+  gap: 8px;
+  border-bottom: 2px solid var(--vienKhung);
+  margin-bottom: 20px;
+  overflow-x: auto;
+}
+
+.nutTab {
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--chuPhu);
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.nutTab:hover {
+  color: var(--mauChinh);
+}
+
+.nutTab.kichHoat {
+  color: var(--mauChinh);
+  border-bottom-color: var(--mauChinh);
+}
+
+/* Modal Popup */
+.manCheModal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+}
+
+.hopThoaiModal {
+  background-color: #ffffff;
+  border-radius: var(--boGoc);
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+}
+
+.dauModal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--vienKhung);
+}
+
+.dauModal h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--chuChinh);
+}
+
+.nutDongModal {
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: var(--chuPhu);
+}
+
+.thanModal {
+  padding: 20px;
+}
+
+.chanModal {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 14px 20px;
+  border-top: 1px solid var(--vienKhung);
+  background-color: #f9fafb;
+  border-radius: 0 0 var(--boGoc) var(--boGoc);
+}

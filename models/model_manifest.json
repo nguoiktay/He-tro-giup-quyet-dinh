@@ -1,0 +1,62 @@
+{
+  "tenMoHinh": "HeThongDeXuatNguyenVongRandomForest",
+  "thuatToan": "RandomForestRegressor",
+  "phienBan": "v1.0.0",
+  "duLieuMoPhong": true,
+  "thamSo": {
+    "n_estimators": 300,
+    "max_depth": 10,
+    "min_samples_leaf": 2,
+    "min_samples_split": 4,
+    "random_state": 42
+  },
+  "danhSachDacTrung": [
+    "diemToan",
+    "diemVan",
+    "diemNgoaiNgu",
+    "diemVatLy",
+    "diemHoaHoc",
+    "diemSinhHoc",
+    "diemTrungBinh",
+    "mucKhopSoThich",
+    "tiLeTaiChinh",
+    "khopDiaBan",
+    "diemChuanThamKhao",
+    "soLuotTuongTacTruoc",
+    "khoiTruong",
+    "vungMien",
+    "nhomNganh",
+    "phuongThuc"
+  ],
+  "thongTinTapChia": {
+    "phuongPhap": "GroupShuffleSplit_TheoHocSinh",
+    "tongMau": 525,
+    "mauTrain": 360,
+    "mauTest": 165,
+    "soHocSinhTrain": 24,
+    "soHocSinhTest": 11
+  },
+  "chiSoDanhGia": {
+    "randomForest": {
+      "MAE": 0.7237,
+      "RMSE": 0.8467,
+      "R2": -0.0682
+    },
+    "baselineMean": {
+      "MAE": 0.716,
+      "RMSE": 0.8318
+    },
+    "decisionTree": {
+      "MAE": 0.8153,
+      "RMSE": 0.979
+    }
+  },
+  "phienBanThuVien": {
+    "scikit-learn": "1.9.0",
+    "numpy": "2.4.6",
+    "pandas": "3.0.5",
+    "joblib": "1.6.0"
+  },
+  "thoiGianHuanLuyen": "2026-09-18T08:04:24.409477+00:00",
+  "checksumSha256": "81d8aa6101a83f7039e68ac38e060bc3cea1347c32ab94d07e68140c0ce036ac"
+}

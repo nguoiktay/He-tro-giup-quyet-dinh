@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="{{ csrfToken }}">
+  <meta name="da-dang-nhap" content="{{ '1' if nguoiDung else '0' }}">
+  <title>Chọn Trường Đại Học 2026 — Gợi Ý Nguyện Vọng Theo Điểm Thi | DSS Random Forest</title>
+  <style>
+        *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: #ffffff;
+      color: #000000;
+      line-height: 1.5;
+      font-size: 14px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+        .top-header {
+      background: #ffffff;
+      border-bottom: 1px solid #000000;
+      padding: 14px 0;
+    }
+
+    .header-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .system-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #000000;
+    }
+
+    .system-subtitle {
+      font-size: 0.75rem;
+      color: #555555;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .auth-section {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.85rem;
+    }
+
+        .page-intro {
+      padding: 24px 0 20px;
+      border-bottom: 1px solid #e0e0e0;
+      margin-bottom: 24px;
+    }
+
+    .main-heading {
+      font-size: 1.65rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .main-description {
+      font-size: 0.95rem;
+      color: #444444;
+      max-width: 850px;
+    }
+
+        .section-box {
+      border: 1px solid #000000;
+      background: #ffffff;
+      padding: 22px;
+      margin-bottom: 24px;
+    }
+
+    .section-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      margin-bottom: 4px;
+      border-bottom: 1px solid #e0e0e0;
+      padding-bottom: 8px;
+    }
+
+    .section-help {
+      font-size: 0.85rem;
+      color: #666666;
+      margin-bottom: 16px;
+    }
+
+        .grid-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field-label {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .field-select, .field-input {
+      width: 100%;
+      height: 40px;
+      padding: 0 12px;
+      border: 1px solid #000000;
+      background: #ffffff;
+      color: #000000;
+      font-family: inherit;
+      font-size: 0.92rem;
+      outline: none;
+    }
+
+    .field-select:focus, .field-input:focus {
+      background: #f9f9f9;
+      outline: 1px solid #000000;
+    }
+
+        .score-summary-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f5f5f5;
+      border: 1px solid #000000;
+      padding: 12px 18px;
+      margin-top: 14px;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .score-value-large {
+      font-size: 1.4rem;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+    }
+
+        .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 42px;
+      padding: 0 20px;
+      border: 1px solid #000000;
+      background: #000000;
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.12s ease, color 0.12s ease;
+    }
+
+    .btn:hover {
+      background: #ffffff;
+      color: #000000;
+    }
+
+    .btn-outline {
+      background: #ffffff;
+      color: #000000;
+    }
+
+    .btn-outline:hover {
+      background: #000000;
+      color: #ffffff;
+    }
+
+    .btn-sm {
+      height: 32px;
+      padding: 0 10px;
+      font-size: 0.78rem;
+      white-space: nowrap;
+    }
+
+    .btn-lg {
+      height: 48px;
+      padding: 0 32px;
+      font-size: 1rem;
+      width: 100%;
+    }
+
+        .tabs-bar {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+      border-bottom: 1px solid #000000;
+      padding-bottom: 8px;
+    }
+
+    .tab-item {
+      padding: 6px 14px;
+      border: 1px solid #000000;
+      background: #ffffff;
+      color: #000000;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+
+    .tab-item.active {
+      background: #000000;
+      color: #ffffff;
+    }
+
+        .table-container {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid #000000;
+      margin-bottom: 20px;
+    }
+
+    .result-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      text-align: left;
+    }
+
+    .result-table th {
+      background: #000000;
+      color: #ffffff;
+      padding: 10px 12px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      border-right: 1px solid #333333;
+    }
+
+    .result-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #e0e0e0;
+      border-right: 1px solid #e0e0e0;
+      vertical-align: middle;
+    }
+
+    .result-table tr:hover td {
+      background: #f9f9f9;
+    }
+
+        .badge-tag {
+      display: inline-block;
+      padding: 2px 6px;
+      border: 1px solid #000000;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .badge-solid {
+      background: #000000;
+      color: #ffffff;
+    }
+
+    .delta-plus {
+      font-weight: 700;
+    }
+
+    .delta-minus {
+      font-weight: 700;
+    }
+
+        .toast-box {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .toast-item {
+      background: #000000;
+      color: #ffffff;
+      padding: 12px 18px;
+      border: 1px solid #ffffff;
+      font-size: 0.85rem;
+      font-weight: 600;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+
+    <header class="top-header">
+    <div class="container header-inner">
+      <div>
+        <div class="system-title">Hệ Trợ Giúp Quyết Định Tuyển Sinh Đại Học 2026</div>
+        <div class="system-subtitle">Mô hình máy học Random Forest</div>
+      </div>
+
+      <div class="auth-section">
+        {% if nguoiDung %}
+          <span>Thí sinh: <strong>{{ nguoiDung.hoTen }}</strong> ({{ nguoiDung.email }})</span>
+          <a href="{{ url_for('dieuKhienXacThuc.dangXuat') }}" class="btn btn-outline btn-sm">[ Đăng Xuất ]</a>
+        {% else %}
+          <button type="button" class="btn btn-outline btn-sm" onclick="hienFormDangNhap()">[ Đăng Nhập ]</button>
+          <button type="button" class="btn btn-sm" onclick="dangNhapNhanhHocSinh()">[ Thử ngay tài khoản mẫu ]</button>
+        {% endif %}
+      </div>
+    </div>
+  </header>
+
+    <div id="modalDangNhap" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center;">
+    <div style="background: #ffffff; border: 2px solid #000000; padding: 24px; width: 100%; max-width: 400px; box-shadow: 6px 6px 0px #000000;">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #000000; padding-bottom: 8px; margin-bottom: 16px;">
+        <strong style="text-transform: uppercase;">Đăng Nhập Thí Sinh</strong>
+        <button type="button" onclick="dongFormDangNhap()" style="background:none; border:1px solid #000; padding: 2px 8px; font-weight:bold; cursor:pointer; font-size: 0.8rem;">[ Đóng ]</button>
+      </div>
+      <form id="formAuthAjax" onsubmit="xuLyDangNhapAjax(event)">
+        <div style="margin-bottom: 12px;">
+          <label style="font-size: 0.8rem; font-weight: bold; display: block; margin-bottom: 4px;">Email:</label>
+          <input type="email" id="loginEmail" class="field-input" value="hocsinh@dss.edu.vn" required>
+        </div>
+        <div style="margin-bottom: 16px;">
+          <label style="font-size: 0.8rem; font-weight: bold; display: block; margin-bottom: 4px;">Mật khẩu:</label>
+          <input type="password" id="loginPass" class="field-input" value="StudentPassword@2026" required>
+        </div>
+        <button type="submit" class="btn" style="width: 100%; margin-bottom: 10px;">Xác Nhận Đăng Nhập</button>
+      </form>
+    </div>
+  </div>
+
+  <main class="container">
+        <div class="page-intro">
+      <h1 class="main-heading">Chọn Trường Đại Học — Nhập Điểm & Xem Ngành Phù Hợp</h1>
+      <p class="main-description">
+        Hệ thống hỗ trợ thí sinh Việt Nam: Nhập điểm 3 môn theo từng tổ hợp (A00, A01, D01...) — Hệ thống đối chiếu dữ liệu điểm chuẩn 587 trường toàn quốc giai đoạn 2021–2026 và chạy thuật toán Random Forest phân nhóm Đỗ chắc / Có khả năng / Thử thách.
+      </p>
+    </div>
+
+        <div class="section-box">
+      <div class="section-title">1. Chọn Tổ Hợp Môn Xét Tuyển & Nhập Điểm Thi (Một Tổ Hợp Gồm 3 Môn)</div>
+      <div class="section-help">
+        Chọn khối xét tuyển của bạn. Hệ thống sẽ hiển thị chính xác 3 ô điểm tương ứng với 3 môn thi của tổ hợp đó.
+      </div>
+
+            <div class="field-group" style="margin-bottom: 18px; max-width: 500px;">
+        <label class="field-label" for="chonToHop">Chọn tổ hợp môn xét tuyển:</label>
+        <select id="chonToHop" class="field-select" onchange="thayDoiToHop()">
+          <option value="A00" selected>Khối A00: Toán, Vật lí, Hóa học</option>
+          <option value="A01">Khối A01: Toán, Vật lí, Tiếng Anh</option>
+          <option value="A02">Khối A02: Toán, Vật lí, Sinh học</option>
+          <option value="B00">Khối B00: Toán, Hóa học, Sinh học</option>
+          <option value="B08">Khối B08: Toán, Sinh học, Tiếng Anh</option>
+          <option value="C00">Khối C00: Ngữ văn, Lịch sử, Địa lí</option>
+          <option value="C01">Khối C01: Toán, Ngữ văn, Vật lí</option>
+          <option value="C03">Khối C03: Ngữ văn, Toán, Lịch sử</option>
+          <option value="D01">Khối D01: Toán, Ngữ văn, Tiếng Anh</option>
+          <option value="D07">Khối D07: Toán, Hóa học, Tiếng Anh</option>
+          <option value="D08">Khối D08: Toán, Sinh học, Tiếng Anh</option>
+          <option value="D14">Khối D14: Ngữ văn, Lịch sử, Tiếng Anh</option>
+          <option value="D15">Khối D15: Ngữ văn, Địa lí, Tiếng Anh</option>
+        </select>
+      </div>
+
+            <div class="grid-row" style="grid-template-columns: repeat(3, 1fr);" id="khung3Mon">
+        <div class="field-group">
+          <label class="field-label" id="nhanMon1">Điểm môn 1 (Toán):</label>
+          <input type="number" step="0.05" min="0" max="10" id="diemMon1" class="field-input" value="8.6" placeholder="0.00 - 10.00" oninput="tinhTongDiem()">
+        </div>
+        <div class="field-group">
+          <label class="field-label" id="nhanMon2">Điểm môn 2 (Vật lí):</label>
+          <input type="number" step="0.05" min="0" max="10" id="diemMon2" class="field-input" value="8.4" placeholder="0.00 - 10.00" oninput="tinhTongDiem()">
+        </div>
+        <div class="field-group">
+          <label class="field-label" id="nhanMon3">Điểm môn 3 (Hóa học):</label>
+          <input type="number" step="0.05" min="0" max="10" id="diemMon3" class="field-input" value="7.8" placeholder="0.00 - 10.00" oninput="tinhTongDiem()">
+        </div>
+      </div>
+
+            <div class="score-summary-bar">
+        <div>
+          <span>Tổng điểm xét tuyển tổ hợp <strong id="hienThiMaToHop">A00</strong>:</span>
+        </div>
+        <div>
+          <span class="score-value-large" id="hienThiTongDiem">24.80</span>
+          <span style="font-size: 0.9rem; color: #555555;"> / 30.00 điểm</span>
+        </div>
+      </div>
+    </div>
+
+        <div class="section-box">
+      <div class="section-title">2. Chọn Ngành Yêu Thích & Tiêu Chí Tuyển Sinh</div>
+      <div class="section-help">
+        Lựa chọn lĩnh vực bạn quan tâm để mô hình Random Forest ưu tiên gợi ý các ngành phù hợp nhất.
+      </div>
+
+      <div class="grid-row" style="grid-template-columns: 2fr 1fr 1fr;">
+                <div class="field-group">
+          <label class="field-label" for="nhomNganh">Nhóm ngành đào tạo yêu thích:</label>
+          <select id="nhomNganh" class="field-select">
+            <option value="tatCa" selected>Tất cả các nhóm ngành</option>
+            <option value="CongNgheThongTin">Công nghệ thông tin & Khoa học máy tính</option>
+            <option value="KinhTeQuanTri">Kinh tế, Quản trị kinh doanh & Tài chính</option>
+            <option value="KyThuatCongNghe">Kỹ thuật & Công nghệ</option>
+            <option value="YDuoc">Y học, Dược học & Khoa học sức khỏe</option>
+            <option value="SuPhamNhanVan">Sư phạm & Khoa học xã hội nhân văn</option>
+            <option value="LuatNgoaiGiao">Luật & Quan hệ quốc tế, Ngoại giao</option>
+            <option value="NongLamThuySan">Nông - Lâm - Thủy sản & Môi trường</option>
+          </select>
+        </div>
+
+                <div class="field-group">
+          <label class="field-label" for="vungMien">Khu vực địa bàn:</label>
+          <select id="vungMien" class="field-select">
+            <option value="tatCa" selected>Toàn quốc</option>
+            <option value="MienBac">Miền Bắc</option>
+            <option value="MienTrung">Miền Trung</option>
+            <option value="MienNam">Miền Nam</option>
+          </select>
+        </div>
+
+                <div class="field-group">
+          <label class="field-label" for="nganSach">Học phí dự kiến:</label>
+          <select id="nganSach" class="field-select">
+            <option value="tatCa" selected>Không giới hạn</option>
+            <option value="15000000">Dưới 15 triệu/kỳ (Công lập)</option>
+            <option value="25000000">Dưới 25 triệu/kỳ</option>
+            <option value="40000000">Dưới 40 triệu/kỳ</option>
+          </select>
+        </div>
+      </div>
+
+            <div style="margin-top: 14px;">
+        <button type="button" class="btn btn-lg" onclick="chayDeXuatRandomForest()">
+          [ ĐỀ XUẤT NGUYỆN VỌNG - THUẬT TOÁN RANDOM FOREST ]
+        </button>
+      </div>
+    </div>
+
+        <div class="section-box" id="khungKetQua" style="margin-bottom: 24px;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px; margin-bottom: 16px;">
+        <div>
+          <div class="section-title" style="border-bottom: none; padding-bottom: 0; margin-bottom: 2px;">
+            3. Kết Quả Đề Xuất & Phân Nhóm Xác Suất Trúng Tuyển
+          </div>
+          <div class="section-help" style="margin-bottom: 0;">
+            Mô hình Random Forest phân tích điểm thi của bạn đối chiếu với điểm chuẩn lịch sử 2021–2026 của từng ngành.
+          </div>
+        </div>
+        <div>
+          <span class="badge-tag badge-solid" id="soLuongPhuongAnBadge">Top 20 Phương Án Tối Ưu</span>
+        </div>
+      </div>
+
+            <div class="tabs-bar">
+        <button type="button" class="tab-item active" onclick="chuyenTabPhanLoai('tatCa', this)">
+          Tất cả kết quả
+        </button>
+        <button type="button" class="tab-item" onclick="chuyenTabPhanLoai('doChac', this)">
+          Đỗ chắc / An toàn (Delta ≥ +0.5đ)
+        </button>
+        <button type="button" class="tab-item" onclick="chuyenTabPhanLoai('coKhaNang', this)">
+          Có khả năng / Vừa sức (Delta ± 0.5đ)
+        </button>
+        <button type="button" class="tab-item" onclick="chuyenTabPhanLoai('thuThach', this)">
+          Thử thách / Mơ ước (Đặt NV1-NV2)
+        </button>
+      </div>
+
+            <div class="table-container">
+        <table class="result-table">
+          <thead>
+            <tr>
+              <th style="width: 40px; text-align: center;">STT</th>
+              <th style="width: 80px;">Mã Trường</th>
+              <th style="width: 25%;">Trường Đại Học & Khu Vực</th>
+              <th style="width: 25%;">Ngành Đào Tạo & Mã Ngành</th>
+              <th style="width: 80px; text-align: center;">Tổ Hợp</th>
+              <th style="width: 100px; text-align: center;">Điểm Chuẩn</th>
+              <th style="width: 90px; text-align: center;">Chênh Lệch</th>
+              <th style="width: 100px; text-align: center;">Random Forest</th>
+              <th style="width: 110px; text-align: center;">Đánh Giá</th>
+              <th style="width: 120px; text-align: center;">Hành Động</th>
+            </tr>
+          </thead>
+          <tbody id="thanBangKetQua">
+            {% if ketQuaKhuyenNghi and ketQuaKhuyenNghi.danhSachKhuyenNghi %}
+              {% for pa in ketQuaKhuyenNghi.danhSachKhuyenNghi %}
+                <tr class="dong-ket-qua" data-phanloai="{{ pa.phanLoai }}">
+                  <td style="text-align: center; font-weight: bold;">{{ pa.thuHang }}</td>
+                  <td><strong>{{ pa.maTruong }}</strong></td>
+                  <td>
+                    <div style="font-weight: bold;">{{ pa.tenTruong }}</div>
+                    <div style="font-size: 0.75rem; color: #555;">{{ pa.vungMien }} | {{ 'Công lập' if pa.khoiTruong == 'CongLap' else 'Ngoài công lập' }}</div>
+                  </td>
+                  <td>
+                    <div style="font-weight: bold;">{{ pa.tenNganh }}</div>
+                    <div style="font-size: 0.75rem; color: #555;">Mã ngành: {{ pa.maNganh }}</div>
+                  </td>
+                  <td style="text-align: center; font-weight: bold;">{{ pa.toHop }}</td>
+                  <td style="text-align: center; font-weight: bold;">{{ pa.diemChuan or 'Đang cập nhật' }}</td>
+                  <td style="text-align: center;">
+                    {% if pa.delta is not none %}
+                      {% if pa.delta >= 0 %}
+                        <span class="delta-plus">+{{ pa.delta }}</span>
+                      {% else %}
+                        <span class="delta-minus">{{ pa.delta }}</span>
+                      {% endif %}
+                    {% else %}
+                      --
+                    {% endif %}
+                  </td>
+                  <td style="text-align: center; font-weight: bold;">{{ pa.diemDuDoan }}/5.0</td>
+                  <td style="text-align: center;">
+                    {% if pa.phanLoai == 'doChac' %}
+                      <span class="badge-tag badge-solid">Đỗ chắc</span>
+                    {% elif pa.phanLoai == 'coKhaNang' %}
+                      <span class="badge-tag">Có khả năng</span>
+                    {% else %}
+                      <span class="badge-tag">Thử thách</span>
+                    {% endif %}
+                  </td>
+                  <td style="text-align: center;">
+                    <button type="button" class="btn btn-sm btn-outline" style="width: 100%;" onclick="themNguyenVongTuKetQua('{{ pa.maPhuongAn }}', this)">
+                      [ + Chọn NV ]
+                    </button>
+                  </td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="10" style="text-align: center; padding: 24px;">
+                  Nhấn nút [ ĐỀ XUẤT NGUYỆN VỌNG ] ở trên để xem danh sách gợi ý.
+                </td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+        <div class="section-box">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px; margin-bottom: 16px;">
+        <div>
+          <div class="section-title" style="border-bottom: none; padding-bottom: 0; margin-bottom: 2px;">
+            4. Danh Sách Nguyện Vọng Đã Chọn
+          </div>
+          <div class="section-help" style="margin-bottom: 0;">
+            Sắp xếp thứ tự NV1, NV2, NV3... theo chiến lược và xuất file CSV nộp hệ thống thi của Bộ GD&ĐT.
+          </div>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <a href="{{ url_for('dieuKhienNguyenVong.xuatCsv') }}" class="btn btn-sm">
+            [ Xuất File CSV Nguyện Vọng ]
+          </a>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table class="result-table">
+          <thead>
+            <tr>
+              <th style="width: 80px; text-align: center;">Nguyện Vọng</th>
+              <th style="width: 90px;">Mã Trường</th>
+              <th style="width: 32%;">Tên Trường Đại Học</th>
+              <th style="width: 30%;">Ngành Đào Tạo</th>
+              <th style="width: 100px; text-align: center;">Điểm Chuẩn</th>
+              <th style="width: 120px; text-align: center;">Điều Chỉnh</th>
+            </tr>
+          </thead>
+          <tbody id="danhSachNguyenVongBody">
+            {% if dsNguyenVong and dsNguyenVong.danhSach and dsNguyenVong.danhSach | length > 0 %}
+              {% for nv in dsNguyenVong.danhSach %}
+                <tr data-mapa="{{ nv.maPhuongAn }}">
+                  <td style="text-align: center; font-weight: 800;">NV{{ nv.thuTu }}</td>
+                  <td><strong>{{ nv.maTruong }}</strong></td>
+                  <td>{{ nv.tenTruong }}</td>
+                  <td>{{ nv.tenNganh }}</td>
+                  <td style="text-align: center; font-weight: bold;">{{ nv.diemChuanGanNhat or '--' }}</td>
+                  <td style="text-align: center;">
+                    <div style="display: flex; gap: 4px; justify-content: center;">
+                      <button type="button" class="btn btn-sm btn-outline" onclick="doiThuTu(this, -1)">[ Lên ]</button>
+                      <button type="button" class="btn btn-sm btn-outline" onclick="doiThuTu(this, 1)">[ Xuống ]</button>
+                      <button type="button" class="btn btn-sm btn-outline" onclick="xoaNguyenVongKhoiDanhSach('{{ nv.maPhuongAn }}')">[ Xóa ]</button>
+                    </div>
+                  </td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr id="dongTrongWishlist">
+                <td colspan="6" style="text-align: center; padding: 24px; color: #555;">
+                  Chưa có nguyện vọng nào. Hãy nhấn [ + Chọn NV ] ở bảng trên để thêm vào danh sách.
+                </td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+
+      {% if dsNguyenVong and dsNguyenVong.danhSach and dsNguyenVong.danhSach | length > 0 %}
+        <div style="display: flex; justify-content: flex-end; margin-top: 10px;">
+          <button type="button" class="btn btn-sm" onclick="luuLaiThuTuWishlist()">
+            [ Lưu Thứ Tự Nguyện Vọng Mới ]
+          </button>
+        </div>
+      {% endif %}
+    </div>
+  </main>
+
+  <footer style="border-top: 1px solid #000000; padding: 24px 0; margin-top: 40px; text-align: center; font-size: 0.82rem; color: #555555;">
+    <div class="container">
+      <div>Hệ Trợ Giúp Quyết Định Tuyển Sinh Đại Học 2026 (DSS Admissions Decision Support System)</div>
+      <div style="margin-top: 4px;">Dữ liệu đối chiếu 587 trường đại học, 777 ngành học và 276 tổ hợp môn toàn quốc.</div>
+    </div>
+  </footer>
+
+  <div id="toastBox" class="toast-box"></div>
+
+  <script>
+    const TO_HOP_CONFIG = {
+      "A00": ["Toán", "Vật lí", "Hóa học"],
+      "A01": ["Toán", "Vật lí", "Tiếng Anh"],
+      "A02": ["Toán", "Vật lí", "Sinh học"],
+      "B00": ["Toán", "Hóa học", "Sinh học"],
+      "B08": ["Toán", "Sinh học", "Tiếng Anh"],
+      "C00": ["Ngữ văn", "Lịch sử", "Địa lí"],
+      "C01": ["Toán", "Ngữ văn", "Vật lí"],
+      "C03": ["Ngữ văn", "Toán", "Lịch sử"],
+      "D01": ["Toán", "Ngữ văn", "Tiếng Anh"],
+      "D07": ["Toán", "Hóa học", "Tiếng Anh"],
+      "D08": ["Toán", "Sinh học", "Tiếng Anh"],
+      "D14": ["Ngữ văn", "Lịch sử", "Tiếng Anh"],
+      "D15": ["Ngữ văn", "Địa lí", "Tiếng Anh"]
+    };
+
+    function thayDoiToHop() {
+      const ma = document.getElementById('chonToHop').value;
+      const mons = TO_HOP_CONFIG[ma] || ["Môn 1", "Môn 2", "Môn 3"];
+
+      document.getElementById('nhanMon1').innerText = "Điểm môn 1 (" + mons[0] + "):";
+      document.getElementById('nhanMon2').innerText = "Điểm môn 2 (" + mons[1] + "):";
+      document.getElementById('nhanMon3').innerText = "Điểm môn 3 (" + mons[2] + "):";
+      document.getElementById('hienThiMaToHop').innerText = ma;
+
+      tinhTongDiem();
+    }
+
+    function tinhTongDiem() {
+      const d1 = parseFloat(document.getElementById('diemMon1').value) || 0;
+      const d2 = parseFloat(document.getElementById('diemMon2').value) || 0;
+      const d3 = parseFloat(document.getElementById('diemMon3').value) || 0;
+      const tong = (d1 + d2 + d3).toFixed(2);
+      document.getElementById('hienThiTongDiem').innerText = tong;
+    }
+
+    function hienToast(msg) {
+      const box = document.getElementById('toastBox');
+      const item = document.createElement('div');
+      item.className = 'toast-item';
+      item.innerText = msg;
+      box.appendChild(item);
+      setTimeout(() => {
+        item.style.opacity = '0';
+        item.style.transition = 'opacity 0.3s ease';
+        setTimeout(() => item.remove(), 300);
+      }, 2500);
+    }
+
+    async function chayDeXuatRandomForest() {
+      const maToHop = document.getElementById('chonToHop').value;
+      const d1 = parseFloat(document.getElementById('diemMon1').value) || 0;
+      const d2 = parseFloat(document.getElementById('diemMon2').value) || 0;
+      const d3 = parseFloat(document.getElementById('diemMon3').value) || 0;
+      const tongDiem = (d1 + d2 + d3);
+
+      const nhomNganh = document.getElementById('nhomNganh').value;
+      const vungMien = document.getElementById('vungMien').value;
+      const nganSach = document.getElementById('nganSach').value;
+
+      hienToast("Đang tính toán với mô hình Random Forest...");
+
+      const payload = {
+        toHop: maToHop,
+        diemMon1: d1,
+        diemMon2: d2,
+        diemMon3: d3,
+        tongDiem: tongDiem,
+        nhomNganh: nhomNganh,
+        vungMien: vungMien,
+        nganSach: nganSach
+      };
+
+      try {
+        const res = await fetch("/api/deXuatChonTruong", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+          throw new Error(`Máy chủ phản hồi lỗi (mã ${res.status}). Vui lòng kiểm tra kết nối MySQL và backend!`);
+        }
+
+        const data = await res.json();
+
+        if (data.thanhCong && data.danhSachKhuyenNghi) {
+          capNhatBangKetQua(data.danhSachKhuyenNghi);
+          hienToast("Đã hoàn tất đề xuất " + data.danhSachKhuyenNghi.length + " phương án tối ưu.");
+        } else {
+          alert("Thông báo: " + (data.thongBao || "Không tìm thấy phương án phù hợp."));
+        }
+      } catch (err) {
+        alert("Lỗi khi kết nối thuật toán: " + (err.message || err));
+      }
+    }
+
+    function capNhatBangKetQua(danhSach) {
+      const tbody = document.getElementById('thanBangKetQua');
+      tbody.innerHTML = '';
+
+      if (danhSach.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="10" style="text-align: center; padding: 24px;">Không tìm thấy phương án nào khớp với tiêu chí đã chọn.</td></tr>';
+        return;
+      }
+
+      danhSach.forEach(pa => {
+        const tr = document.createElement('tr');
+        tr.className = 'dong-ket-qua';
+        tr.setAttribute('data-phanloai', pa.phanLoai || 'coKhaNang');
+
+        let tagPhanLoai = '<span class="badge-tag">Có khả năng</span>';
+        if (pa.phanLoai === 'doChac') {
+          tagPhanLoai = '<span class="badge-tag badge-solid">Đỗ chắc</span>';
+        } else if (pa.phanLoai === 'thuThach') {
+          tagPhanLoai = '<span class="badge-tag">Thử thách</span>';
+        }
+
+        let deltaStr = '--';
+        if (pa.delta !== null && pa.delta !== undefined) {
+          deltaStr = pa.delta >= 0 ? `+${pa.delta}` : `${pa.delta}`;
+        }
+
+        tr.innerHTML = `
+          <td style="text-align: center; font-weight: bold;">${pa.thuHang}</td>
+          <td><strong>${pa.maTruong}</strong></td>
+          <td>
+            <div style="font-weight: bold;">${pa.tenTruong}</div>
+            <div style="font-size: 0.75rem; color: #555;">${pa.vungMien} | ${pa.khoiTruong === 'CongLap' ? 'Công lập' : 'Ngoài công lập'}</div>
+          </td>
+          <td>
+            <div style="font-weight: bold;">${pa.tenNganh}</div>
+            <div style="font-size: 0.75rem; color: #555;">Mã ngành: ${pa.maNganh}</div>
+          </td>
+          <td style="text-align: center; font-weight: bold;">${pa.toHop || 'A00'}</td>
+          <td style="text-align: center; font-weight: bold;">${pa.diemChuan || 'Xét THPT'}</td>
+          <td style="text-align: center; font-weight: bold;">${deltaStr}</td>
+          <td style="text-align: center; font-weight: bold;">${pa.diemDuDoan}/5.0</td>
+          <td style="text-align: center;">${tagPhanLoai}</td>
+          <td style="text-align: center;">
+            <button type="button" class="btn btn-sm btn-outline" style="width: 100%;" onclick="themNguyenVongTuKetQua('${pa.maPhuongAn}', this)">
+              [ + Chọn NV ]
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function chuyenTabPhanLoai(loai, btn) {
+      document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+
+      const dongs = document.querySelectorAll('.dong-ket-qua');
+      dongs.forEach(d => {
+        if (loai === 'tatCa') {
+          d.style.display = '';
+        } else {
+          d.style.display = (d.getAttribute('data-phanloai') === loai) ? '' : 'none';
+        }
+      });
+    }
+
+    async function themNguyenVongTuKetQua(maPhuongAn, btn) {
+      const daDangNhap = document.querySelector('meta[name="da-dang-nhap"]')?.getAttribute('content') === '1';
+      if (!daDangNhap) {
+        if (confirm("Tính năng lưu danh sách nguyện vọng yêu cầu tài khoản học sinh. Bạn có muốn đăng nhập nhanh bằng tài khoản mẫu không?")) {
+          dangNhapNhanhHocSinh();
+        }
+        return;
+      }
+
+      const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+      try {
+        btn.innerText = "[ Đang thêm... ]";
+        const res = await fetch("/nguyenVong/them", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "X-CSRF-Token": csrfToken },
+          body: JSON.stringify({ maPhuongAn: maPhuongAn })
+        });
+        const data = await res.json();
+        if (data.thanhCong) {
+          btn.innerText = "[ Đã chọn ]";
+          btn.disabled = true;
+          hienToast("Đã lưu vào danh sách nguyện vọng!");
+          setTimeout(() => window.location.reload(), 1000);
+        } else {
+          btn.innerText = "[ + Chọn NV ]";
+          hienToast(data.thongBao);
+        }
+      } catch (e) {
+        btn.innerText = "[ + Chọn NV ]";
+        alert("Lỗi: " + e);
+      }
+    }
+
+    function doiThuTu(btn, huong) {
+      const row = btn.closest('tr');
+      if (huong === -1 && row.previousElementSibling) {
+        row.parentNode.insertBefore(row, row.previousElementSibling);
+      } else if (huong === 1 && row.nextElementSibling) {
+        row.parentNode.insertBefore(row.nextElementSibling, row);
+      }
+      capNhatSoThuTu();
+    }
+
+    function capNhatSoThuTu() {
+      const rows = document.querySelectorAll('#danhSachNguyenVongBody tr');
+      rows.forEach((r, idx) => {
+        if (r.cells.length >= 6) {
+          r.cells[0].innerText = "NV" + (idx + 1);
+        }
+      });
+    }
+
+    async function luuLaiThuTuWishlist() {
+      const rows = document.querySelectorAll('#danhSachNguyenVongBody tr');
+      const danhSach = Array.from(rows).map(r => r.getAttribute('data-mapa')).filter(Boolean);
+      const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+      try {
+        const res = await fetch("/nguyenVong/capNhatThuTu", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "X-CSRF-Token": csrfToken },
+          body: JSON.stringify({ danhSachMaPhuongAn: danhSach })
+        });
+        const data = await res.json();
+        if (data.thanhCong) {
+          hienToast("Đã cập nhật thứ tự thành công.");
+        } else {
+          alert("Lỗi: " + data.thongBao);
+        }
+      } catch (e) {
+        alert("Lỗi: " + e);
+      }
+    }
+
+    async function xoaNguyenVongKhoiDanhSach(maPa) {
+      if (!confirm("Bạn có chắc chắn muốn xóa phương án này?")) return;
+      const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+      try {
+        const res = await fetch("/nguyenVong/xoa", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "X-CSRF-Token": csrfToken },
+          body: JSON.stringify({ maPhuongAn: maPa })
+        });
+        const data = await res.json();
+        if (data.thanhCong) {
+          window.location.reload();
+        } else {
+          alert("Lỗi: " + data.thongBao);
+        }
+      } catch (e) {
+        alert("Lỗi: " + e);
+      }
+    }
+
+    function hienFormDangNhap() {
+      document.getElementById('modalDangNhap').style.display = 'flex';
+    }
+    function dongFormDangNhap() {
+      document.getElementById('modalDangNhap').style.display = 'none';
+    }
+
+    async function xuLyDangNhapAjax(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value;
+      const matKhau = document.getElementById('loginPass').value;
+
+      try {
+        const res = await fetch("/dangNhap", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: email, matKhau: matKhau })
+        });
+        const data = await res.json();
+        if (data.thanhCong) {
+          window.location.reload();
+        } else {
+          alert("Lỗi đăng nhập: " + (data.thongBao || "Thông tin không chính xác."));
+        }
+      } catch (err) {
+        alert("Lỗi: " + err);
+      }
+    }
+
+    function dangNhapNhanhHocSinh() {
+      document.getElementById('loginEmail').value = 'hocsinh@dss.edu.vn';
+      document.getElementById('loginPass').value = 'StudentPassword@2026';
+      xuLyDangNhapAjax(new Event('submit'));
+    }
+
+    thayDoiToHop();
+  </script>
+</body>
+</html>

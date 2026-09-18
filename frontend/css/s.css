@@ -1,0 +1,598 @@
+
+
+:root {
+  --mauChinh: #1a56db;         
+  --mauChinhDam: #1e429f;
+  --mauChinhNhat: #ebf5ff;
+  --mauPhu: #0e9f6e;         
+  --mauCanhBao: #f59e0b;      
+  --mauNguyHiem: #e02424;     
+  --mauTim: #7e3af2;           
+  
+  --nenTrang: #f9fafb;
+  --nenThe: #ffffff;
+  --vienKhung: #e5e7eb;
+  --vienDam: #d1d5db;
+  
+  --chuChinh: #111827;
+  --chuPhu: #4b5563;
+  --chuMo: #9ca3af;
+  
+  --bongThe: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --bongNoi: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+  --boGoc: 8px;
+  --boGocNho: 5px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: var(--nenTrang);
+  color: var(--chuChinh);
+  line-height: 1.6;
+  font-size: 15px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ==========================================================================
+   Thanh điều hướng đầu trang (Navbar)
+   ========================================================================== */
+.thanhDieuHuong {
+  background-color: #ffffff;
+  border-bottom: 1px solid var(--vienKhung);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+}
+
+.khungChuaDieuHuong {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 68px;
+}
+
+.bieuTrung {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--chuChinh);
+}
+
+.bieuTrung .bieuTuongLogo {
+  width: 38px;
+  height: 38px;
+  background-color: var(--mauChinh);
+  color: #fff;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.bieuTrung .tieuDeHeThong {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--mauChinhDam);
+}
+
+.bieuTrung .phuDeHeThong {
+  font-size: 12px;
+  color: var(--chuPhu);
+}
+
+.danhSachLienKet {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  list-style: none;
+}
+
+.danhSachLienKet a {
+  text-decoration: none;
+  color: var(--chuPhu);
+  font-weight: 500;
+  font-size: 14px;
+  padding: 6px 10px;
+  border-radius: var(--boGocNho);
+  transition: all 0.2s ease;
+}
+
+.danhSachLienKet a:hover,
+.danhSachLienKet a.kichHoat {
+  color: var(--mauChinh);
+  background-color: var(--mauChinhNhat);
+}
+
+.khuVucTaiKhoan {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ==========================================================================
+   Bố cục chính & Container
+   ========================================================================== */
+.khungNoiDung {
+  max-width: 1200px;
+  margin: 25px auto;
+  padding: 0 20px;
+  flex: 1;
+  width: 100%;
+}
+
+.theNoiDung {
+  background-color: var(--nenThe);
+  border: 1px solid var(--vienKhung);
+  border-radius: var(--boGoc);
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: var(--bongThe);
+}
+
+.tieuDeTrang {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--chuChinh);
+  margin-bottom: 8px;
+}
+
+.moTaTrang {
+  font-size: 14px;
+  color: var(--chuPhu);
+  margin-bottom: 24px;
+}
+
+/* ==========================================================================
+   Nút bấm (Buttons)
+   ========================================================================== */
+.nutBam {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: var(--boGocNho);
+  cursor: pointer;
+  border: 1px solid transparent;
+  text-decoration: none;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.nutChinh {
+  background-color: var(--mauChinh);
+  color: #ffffff;
+}
+.nutChinh:hover {
+  background-color: var(--mauChinhDam);
+}
+
+.nutPhu {
+  background-color: #ffffff;
+  color: var(--chuPhu);
+  border-color: var(--vienDam);
+}
+.nutPhu:hover {
+  background-color: #f3f4f6;
+  color: var(--chuChinh);
+}
+
+.nutXanhLa {
+  background-color: var(--mauPhu);
+  color: #ffffff;
+}
+.nutXanhLa:hover {
+  background-color: #057a55;
+}
+
+.nutDo {
+  background-color: var(--mauNguyHiem);
+  color: #ffffff;
+}
+.nutDo:hover {
+  background-color: #b91c1c;
+}
+
+.nutNho {
+  padding: 5px 10px;
+  font-size: 13px;
+}
+
+.nutLon {
+  padding: 12px 24px;
+  font-size: 16px;
+}
+
+/* ==========================================================================
+   Biểu mẫu (Forms)
+   ========================================================================== */
+.nhomNhapLieu {
+  margin-bottom: 18px;
+}
+
+.nhanNhapLieu {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--chuChinh);
+  margin-bottom: 6px;
+}
+
+.oNhapLieu,
+.oChon {
+  width: 100%;
+  padding: 9px 12px;
+  font-size: 14px;
+  color: var(--chuChinh);
+  background-color: #ffffff;
+  border: 1px solid var(--vienDam);
+  border-radius: var(--boGocNho);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.oNhapLieu:focus,
+.oChon:focus {
+  border-color: var(--mauChinh);
+  box-shadow: 0 0 0 2px rgba(26, 86, 219, 0.2);
+}
+
+.luoiNhapDiem {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 15px;
+  background-color: #f9fafb;
+  padding: 16px;
+  border-radius: var(--boGoc);
+  border: 1px solid var(--vienKhung);
+  margin-bottom: 20px;
+}
+
+.oNhapDiemMon {
+  text-align: center;
+}
+
+.oNhapDiemMon label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--chuPhu);
+}
+
+.oNhapDiemMon input {
+  text-align: center;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--mauChinhDam);
+}
+
+/* ==========================================================================
+   Hộp chọn nhiều (Checkbox pill cards)
+   ========================================================================== */
+.danhSachHopChon {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.theHopChon {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--vienKhung);
+  border-radius: var(--boGocNho);
+  background-color: #ffffff;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.theHopChon:hover {
+  border-color: var(--mauChinh);
+  background-color: var(--mauChinhNhat);
+}
+
+.theHopChon input[type="checkbox"] {
+  margin-top: 3px;
+  cursor: pointer;
+}
+
+.theHopChon .nhanHopChon {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--chuChinh);
+}
+
+.theHopChon .moTaHopChon {
+  font-size: 12px;
+  color: var(--chuPhu);
+  margin-top: 2px;
+}
+
+/* ==========================================================================
+   Huy hiệu (Badges)
+   ========================================================================== */
+.huyHieu {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 4px;
+}
+
+.huyHieuToHop {
+  background-color: #e1effe;
+  color: #1e429f;
+  border: 1px solid #b4c6fc;
+}
+
+.huyHieuPhuongThuc {
+  background-color: #f3e8ff;
+  color: #6b21a8;
+  border: 1px solid #d8b4fe;
+}
+
+.huyHieuAnToan {
+  background-color: #def7ec;
+  color: #03543f;
+}
+
+.huyHieuKhaNangTot {
+  background-color: #e1effe;
+  color: #1e429f;
+}
+
+.huyHieuPhuHop {
+  background-color: #fef08a;
+  color: #854d0e;
+}
+
+.huyHieuMucTieuCao {
+  background-color: #ffedd5;
+  color: #9a3412;
+}
+
+.huyHieuRuiRo {
+  background-color: #fde8e8;
+  color: #9b1c1c;
+}
+
+/* ==========================================================================
+   Bảng dữ liệu (Tables)
+   ========================================================================== */
+.khungBang {
+  overflow-x: auto;
+  border: 1px solid var(--vienKhung);
+  border-radius: var(--boGoc);
+  background-color: #ffffff;
+}
+
+.bangDuLieu {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  text-align: left;
+}
+
+.bangDuLieu th {
+  background-color: #f9fafb;
+  color: var(--chuPhu);
+  font-weight: 600;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--vienKhung);
+}
+
+.bangDuLieu td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--vienKhung);
+  vertical-align: middle;
+}
+
+.bangDuLieu tr:last-child td {
+  border-bottom: none;
+}
+
+.bangDuLieu tr:hover {
+  background-color: #f9fafb;
+}
+
+/* ==========================================================================
+   Thẻ kết quả nguyện vọng (Wish Cards)
+   ========================================================================== */
+.danhSachNguyenVongThe {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.theNguyenVong {
+  background-color: #ffffff;
+  border: 1px solid var(--vienKhung);
+  border-left: 5px solid var(--mauChinh);
+  border-radius: var(--boGoc);
+  padding: 20px;
+  box-shadow: var(--bongThe);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.theNguyenVong:hover {
+  box-shadow: var(--bongNoi);
+}
+
+.theNguyenVong.vienAnToan {
+  border-left-color: var(--mauPhu);
+}
+.theNguyenVong.vienPhuHop {
+  border-left-color: var(--mauCanhBao);
+}
+.theNguyenVong.vienMucTieuCao {
+  border-left-color: #ea580c;
+}
+
+.dauTheNguyenVong {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.soThuTuNV {
+  font-size: 13px;
+  font-weight: 700;
+  background-color: var(--chuChinh);
+  color: #fff;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.tenTruongVaNganh h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--chuChinh);
+}
+
+.tenTruongVaNganh .tenTruong {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--mauChinhDam);
+  margin-top: 2px;
+}
+
+.thongSoNguyenVong {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 14px 0;
+  padding: 10px 14px;
+  background-color: #f9fafb;
+  border-radius: var(--boGocNho);
+  font-size: 13px;
+}
+
+.mucThongSo span {
+  color: var(--chuPhu);
+}
+.mucThongSo strong {
+  color: var(--chuChinh);
+  font-size: 14px;
+}
+
+.lyDoDeXuat {
+  font-size: 13.5px;
+  color: var(--chuPhu);
+  line-height: 1.5;
+  background-color: #f0fdf4;
+  border-left: 3px solid var(--mauPhu);
+  padding: 10px 14px;
+  border-radius: 0 var(--boGocNho) var(--boGocNho) 0;
+  margin-top: 10px;
+}
+
+/* ==========================================================================
+   Biểu đồ Độ quan trọng đặc trưng (Feature Importance)
+   ========================================================================== */
+.khungDoQuanTrong {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.dongDacTrung {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.tenDacTrung {
+  width: 140px;
+  font-weight: 500;
+  color: var(--chuChinh);
+}
+
+.thanhTienTrinhNen {
+  flex: 1;
+  background-color: #e5e7eb;
+  height: 14px;
+  border-radius: 7px;
+  overflow: hidden;
+}
+
+.thanhTienTrinhChay {
+  background-color: var(--mauChinh);
+  height: 100%;
+  border-radius: 7px;
+}
+
+.phanTramDacTrung {
+  width: 50px;
+  font-weight: 600;
+  text-align: right;
+  color: var(--mauChinhDam);
+}
+
+/* ==========================================================================
+   Chân trang (Footer)
+   ========================================================================== */
+.chanTrang {
+  background-color: #ffffff;
+  border-top: 1px solid var(--vienKhung);
+  padding: 24px 20px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--chuPhu);
+  margin-top: auto;
+}
+
+.chanTrang .canhBaoDemo {
+  color: #b45309;
+  font-weight: 500;
+  margin-top: 6px;
+}
+
+/* ==========================================================================
+   Responsive Mobile
+   ========================================================================== */
+@media (max-width: 768px) {
+  .khungChuaDieuHuong {
+    height: auto;
+    padding: 12px 16px;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .danhSachLienKet {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+  .luoiNhapDiem {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .theNoiDung {
+    padding: 16px;
+  }
+  .dauTheNguyenVong {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
