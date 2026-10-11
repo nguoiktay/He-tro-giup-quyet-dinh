@@ -1,4 +1,5 @@
 import math
+import re
 from pydantic import BaseModel, Field, field_validator
 from typing import Dict, List, Optional, Any, Union
 
@@ -10,6 +11,26 @@ class UserRegisterRequest(BaseModel):
     email: str
     soDienThoai: Optional[str] = ""
     vaiTro: Optional[str] = "hocSinh"
+
+    @field_validator("email")
+    @classmethod
+    def validate_email_format(cls, v: str) -> str:
+        clean = v.strip().lower()
+        if not re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", clean):
+            raise ValueError("Email không đúng định dạng hợp lệ.")
+        return clean
+
+    @field_validator("soDienThoai")
+    @classmethod
+    def validate_phone_number(cls, v: Optional[str]) -> str:
+        if not v:
+            return ""
+        clean = str(v).strip()
+        if clean.endswith(".0"):
+            clean = clean[:-2]
+        if len(clean) == 9 and not clean.startswith("0"):
+            clean = "0" + clean
+        return clean
 
 
 class UserLoginRequest(BaseModel):
@@ -74,15 +95,20 @@ class StudentProfileInput(BaseModel):
     diemSu: Optional[float] = None
     diemDia: Optional[float] = None
     diemGDCD: Optional[float] = None
+    diemTinHoc: Optional[float] = None
+    diemCongNghe: Optional[float] = None
     diemHocBa: Optional[float] = None
     diemDanhGiaNangLuc: Optional[float] = None
+    diemDanhGiaTuDuy: Optional[float] = None
     chungChiQuocTe: Optional[str] = None
     khuVucUuTien: Optional[str] = "KV3"
     doiTuongUuTien: Optional[str] = "NONE"
     khuVucMongMuon: Optional[str] = None
     nganhMongMuon: Optional[str] = None
     nganSach: Optional[float] = None
-    namTuyenSinh: Optional[int] = 2026
+    mucHocPhi: Optional[str] = None
+    filterTuition: Optional[str] = None
+    namTuyenSinh: Optional[int] = 2027
     calculationRuleId: Optional[str] = None
     scoreScale: Optional[str] = None
     phuongThucMongMuon: Optional[Union[List[str], str]] = "PT01"
@@ -90,7 +116,7 @@ class StudentProfileInput(BaseModel):
 
     @field_validator(
         "diemToan", "diemVan", "diemAnh", "diemLy", "diemHoa",
-        "diemSinh", "diemSu", "diemDia", "diemGDCD", "diemHocBa"
+        "diemSinh", "diemSu", "diemDia", "diemGDCD", "diemTinHoc", "diemCongNghe", "diemHocBa"
     )
     @classmethod
     def validate_subject_score(cls, v):
@@ -105,6 +131,14 @@ class StudentProfileInput(BaseModel):
         if v is not None:
             if not math.isfinite(v) or v < 0.0 or v > 1200.0:
                 raise ValueError("Điểm đánh giá năng lực phải từ 0.0 đến 1200.0")
+        return v
+
+    @field_validator("diemDanhGiaTuDuy")
+    @classmethod
+    def validate_dgtd(cls, v):
+        if v is not None:
+            if not math.isfinite(v) or v < 0.0 or v > 100.0:
+                raise ValueError("Điểm đánh giá tư duy phải từ 0.0 đến 100.0")
         return v
 
     @field_validator("phuongThucMongMuon")

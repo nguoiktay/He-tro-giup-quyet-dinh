@@ -172,18 +172,19 @@ class ScoringService:
                 }
 
             elif ruleId == "RULE_HB_STD_30" and scale in ["SCALE_30", "THANG_30"]:
-                diemTho = cls.tinhDiemToHop(diemMonHoc, maToHop)
+                diemTho = None
                 uocTinh = False
+                diemHb = hoSoHocSinh.get("diemHocBa")
+                if diemHb is not None and str(diemHb).strip() != "":
+                    try:
+                        gpaVal = float(diemHb)
+                        if 0.0 <= gpaVal <= 10.0:
+                            diemTho = round(gpaVal * 3.0, 2)
+                            uocTinh = True
+                    except Exception:
+                        pass
                 if diemTho is None:
-                    diemHb = hoSoHocSinh.get("diemHocBa")
-                    if diemHb is not None:
-                        try:
-                            gpaVal = float(diemHb)
-                            if 0.0 <= gpaVal <= 10.0:
-                                diemTho = round(gpaVal * 3.0, 2)
-                                uocTinh = True
-                        except Exception:
-                            pass
+                    diemTho = cls.tinhDiemToHop(diemMonHoc, maToHop)
                 if diemTho is None:
                     return {"hopLe": False, "lyDo": f"Thiếu điểm các môn bắt buộc của tổ hợp {maToHop} theo quy tắc xét tuyển 3 môn học bạ"}
 
@@ -299,9 +300,15 @@ class ScoringService:
 
         if maPhuongThuc == "PT03":
             diemDgnl = hoSoHocSinh.get("diemDanhGiaNangLuc")
-            if diemDgnl is None or float(diemDgnl) <= 0:
+            if diemDgnl is None or str(diemDgnl).strip() == "":
                 return {"hopLe": False, "lyDo": "Chưa nhập điểm thi Đánh giá năng lực"}
-            rawVal = float(diemDgnl)
+            try:
+                rawVal = float(diemDgnl)
+                if rawVal <= 0:
+                    return {"hopLe": False, "lyDo": "Điểm thi Đánh giá năng lực phải lớn hơn 0"}
+            except (ValueError, TypeError):
+                return {"hopLe": False, "lyDo": "Điểm thi Đánh giá năng lực không đúng định dạng số"}
+
             if rawVal <= 150.0:
                 diemTho = round(rawVal * 30.0 / 150.0, 2)
             else:
@@ -321,10 +328,17 @@ class ScoringService:
             }
 
         elif maPhuongThuc == "PT04":
-            diemDgtd = hoSoHocSinh.get("diemDanhGiaNangLuc")
-            if diemDgtd is None or float(diemDgtd) <= 0:
+            diemDgtd = hoSoHocSinh.get("diemDanhGiaTuDuy") or hoSoHocSinh.get("diemTSA")
+            if diemDgtd is None or str(diemDgtd).strip() == "":
                 return {"hopLe": False, "lyDo": "Chưa có điểm thi Đánh giá tư duy"}
-            rawVal = min(float(diemDgtd), 100.0)
+            try:
+                rawVal = float(diemDgtd)
+                if rawVal <= 0:
+                    return {"hopLe": False, "lyDo": "Điểm thi Đánh giá tư duy phải lớn hơn 0"}
+            except (ValueError, TypeError):
+                return {"hopLe": False, "lyDo": "Điểm thi Đánh giá tư duy không đúng định dạng số"}
+
+            rawVal = min(max(rawVal, 0.0), 100.0)
             diemTho = round(rawVal * 30.0 / 100.0, 2)
             diemUuTien = cls.tinhDiemUuTien(khuVuc, doiTuong, diemTho)
             diemXetTuyen = cls.tinhDiemXetTuyen(diemTho, diemUuTien)
@@ -361,7 +375,9 @@ class ScoringService:
             }
 
         else:
-            diemTho = cls.tinhDiemToHop(diemMonHoc, maToHop) or 24.0
+            diemTho = cls.tinhDiemToHop(diemMonHoc, maToHop)
+            if diemTho is None:
+                return {"hopLe": False, "lyDo": f"Thiếu điểm các môn thuộc tổ hợp {maToHop}"}
             diemUuTien = cls.tinhDiemUuTien(khuVuc, doiTuong, diemTho)
             diemXetTuyen = cls.tinhDiemXetTuyen(diemTho, diemUuTien)
             return {

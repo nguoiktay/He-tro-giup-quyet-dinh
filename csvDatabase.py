@@ -8,7 +8,7 @@ from typing import Dict, List, Optional, Any
 CSV_DIR = os.path.join(os.path.dirname(__file__), "data", "csv")
 os.makedirs(CSV_DIR, exist_ok=True)
 
-_lock = threading.Lock()
+_lock = threading.RLock()
 _cache: Dict[str, List[Dict[str, Any]]] = {}
 
 
@@ -68,7 +68,8 @@ class CsvDatabase:
         "diemChuan": os.path.join(CSV_DIR, "diemChuan.csv"),
         "nguoiDung": os.path.join(CSV_DIR, "nguoiDung.csv"),
         "hoSoHocSinh": os.path.join(CSV_DIR, "hoSoHocSinh.csv"),
-        "goiYNguyenVong": os.path.join(CSV_DIR, "goiYNguyenVong.csv")
+        "goiYNguyenVong": os.path.join(CSV_DIR, "goiYNguyenVong.csv"),
+        "hocPhi": os.path.join(CSV_DIR, "hocPhi.csv")
     }
 
     COLUMNS = {
@@ -87,6 +88,11 @@ class CsvDatabase:
             "id", "hoSoHocSinhId", "truongDaiHocId", "nganhHocId", "toHopMonId", "phuongThucXetTuyenId", 
             "diemXetTuyen", "diemChuanThamChieu", "doPhuHop", "mucDoPhuHop", "mucDoRuiRo", "thuTuUuTien", "ngayTao",
             "programId", "tenChuongTrinh", "admissionCaseId"
+        ],
+        "hocPhi": [
+            "id", "programId", "truongDaiHocId", "maTruong", "tenTruong", "tenChuongTrinh",
+            "namApDung", "khoaApDung", "hocPhiToiThieu", "hocPhiToiDa", "donViTinh",
+            "loaiHocPhi", "trangThaiHocPhi", "hocPhiDisplay", "nguonMinhChung", "urlNguon", "ghiChu"
         ]
     }
 
@@ -416,6 +422,15 @@ class CsvDatabase:
                 _cache.clear()
 
     @classmethod
+    def setDatabaseDirectory(cls, newDir: str):
+        with _lock:
+            cls.CSV_DIR = newDir
+            cls.FILE_PATHS = {
+                k: os.path.join(newDir, f"{k}.csv") for k in cls.COLUMNS
+            }
+            cls.clearCache()
+
+    @classmethod
     def readAll(cls, tableName: str) -> List[Dict[str, Any]]:
         with _lock:
             if tableName in _cache:
@@ -423,7 +438,7 @@ class CsvDatabase:
             filePath = cls.FILE_PATHS.get(tableName)
             if not filePath or not os.path.exists(filePath):
                 return []
-            df = pd.read_csv(filePath)
+            df = pd.read_csv(filePath, dtype={"soDienThoai": str, "maTruong": str, "maNganh": str, "maToHop": str, "maPhuongThuc": str, "programId": str, "admissionCaseId": str})
             records = df.where(pd.notna(df), None).to_dict(orient="records")
             cleaned = []
             for r in records:
@@ -432,6 +447,13 @@ class CsvDatabase:
                     if pd.isna(v) or v is None:
                         cleanRow[k] = None
                     else:
+                        if k == "soDienThoai":
+                            sVal = str(v).strip()
+                            if sVal.endswith(".0"):
+                                sVal = sVal[:-2]
+                            if len(sVal) == 9 and not sVal.startswith("0"):
+                                sVal = "0" + sVal
+                            v = sVal
                         cleanRow[k] = v
                 cleaned.append(cleanRow)
             _cache[tableName] = cleaned
@@ -488,6 +510,13 @@ class CsvDatabase:
             data["id"] = maxId + 1
 
             newRow = {c: data.get(c, None) for c in cols}
+            if "soDienThoai" in newRow and newRow["soDienThoai"] is not None:
+                pStr = str(newRow["soDienThoai"]).strip()
+                if pStr.endswith(".0"):
+                    pStr = pStr[:-2]
+                if len(pStr) == 9 and not pStr.startswith("0"):
+                    pStr = "0" + pStr
+                newRow["soDienThoai"] = pStr
             records.append(newRow)
 
             pd.DataFrame(records)[cols].to_csv(filePath, index=False, encoding="utf-8-sig")

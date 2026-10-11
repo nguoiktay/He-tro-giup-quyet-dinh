@@ -7,32 +7,11 @@ from typing import Dict, Optional, Any
 from csvDatabase import CsvDatabase
 
 import os
+import re
 import secrets
 
 PBKDF2_ITERATIONS = int(os.environ.get("DSS_PBKDF2_ITERS", 600000))
-_ENV_SECRET = os.environ.get("DSS_SECRET_KEY")
-_SECRET_FILE = os.path.join(os.path.dirname(__file__), "data", ".jwt_secret")
-
-if _ENV_SECRET:
-    SECRET_KEY = _ENV_SECRET
-else:
-    if os.path.exists(_SECRET_FILE):
-        try:
-            with open(_SECRET_FILE, "r", encoding="utf-8") as f:
-                SECRET_KEY = f.read().strip()
-        except Exception:
-            SECRET_KEY = ""
-    else:
-        SECRET_KEY = ""
-
-    if not SECRET_KEY:
-        SECRET_KEY = secrets.token_hex(32)
-        try:
-            os.makedirs(os.path.dirname(_SECRET_FILE), exist_ok=True)
-            with open(_SECRET_FILE, "w", encoding="utf-8") as f:
-                f.write(SECRET_KEY)
-        except Exception:
-            pass
+SECRET_KEY = os.environ.get("DSS_SECRET_KEY") or secrets.token_hex(32)
 
 def hashPassword(password: str) -> str:
     salt = secrets.token_hex(16)
@@ -108,6 +87,8 @@ def verifyJwtToken(token: str) -> Optional[Dict[str, Any]]:
         return None
 
 class AuthService:
+    SECRET_KEY = SECRET_KEY
+
 
     @classmethod
     def dangKy(
@@ -119,6 +100,16 @@ class AuthService:
         soDienThoai: str = "",
         vaiTro: str = "hocSinh"
     ) -> Dict[str, Any]:
+        emailClean = str(email or "").strip().lower()
+        if not re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", emailClean):
+            return {"thanhCong": False, "thongBao": "Địa chỉ email không đúng định dạng hợp lệ."}
+
+        phoneClean = str(soDienThoai or "").strip()
+        if phoneClean.endswith(".0"):
+            phoneClean = phoneClean[:-2]
+        if len(phoneClean) == 9 and not phoneClean.startswith("0"):
+            phoneClean = "0" + phoneClean
+
         tenClean = tenDangNhap.strip().lower()
         existing = CsvDatabase.findWhere("nguoiDung", {"tenDangNhap": tenClean})
         if existing:
@@ -129,8 +120,8 @@ class AuthService:
             "tenDangNhap": tenClean,
             "matKhau": hashedPw,
             "hoTen": hoTen.strip(),
-            "email": email.strip(),
-            "soDienThoai": soDienThoai.strip(),
+            "email": emailClean,
+            "soDienThoai": phoneClean,
             "vaiTro": vaiTro,
             "ngayTao": time.strftime("%Y-%m-%d %H:%M:%S")
         })

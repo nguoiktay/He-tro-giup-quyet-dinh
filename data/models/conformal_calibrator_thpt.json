@@ -4,9 +4,9 @@
   "test_set": "Test 2026 (N=766)",
   "intervals": {
     "confidence_80": {
-      "radius_points": 2.11,
+      "radius_points": 2.2,
       "nominal_coverage": 0.8,
-      "empirical_test_coverage": 0.8381
+      "empirical_test_coverage": 0.876
     }
   }
 }

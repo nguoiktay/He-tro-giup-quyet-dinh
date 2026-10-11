@@ -1,28 +1,3 @@
-﻿id,tenDangNhap,matKhau,hoTen,email,soDienThoai,vaiTro,ngayTao
-1,admin,pbkdf2:sha256:600000$626baf4cc803a0ca1d95da3f940aaea4$58bdf7863d93bea1082eb8fb1aa7980069e0ee9bde8666d7ecb272b1963d7f13,Quản Trị Viên Hệ Thống,admin@dss-admission.edu.vn,988888888.0,quanTriVien,2026-01-01 08:00:00
-2,hocsinh,pbkdf2:sha256:600000$eee70cb82a81ba4f39b91ad4712071fd$b35caf274be5f4af815f69f077121c6163923ec14fba903b73974e04fa07e158,Nguyễn Văn Thí Sinh,thisinh@gmail.com,912345678.0,hocSinh,2026-01-01 08:00:00
-3,test_sec_1791633930,31a679641088df4133940c2568037c743e65763d8eabbf7e416b6f74bc3095ce,Người dùng Test Bảo Mật,test_sec_1791633930@test.edu.vn,,hocSinh,2026-10-10 12:05:30
-4,test_sec_1791633968,31a679641088df4133940c2568037c743e65763d8eabbf7e416b6f74bc3095ce,Người dùng Test Bảo Mật,test_sec_1791633968@test.edu.vn,,hocSinh,2026-10-10 12:06:08
-5,test_sec_1791634159,31a679641088df4133940c2568037c743e65763d8eabbf7e416b6f74bc3095ce,Người dùng Test Bảo Mật,test_sec_1791634159@test.edu.vn,,hocSinh,2026-10-10 12:09:19
-6,test_sec_1791634270,31a679641088df4133940c2568037c743e65763d8eabbf7e416b6f74bc3095ce,Người dùng Test Bảo Mật,test_sec_1791634270@test.edu.vn,,hocSinh,2026-10-10 12:11:10
-7,test_sec_1791634684,31a679641088df4133940c2568037c743e65763d8eabbf7e416b6f74bc3095ce,Người dùng Test Bảo Mật,test_sec_1791634684@test.edu.vn,,hocSinh,2026-10-10 12:18:04
-8,test_sec_1791656603,31a679641088df4133940c2568037c743e65763d8eabbf7e416b6f74bc3095ce,Người dùng Test Bảo Mật,test_sec_1791656603@test.edu.vn,,hocSinh,2026-10-10 18:23:23
-9,test_sec_1791656641,31a679641088df4133940c2568037c743e65763d8eabbf7e416b6f74bc3095ce,Người dùng Test Bảo Mật,test_sec_1791656641@test.edu.vn,,hocSinh,2026-10-10 18:24:01
-10,test_sec_1791665319,31a679641088df4133940c2568037c743e65763d8eabbf7e416b6f74bc3095ce,Người dùng Test Bảo Mật,test_sec_1791665319@test.edu.vn,,hocSinh,2026-10-10 20:48:39
-11,test_sec_1791671613,31a679641088df4133940c2568037c743e65763d8eabbf7e416b6f74bc3095ce,Người dùng Test Bảo Mật,test_sec_1791671613@test.edu.vn,,hocSinh,2026-10-10 22:33:33
-12,test_sec_1791671705,31a679641088df4133940c2568037c743e65763d8eabbf7e416b6f74bc3095ce,Người dùng Test Bảo Mật,test_sec_1791671705@test.edu.vn,,hocSinh,2026-10-10 22:35:05
-13,test_sec_1791675108,pbkdf2:sha256:100000$8c34cb02ea35e343efbd357e50c60190$e80957f0a48e2e4ca5ced5fee6e53d297f6041c29314cea777705b5d2d3ae974,Người dùng Test Bảo Mật,test_sec_1791675108@test.edu.vn,,hocSinh,2026-10-10 23:31:48
-14,test_sec_1791675236,pbkdf2:sha256:100000$cedd879ab7d8bc3cd080f2cfa5b08a96$2f8061ad192165c0369d22827da831484e582e72a8f66e6daf06789b88ded7b4,Người dùng Test Bảo Mật,test_sec_1791675236@test.edu.vn,,hocSinh,2026-10-10 23:33:56
-15,test_sec_1791675303,pbkdf2:sha256:100000$eb47ae4796037acdc39e4ebadc7b582f$277c1cc448f4ff86602004bd713099928daaa4e355acd2a593715bf059beb5e0,Người dùng Test Bảo Mật,test_sec_1791675303@test.edu.vn,,hocSinh,2026-10-10 23:35:03
-16,testuser_prg_id,pbkdf2:sha256:100000$6c198d8c39b10151b0269801f9bf4e6a$24dede58786d8a87b29d7d7a01aa042ba749d52dd55e697b15c760adab154f03,Nguyễn Program Test,testprg@gmail.com,,hocSinh,2026-10-10 23:35:35
-17,test_sec_1791675380,pbkdf2:sha256:100000$4146db860013649d36f63ae4d3663fc4$a3974585844d4da73a7f53ba6c2fce06a6786384b20866b00434eeb9a0791b21,Người dùng Test Bảo Mật,test_sec_1791675380@test.edu.vn,,hocSinh,2026-10-10 23:36:20
-18,test_sec_1791675455,pbkdf2:sha256:100000$a6a4ecc0c2a0d729cecf1c81fb7ef060$d9ff0baf9578a5fd545882710bea93dd588009c0afa38cc89e95de8eca4b83bd,Người dùng Test Bảo Mật,test_sec_1791675455@test.edu.vn,,hocSinh,2026-10-10 23:37:35
-19,test_sec_1791679337,pbkdf2:sha256:600000$ffeea7386da9b6a375927b28e2851e03$5b6456d4792eaa218aef4ce11340e5b65452e0f4014c2a55442251527df5807a,Người dùng Test Bảo Mật,test_sec_1791679337@test.edu.vn,,hocSinh,2026-10-11 00:42:17
-20,test_sec_1791679442,pbkdf2:sha256:600000$a8e3a54d687a6ea70746ec01b13a8101$4bb177ffe0d341a5374ca5a60bac4194c551a0d2927d824ccbe7857b0d0bb9bf,Người dùng Test Bảo Mật,test_sec_1791679442@test.edu.vn,,hocSinh,2026-10-11 00:44:02
-21,test_sec_1791708373,pbkdf2:sha256:600000$2a1e4e156d2110f3662b92771b58c0d2$62a097851c09bda0956a2cade0f4257d0ed4cb3d8494a44626076fad259f9455,Người dùng Test Bảo Mật,test_sec_1791708373@test.edu.vn,,hocSinh,2026-10-11 08:46:13
-22,test_sec_1791708411,pbkdf2:sha256:600000$e094fc6ade63a535cf6a436132f6043b$97d72992ad9fd5ebf57508d3662adf59f03e7aa983e0b0857419632ac9d06ee7,Người dùng Test Bảo Mật,test_sec_1791708411@test.edu.vn,,hocSinh,2026-10-11 08:46:52
-23,test_sec_1791708446,pbkdf2:sha256:600000$be9f4379f58b22a829806bd1266917fa$bd87840b832f4e31c8e3531b8050c043d71420fd2f3b25fa053f4752e7bb8b5a,Người dùng Test Bảo Mật,test_sec_1791708446@test.edu.vn,,hocSinh,2026-10-11 08:47:26
-24,test_sec_1791708480,pbkdf2:sha256:600000$30cdfdd9d3337456f6c032205516dc7c$172fe22681f043d9a33e2a8110abed7e12c77ee6da060fa61162432b241358e2,Người dùng Test Bảo Mật,test_sec_1791708480@test.edu.vn,,hocSinh,2026-10-11 08:48:00
-25,test_sec_1791709050,pbkdf2:sha256:600000$8e14a8f6ed59e9446b59dcf512ef7efa$df6c1bc423c23d0ce927c3c6a786f628263963a366eb377be2abe9f2b0f59a7c,Người dùng Test Bảo Mật,test_sec_1791709050@test.edu.vn,,hocSinh,2026-10-11 08:57:31
-26,test_sec_1791709902,pbkdf2:sha256:600000$e6b62949dda289ddb9c0456adc9316a9$e8226740f2fbc2ef42fa48cecd4dea392cd5d18cac5f077447a86497d67057d4,Người dùng Test Bảo Mật,test_sec_1791709902@test.edu.vn,,hocSinh,2026-10-11 09:11:42
-27,test_sec_1791732306,pbkdf2:sha256:600000$4fbf72f3c1a44b6508a469200f9061d2$fd15866e07a24d726384cda8af84c88c1cfdefc771a7eb75974ca02732fb77e7,Người dùng Test Bảo Mật,test_sec_1791732306@test.edu.vn,,hocSinh,2026-10-11 15:25:06
+id,tenDangNhap,matKhau,hoTen,email,soDienThoai,vaiTro,ngayTao
+1,admin,pbkdf2:sha256:600000$626baf4cc803a0ca1d95da3f940aaea4$58bdf7863d93bea1082eb8fb1aa7980069e0ee9bde8666d7ecb272b1963d7f13,Quản Trị Viên Hệ Thống,admin@dss-admission.edu.vn,0988888888,quanTriVien,2026-01-01 08:00:00
+2,hocsinh,pbkdf2:sha256:600000$eee70cb82a81ba4f39b91ad4712071fd$b35caf274be5f4af815f69f077121c6163923ec14fba903b73974e04fa07e158,Nguyễn Văn Thí Sinh,thisinh@gmail.com,0912345678,hocSinh,2026-01-01 08:00:00

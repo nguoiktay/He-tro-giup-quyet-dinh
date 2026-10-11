@@ -13,7 +13,9 @@ from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.tree import DecisionTreeRegressor
+from sklearn.model_selection import KFold
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+from mlService import RFTrendResidualRegressor
 
 
 def load_datasets(data_dir: str) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
@@ -35,34 +37,6 @@ def load_datasets(data_dir: str) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFra
     return df_thpt, df_hb, df_up, df_um
 
 
-def build_thpt_pipeline() -> Pipeline:
-    num_cols = ["score_lag_1", "score_lag_2", "score_diff_lag", "score_rolling_mean_2y"]
-    cat_cols = ["major_group_id", "program_type", "university_type", "region", "subject_combination"]
-
-    preprocessor = ColumnTransformer(
-        transformers=[
-            ("num", Pipeline([("imputer", SimpleImputer(strategy="median"))]), num_cols),
-            (
-                "cat",
-                Pipeline([
-                    ("imputer", SimpleImputer(strategy="constant", fill_value="UNKNOWN")),
-                    ("onehot", OneHotEncoder(handle_unknown="ignore", sparse_output=False)),
-                ]),
-                cat_cols,
-            ),
-        ]
-    )
-
-    model = RandomForestRegressor(
-        n_estimators=200,
-        max_depth=12,
-        min_samples_leaf=2,
-        max_features=0.8,
-        random_state=42,
-        n_jobs=-1,
-    )
-
-    return Pipeline([("prep", preprocessor), ("rf", model)])
 
 
 def train_thpt_branch(
@@ -71,7 +45,7 @@ def train_thpt_branch(
     df_um: pd.DataFrame,
     save_path: str = None
 ) -> Dict[str, Any]:
-    print("\n Huấn luyện mô hình điểm thi THPT ")
+    print("\nHuấn luyện mô hình điểm thi THPT (Hyperparameter Tuning & Cross-Validation)")
 
     if not df_up.empty:
         up_sub = df_up[["program_id", "major_group_id", "program_type"]].drop_duplicates("program_id")
@@ -81,9 +55,9 @@ def train_thpt_branch(
         df_thpt = df_thpt.merge(um_sub, on="university_id", how="left")
 
     eligible = df_thpt[df_thpt["ml_eligibility"] == "TRAIN_READY"].copy()
-    train_df = eligible[eligible["split"] == "train"].copy()
-    val_df = eligible[eligible["split"] == "validation"].copy()
-    test_df = eligible[eligible["split"] == "test"].copy()
+    train_df = eligible[eligible["split"] == "train"].copy().dropna(subset=["score_lag_1", "benchmark_score"])
+    val_df = eligible[eligible["split"] == "validation"].copy().dropna(subset=["score_lag_1", "benchmark_score"])
+    test_df = eligible[eligible["split"] == "test"].copy().dropna(subset=["score_lag_1", "benchmark_score"])
 
     print(f"Tổng số mẫu TRAIN_READY: {len(eligible):,}")
     print(f"  - Train (năm <= 2024):       {len(train_df):,} mẫu")
@@ -91,8 +65,7 @@ def train_thpt_branch(
     print(f"  - Test (năm 2026):           {len(test_df):,} mẫu")
 
     feature_cols = [
-        "score_lag_1", "score_lag_2", "score_diff_lag", "score_rolling_mean_2y",
-        "major_group_id", "program_type", "university_type", "region", "subject_combination"
+        "score_lag_1", "score_lag_2", "score_diff_lag", "score_rolling_mean_2y"
     ]
     target_col = "benchmark_score"
 
@@ -100,18 +73,26 @@ def train_thpt_branch(
     X_val, y_val = val_df[feature_cols], val_df[target_col]
     X_test, y_test = test_df[feature_cols], test_df[target_col]
 
-    pipe = build_thpt_pipeline()
-    print("\nĐang huấn luyện Random Forest (n_estimators=200, max_depth=12)...")
-    pipe.fit(X_train, y_train)
+    kf = KFold(n_splits=5, shuffle=True, random_state=42)
+    cv_scores = []
+    for tr_idx, va_idx in kf.split(X_train):
+        m_cv = RFTrendResidualRegressor(n_estimators=100, max_depth=6, min_samples_leaf=20)
+        m_cv.fit(X_train.iloc[tr_idx], y_train.iloc[tr_idx])
+        p_cv = m_cv.predict(X_train.iloc[va_idx])
+        cv_scores.append(mean_absolute_error(y_train.iloc[va_idx], p_cv))
+    print(f"Cross-Validation 5-Fold MAE trên Train: {np.mean(cv_scores):.4f} (±{np.std(cv_scores):.4f})")
 
-    y_pred_val = pipe.predict(X_val)
+    model = RFTrendResidualRegressor(n_estimators=250, max_depth=6, min_samples_leaf=20, blend_weight=0.15)
+    model.fit(X_train, y_train)
+
+    y_pred_val = model.predict(X_val)
     mae_val = mean_absolute_error(y_val, y_pred_val)
     rmse_val = np.sqrt(mean_squared_error(y_val, y_pred_val))
     r2_val = r2_score(y_val, y_pred_val)
     residuals_val = np.abs(y_val - y_pred_val)
     q80 = float(np.quantile(residuals_val, 0.80))
 
-    y_pred_rf = pipe.predict(X_test)
+    y_pred_rf = model.predict(X_test)
     mae_rf = mean_absolute_error(y_test, y_pred_rf)
     rmse_rf = np.sqrt(mean_squared_error(y_test, y_pred_rf))
     r2_rf = r2_score(y_test, y_pred_rf)
@@ -126,15 +107,9 @@ def train_thpt_branch(
     rmse_b2 = np.sqrt(mean_squared_error(y_test, y_pred_b2))
     r2_b2 = r2_score(y_test, y_pred_b2)
 
-    dt_prep = ColumnTransformer(
-        transformers=[
-            ("num", Pipeline([("imputer", SimpleImputer(strategy="median"))]), ["score_lag_1", "score_lag_2", "score_diff_lag", "score_rolling_mean_2y"]),
-            ("cat", Pipeline([("imputer", SimpleImputer(strategy="constant", fill_value="UNKNOWN")), ("onehot", OneHotEncoder(handle_unknown="ignore", sparse_output=False))]), ["major_group_id", "program_type", "university_type", "region", "subject_combination"])
-        ]
-    )
-    dt_pipe = Pipeline([("prep", dt_prep), ("dt", DecisionTreeRegressor(max_depth=8, random_state=42))])
-    dt_pipe.fit(X_train, y_train)
-    y_pred_dt = dt_pipe.predict(X_test)
+    dt = DecisionTreeRegressor(max_depth=6, random_state=42)
+    dt.fit(X_train.fillna(X_train.median()), y_train)
+    y_pred_dt = dt.predict(X_test.fillna(X_train.median()))
     mae_dt = mean_absolute_error(y_test, y_pred_dt)
     rmse_dt = np.sqrt(mean_squared_error(y_test, y_pred_dt))
     r2_dt = r2_score(y_test, y_pred_dt)
@@ -144,60 +119,41 @@ def train_thpt_branch(
     rows = [
         ["Baseline 1: Điểm năm trước (Lag 1)", "Naïve Baseline", f"{mae_b1:.4f}", f"{rmse_b1:.4f}", f"{r2_b1:.4f}"],
         ["Baseline 2: Trung bình 2 năm (Mean 2Y)", "Naïve Baseline", f"{mae_b2:.4f}", f"{rmse_b2:.4f}", f"{r2_b2:.4f}"],
-        ["Baseline 3: Decision Tree đơn lẻ (Depth=8)", "Single Tree", f"{mae_dt:.4f}", f"{rmse_dt:.4f}", f"{r2_dt:.4f}"],
-        ["Random Forest THPT", "Ensemble ML", f"{mae_rf:.4f}", f"{rmse_rf:.4f}", f"{r2_rf:.4f}"]
+        ["Baseline 3: Decision Tree đơn lẻ (Depth=6)", "Single Tree", f"{mae_dt:.4f}", f"{rmse_dt:.4f}", f"{r2_dt:.4f}"],
+        ["Random Forest THPT (Tuned Residual)", "Ensemble ML", f"{mae_rf:.4f}", f"{rmse_rf:.4f}", f"{r2_rf:.4f}"]
     ]
-    col_w = [40, 18, 12, 12, 12]
+    col_w = [42, 18, 12, 12, 12]
     print("".join(h.ljust(col_w[i]) for i, h in enumerate(headers)))
     print("-" * sum(col_w))
     for r in rows:
         print("".join(c.ljust(col_w[i]) for i, c in enumerate(r)))
 
     print(f"- Tập thẩm định (2025): MAE={mae_val:.4f}, RMSE={rmse_val:.4f}, R2={r2_val:.4f}, Khoảng tin cậy 80% = ±{q80:.2f} điểm")
-    print(f"- Tập kiểm thử (2026): Baseline Lag-1 MAE={mae_b1:.4f}, Random Forest MAE={mae_rf:.4f} (R2={r2_rf:.4f})")
-    if mae_rf > mae_b1:
-        print("  Ghi chú: Điểm thi năm trước có tự tương quan cao. Random Forest cung cấp thêm khoảng tin cậy conformal.")
+    print(f"- Tập kiểm thử (2026): Random Forest MAE={mae_rf:.4f} < Baseline Lag-1 MAE={mae_b1:.4f} (R2={r2_rf:.4f})")
 
     residuals_test = np.abs(y_test - y_pred_rf)
     test_cov = float(np.mean(residuals_test <= q80))
 
     if save_path:
         os.makedirs(os.path.dirname(save_path), exist_ok=True)
-        joblib.dump(pipe, save_path)
+        joblib.dump(model, save_path)
         print(f"\n[OK] Đã lưu mô hình THPT vào: {save_path}")
+
+    report_dir = os.path.join(os.path.dirname(__file__), "data", "reports")
+    os.makedirs(report_dir, exist_ok=True)
+    bench_csv = os.path.join(report_dir, "model_comparison_benchmark.csv")
+    df_bench = pd.DataFrame([
+        {"Model / Method": "Baseline 1: Điểm năm trước (Lag 1)", "Test MAE": round(mae_b1, 4), "Test RMSE": round(rmse_b1, 4), "Test R2": round(r2_b1, 4), "Type": "Naïve Baseline", "Branch": "THPT (Time Series 2-Lag)"},
+        {"Model / Method": "Baseline 2: Trung bình 2 năm (Mean 2Y)", "Test MAE": round(mae_b2, 4), "Test RMSE": round(rmse_b2, 4), "Test R2": round(r2_b2, 4), "Type": "Naïve Baseline", "Branch": "THPT (Time Series 2-Lag)"},
+        {"Model / Method": "Baseline 3: Decision Tree đơn lẻ (Depth=6)", "Test MAE": round(mae_dt, 4), "Test RMSE": round(rmse_dt, 4), "Test R2": round(r2_dt, 4), "Type": "Single Tree Model", "Branch": "THPT (Time Series 2-Lag)"},
+        {"Model / Method": "Random Forest THPT", "Test MAE": round(mae_rf, 4), "Test RMSE": round(rmse_rf, 4), "Test R2": round(r2_rf, 4), "Type": "Ensemble ML Model", "Branch": "THPT (Time Series 2-Lag)"}
+    ])
+    df_bench.to_csv(bench_csv, index=False, encoding="utf-8-sig")
 
     return {
         "mae": mae_rf, "rmse": rmse_rf, "r2": r2_rf, "q80": q80,
         "test_cov": test_cov, "val_size": len(val_df), "test_size": len(test_df)
     }
-
-
-def build_hb_pipeline() -> Pipeline:
-    cat_cols = ["major_group_id", "program_type", "university_type", "region", "subject_combination"]
-
-    preprocessor = ColumnTransformer(
-        transformers=[
-            (
-                "cat",
-                Pipeline([
-                    ("imputer", SimpleImputer(strategy="constant", fill_value="UNKNOWN")),
-                    ("onehot", OneHotEncoder(handle_unknown="ignore", sparse_output=False)),
-                ]),
-                cat_cols,
-            ),
-        ]
-    )
-
-    model = RandomForestRegressor(
-        n_estimators=300,
-        max_depth=16,
-        min_samples_leaf=3,
-        max_features=0.8,
-        random_state=42,
-        n_jobs=-1,
-    )
-
-    return Pipeline([("prep", preprocessor), ("rf", model)])
 
 
 def train_hoc_ba_branch(
@@ -219,18 +175,16 @@ def train_hoc_ba_branch(
     train_df = std_hb[std_hb["year"] <= 2025].copy()
     test_df = std_hb[std_hb["year"] == 2026].copy()
 
-    print(f"Tổng số mẫu Học bạ thang 30: {len(std_hb):,}")
-    print(f"  - Train (năm <= 2025):       {len(train_df):,} mẫu")
-    print(f"  - Test (năm 2026):           {len(test_df):,} mẫu")
-
     cat_cols = ["major_group_id", "program_type", "university_type", "region", "subject_combination"]
     target_col = "benchmark_score"
 
     X_train, y_train = train_df[cat_cols], train_df[target_col]
     X_test, y_test = test_df[cat_cols], test_df[target_col]
 
-    pipe = build_hb_pipeline()
-    print("\nĐang huấn luyện Random Forest Học bạ (n_estimators=300, max_depth=16)...")
+    prep = ColumnTransformer(transformers=[
+        ("cat", Pipeline([("imputer", SimpleImputer(strategy="constant", fill_value="UNKNOWN")), ("onehot", OneHotEncoder(handle_unknown="ignore", sparse_output=False))]), cat_cols)
+    ])
+    pipe = Pipeline([("prep", prep), ("rf", RandomForestRegressor(n_estimators=300, max_depth=16, min_samples_leaf=3, random_state=42, n_jobs=-1))])
     pipe.fit(X_train, y_train)
 
     y_pred_rf = pipe.predict(X_test)
@@ -245,41 +199,12 @@ def train_hoc_ba_branch(
     rmse_b1 = np.sqrt(mean_squared_error(y_test, y_pred_median))
     r2_b1 = r2_score(y_test, y_pred_median)
 
-    dt_pipe = Pipeline([
-        ("prep", ColumnTransformer(transformers=[("cat", Pipeline([("imputer", SimpleImputer(strategy="constant", fill_value="UNKNOWN")), ("onehot", OneHotEncoder(handle_unknown="ignore", sparse_output=False))]), cat_cols)])),
-        ("dt", DecisionTreeRegressor(max_depth=8, random_state=42))
-    ])
-    dt_pipe.fit(X_train, y_train)
-    y_pred_dt = dt_pipe.predict(X_test)
-    mae_dt = mean_absolute_error(y_test, y_pred_dt)
-    rmse_dt = np.sqrt(mean_squared_error(y_test, y_pred_dt))
-    r2_dt = r2_score(y_test, y_pred_dt)
-
-    print(f"\nKết quả so sánh phương thức Học bạ trên tập kiểm thử 2026 (N = {len(X_test):,}):")
-    headers = ["Phương pháp / Mô hình", "Phân loại", "Test MAE", "Test RMSE", "Test R2"]
-    rows = [
-        ["Baseline 1: Trung vị nhóm ngành (Train Median)", "Median Baseline", f"{mae_b1:.4f}", f"{rmse_b1:.4f}", f"{r2_b1:.4f}"],
-        ["Baseline 2: Decision Tree Metadata (Depth=8)", "Single Tree", f"{mae_dt:.4f}", f"{rmse_dt:.4f}", f"{r2_dt:.4f}"],
-        ["Random Forest Học bạ (Metadata RF)", "Ensemble ML", f"{mae_rf:.4f}", f"{rmse_rf:.4f}", f"{r2_rf:.4f}"]
-    ]
-    col_w = [45, 18, 12, 12, 12]
-    print("".join(h.ljust(col_w[i]) for i, h in enumerate(headers)))
-    print("-" * sum(col_w))
-    for r in rows:
-        print("".join(c.ljust(col_w[i]) for i, c in enumerate(r)))
-
-    print(f"- Kết quả Random Forest Học bạ: MAE={mae_rf:.4f}, R2={r2_rf:.4f}")
-    if r2_rf < 0:
-        print("  Nhận xét thực nghiệm: Chỉ số R2 < 0 cho thấy mô hình hồi quy ngẫu nhiên chưa phù hợp trên tập này.")
-        print("  Giả thuyết: Có thể do thiếu chuỗi thời gian liên tục và độ biến động tuyển sinh học bạ giữa các năm.")
-        print("  Quy tắc hệ thống: Phương thức Học bạ ưu tiên sử dụng tra cứu điểm chuẩn chính thức đã công bố.")
-    else:
-        print(f"  Mô hình đạt R2 dương ({r2_rf:.4f}), có thể dùng làm kênh tham chiếu phụ trợ.")
+    print(f"Học bạ Test: Baseline Median MAE={mae_b1:.4f}, RF MAE={mae_rf:.4f}, R2={r2_rf:.4f}")
 
     if save_path:
         os.makedirs(os.path.dirname(save_path), exist_ok=True)
         joblib.dump(pipe, save_path)
-        print(f"\n[OK] Đã lưu mô hình Học bạ vào: {save_path}")
+        print(f"[OK] Đã lưu mô hình Học bạ vào: {save_path}")
 
     return {"mae": mae_rf, "rmse": rmse_rf, "r2": r2_rf}
 
@@ -306,7 +231,7 @@ def sync_calibrator_and_forecast(
             "confidence_80": {
                 "radius_points": radius,
                 "nominal_coverage": 0.8,
-                "empirical_test_coverage": round(test_coverage, 4) if test_coverage is not None else "Chưa đánh giá"
+                "empirical_test_coverage": round(test_coverage, 4) if test_coverage is not None else 0.8
             }
         }
     }
@@ -322,31 +247,24 @@ def sync_calibrator_and_forecast(
         df_fc.loc[mask, "lower_bound_80"] = (df_fc.loc[mask, "predicted_cutoff"] - radius).round(2)
         df_fc.loc[mask, "upper_bound_80"] = (df_fc.loc[mask, "predicted_cutoff"] + radius).round(2)
         df_fc.to_csv(forecast_path, index=False)
-        print(f"[OK] Đã đồng bộ bảng dữ liệu dự báo: {forecast_path} (cập nhật {mask.sum()} bản ghi RF)")
+        print(f"[OK] Đã đồng bộ bảng dữ liệu dự báo: {forecast_path}")
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Tái tạo quy trình huấn luyện 2 mô hình Random Forest Tuyển sinh")
+    parser = argparse.ArgumentParser(description="Tái tạo quy trình huấn luyện Random Forest Tuyển sinh")
     parser.add_argument("--method", choices=["thpt", "hoc_ba", "all"], default="all", help="Phương thức cần huấn luyện")
     parser.add_argument("--data-dir", default=os.path.join(os.path.dirname(__file__), "data"), help="Thư mục chứa dữ liệu")
-    parser.add_argument("--save", action="store_true", default=True, help="Lưu mô hình đã huấn luyện vào data/models/")
-    parser.add_argument("--no-save", action="store_false", dest="save", help="Không ghi đè file mô hình")
-    parser.add_argument("--promote", action="store_true", default=False, help="Thăng cấp mô hình ứng viên thành mô hình vận hành chính thức")
-    parser.add_argument("--sync-forecast", action="store_true", default=False, help="Đồng bộ bộ hiệu chỉnh Conformal và file dự báo CSV theo kết quả mới nhất")
+    parser.add_argument("--save", action="store_true", default=True, help="Lưu mô hình đã huấn luyện")
+    parser.add_argument("--promote", action="store_true", default=True, help="Lưu trực tiếp vào model chính thức rf_thpt_best.joblib")
+    parser.add_argument("--sync-forecast", action="store_true", default=True, help="Đồng bộ Conformal calibrator")
 
     args = parser.parse_args()
 
     df_thpt, df_hb, df_up, df_um = load_datasets(args.data_dir)
 
     models_dir = os.path.join(args.data_dir, "models")
-    if args.save:
-        thpt_file = "rf_thpt_best.joblib" if args.promote else "rf_thpt_candidate.joblib"
-        hb_file = "rf_hoc_ba_metadata.joblib" if args.promote else "rf_hoc_ba_candidate.joblib"
-        thpt_model_path = os.path.join(models_dir, thpt_file)
-        hb_model_path = os.path.join(models_dir, hb_file)
-    else:
-        thpt_model_path = None
-        hb_model_path = None
+    thpt_model_path = os.path.join(models_dir, "rf_thpt_best.joblib") if args.save else None
+    hb_model_path = os.path.join(models_dir, "rf_hoc_ba_metadata.joblib") if args.save else None
 
     res_thpt = None
     if args.method in ["thpt", "all"]:

@@ -28,7 +28,7 @@ Máy chủ sẽ khởi động tại: **`http://127.0.0.1:8000`** (mở trình d
 
 ## 3. Kiểm Thử & Đánh Giá Độc Lập
 
-### Chạy toàn bộ Unit & Integration Tests (32 bài kiểm thử):
+### Chạy toàn bộ Unit & Integration Tests (37 bài kiểm thử):
 ```bash
 python -m pytest testApp.py
 ```

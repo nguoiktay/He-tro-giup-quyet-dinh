@@ -29,9 +29,18 @@ app = FastAPI(
     version="1.0.0"
 )
 
+ALLOWED_ORIGINS = [
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "http://localhost:5500",
+    "http://127.0.0.1:5500"
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -131,36 +140,40 @@ def createMethod(req: PhuongThucCreateRequest, admin: Dict[str, Any] = Depends(r
 
 @app.get("/api/universities")
 def getUniversities(limit: int = 100, query: Optional[str] = None):
+    clampedLimit = max(1, min(int(limit), 200)) if limit > 0 else 100
     unis = CsvDatabase.readAll("truongDaiHoc")
     if query:
         q = query.lower()
         unis = [u for u in unis if q in str(u.get("tenTruong", "")).lower() or q in str(u.get("maTruong", "")).lower()]
-    return unis[:limit]
+    return unis[:clampedLimit]
 
 
 @app.get("/api/majors")
 def getMajors(limit: int = 100, query: Optional[str] = None):
+    clampedLimit = max(1, min(int(limit), 200)) if limit > 0 else 100
     majors = CsvDatabase.readAll("nganhHoc")
     if query:
         q = query.lower()
         majors = [m for m in majors if q in str(m.get("tenNganh", "")).lower() or q in str(m.get("maNganh", "")).lower()]
-    return majors[:limit]
+    return majors[:clampedLimit]
 
 
 @app.get("/api/benchmarks")
 def getBenchmarks(limit: int = 100, truongId: Optional[int] = None, phuongThucId: Optional[int] = None):
+    clampedLimit = max(1, min(int(limit), 200)) if limit > 0 else 100
     conds = {}
     if truongId:
         conds["truongDaiHocId"] = truongId
     if phuongThucId:
         conds["phuongThucXetTuyenId"] = phuongThucId
     if conds:
-        return CsvDatabase.findWhere("diemChuan", conds)[:limit]
-    return CsvDatabase.readAll("diemChuan")[:limit]
+        return CsvDatabase.findWhere("diemChuan", conds)[:clampedLimit]
+    return CsvDatabase.readAll("diemChuan")[:clampedLimit]
 
 
 @app.get("/api/explore-benchmarks")
 def exploreBenchmarks(query: Optional[str] = None, limit: int = 50):
+    clampedLimit = max(1, min(int(limit), 200)) if limit > 0 else 50
     allUnis = {u["id"]: u for u in CsvDatabase.readAll("truongDaiHoc")}
     allMajors = {m["id"]: m for m in CsvDatabase.readAll("nganhHoc")}
     allCombs = {c["id"]: c for c in CsvDatabase.readAll("toHopMon")}
@@ -194,7 +207,7 @@ def exploreBenchmarks(query: Optional[str] = None, limit: int = 50):
                 continue
 
         scoreVal = b.get("diemChuan")
-        hpInfo = AdmissionService.uocLuongHocPhi(u, m)
+        hpInfo = AdmissionService.traCuuHocPhi(programId=b.get("programId"), uni=u, major=m)
         results.append({
             "maTruong": maTruong,
             "tenTruong": tenTruong,
@@ -207,10 +220,13 @@ def exploreBenchmarks(query: Optional[str] = None, limit: int = 50):
             "nam": b.get("nam", 2025),
             "diemChuan": float(scoreVal) if (scoreVal is not None and str(scoreVal).strip() != "") else None,
             "hocPhiUocTinh": hpInfo["hocPhiText"],
+            "trangThaiHocPhi": hpInfo.get("trangThaiHocPhi", "UNVERIFIED"),
+            "nguonMinhChung": hpInfo.get("nguonMinhChung", ""),
+            "urlNguon": hpInfo.get("urlNguon", ""),
             "chiTieu": int(b.get("chiTieu") or 100)
         })
 
-        if len(results) >= limit:
+        if len(results) >= clampedLimit:
             break
 
     return results
@@ -245,16 +261,20 @@ def calculateScore(req: ScoreCalculationRequest):
 
 
 @app.post("/api/profile")
-def saveStudentProfile(req: StudentProfileInput, currentUser: Optional[Dict[str, Any]] = Depends(getCurrentUser)):
+def saveStudentProfile(req: StudentProfileInput, currentUser: Dict[str, Any] = Depends(requireAuth)):
     data = req.model_dump()
-    data["nguoiDungId"] = currentUser["id"] if currentUser else None
+    data["nguoiDungId"] = currentUser["id"]
 
     if isinstance(data.get("phuongThucMongMuon"), list):
         data["phuongThucMongMuon"] = ",".join(data["phuongThucMongMuon"])
 
     data["ngayCapNhat"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    savedProfile = CsvDatabase.insert("hoSoHocSinh", data)
+    existing = CsvDatabase.findWhere("hoSoHocSinh", {"nguoiDungId": currentUser["id"]})
+    if existing:
+        savedProfile = CsvDatabase.update("hoSoHocSinh", existing[0]["id"], data)
+    else:
+        savedProfile = CsvDatabase.insert("hoSoHocSinh", data)
     return {"thanhCong": True, "thongBao": "Đã lưu hồ sơ học sinh.", "hoSo": savedProfile}
 
 

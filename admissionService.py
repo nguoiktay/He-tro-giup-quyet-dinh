@@ -7,86 +7,107 @@ from mlService import mlServiceInstance
 
 class AdmissionService:
 
-    @staticmethod
-    def uocLuongHocPhi(uni: Dict[str, Any], major: Dict[str, Any]) -> Dict[str, Any]:
-        loaiTruong = str(uni.get("loaiTruong", "")).strip().lower()
-        tenTruong = str(uni.get("tenTruong", "")).strip().lower()
-        tenNganh = str(major.get("tenNganh", "")).strip().lower()
+    _hocPhiByProg = None
+    _hocPhiByUni = None
+    _hocPhiByName = None
 
-        isQuanDoiCongAn = (
-            "quân đội" in loaiTruong or
-            "công an" in tenTruong or
-            "an ninh" in tenTruong or
-            "cảnh sát" in tenTruong or
-            "biên phòng" in tenTruong or
-            "quân y" in tenTruong or
-            "sĩ quan" in tenTruong
-        )
-        isSuPham = "sư phạm" in tenTruong and "sư phạm" in tenNganh
+    @classmethod
+    def _ensureHocPhiCache(cls):
+        if cls._hocPhiByProg is not None:
+            return
+        records = CsvDatabase.readAll("hocPhi")
+        cls._hocPhiByProg = {}
+        cls._hocPhiByUni = {}
+        cls._hocPhiByName = {}
+        for r in records:
+            pid = str(r.get("programId", "")).strip()
+            if pid:
+                cls._hocPhiByProg[pid] = r
+            uCode = str(r.get("maTruong", "")).strip().upper()
+            if uCode and uCode not in cls._hocPhiByUni:
+                cls._hocPhiByUni[uCode] = r
+            uName = str(r.get("tenTruong", "")).strip().lower()
+            if uName and uName not in cls._hocPhiByName:
+                cls._hocPhiByName[uName] = r
 
-        if isQuanDoiCongAn:
+    @classmethod
+    def traCuuHocPhi(
+        cls,
+        programId: Optional[str] = None,
+        uni: Optional[Dict[str, Any]] = None,
+        major: Optional[Dict[str, Any]] = None
+    ) -> Dict[str, Any]:
+        cls._ensureHocPhiCache()
+        progKey = str(programId or "").strip()
+        matched = cls._hocPhiByProg.get(progKey)
+        if not matched and uni:
+            uCode = str(uni.get("maTruong", "")).strip().upper()
+            if uCode:
+                matched = cls._hocPhiByUni.get(uCode)
+            if not matched:
+                uName = str(uni.get("tenTruong", "")).strip().lower()
+                matched = cls._hocPhiByName.get(uName)
+                if not matched and uName:
+                    for kName, r in cls._hocPhiByName.items():
+                        if uName in kName or kName in uName:
+                            matched = r
+                            break
+
+        if matched:
+            tMin = matched.get("hocPhiToiThieu")
+            tMax = matched.get("hocPhiToiDa")
+            tMinFloat = float(tMin) if tMin is not None and str(tMin).strip() != "" and str(tMin).lower() != "none" else None
+            tMaxFloat = float(tMax) if tMax is not None and str(tMax).strip() != "" and str(tMax).lower() != "none" else None
+
+            tYear = tMaxFloat if tMaxFloat is not None else tMinFloat
+            tKy = round(tYear / 2.0, 1) if tYear is not None else None
+            tTrieu = round(tYear / 1000000.0, 1) if tYear is not None else None
+
+            phanLoai = "under_20m"
+            if tTrieu is not None:
+                if tTrieu <= 20.0:
+                    phanLoai = "under_20m"
+                elif tTrieu <= 35.0:
+                    phanLoai = "20m_35m"
+                else:
+                    phanLoai = "over_35m"
+            else:
+                phanLoai = "unverified"
+
             return {
-                "hocPhiKy": 0.0,
-                "hocPhiNam": 0.0,
-                "hocPhiTrieuNam": 0.0,
-                "hocPhiText": "Miễn học phí ",
-                "phanLoai": "under_20m"
+                "hocPhiKy": tKy,
+                "hocPhiNam": tYear,
+                "hocPhiTrieuNam": tTrieu,
+                "hocPhiToiThieu": tMinFloat,
+                "hocPhiToiDa": tMaxFloat,
+                "hocPhiText": matched.get("hocPhiDisplay") or "Chưa có thông tin học phí đã xác minh",
+                "trangThaiHocPhi": matched.get("trangThaiHocPhi", "UNVERIFIED"),
+                "loaiHocPhi": matched.get("loaiHocPhi", "CHUA_XAC_DINH"),
+                "nguonMinhChung": matched.get("nguonMinhChung", "Chưa có công bố chính thức"),
+                "urlNguon": matched.get("urlNguon", ""),
+                "ghiChu": matched.get("ghiChu", ""),
+                "phanLoai": phanLoai
             }
 
-        if isSuPham:
-            return {
-                "hocPhiKy": 0.0,
-                "hocPhiNam": 0.0,
-                "hocPhiTrieuNam": 0.0,
-                "hocPhiText": "Miễn học phí ",
-                "phanLoai": "under_20m"
-            }
-
-        if "quốc tế" in loaiTruong or "quốc tế" in tenTruong:
-            return {
-                "hocPhiKy": 40000000.0,
-                "hocPhiNam": 80000000.0,
-                "hocPhiTrieuNam": 80.0,
-                "hocPhiText": "Khoảng 40 triệu/kỳ (80 triệu/năm)",
-                "phanLoai": "over_35m"
-            }
-
-        if "tư thục" in loaiTruong or "dân lập" in loaiTruong:
-            return {
-                "hocPhiKy": 22000000.0,
-                "hocPhiNam": 44000000.0,
-                "hocPhiTrieuNam": 44.0,
-                "hocPhiText": "Khoảng 22 triệu/kỳ (44 triệu/năm)",
-                "phanLoai": "over_35m"
-            }
-
-        isYDuoc = "y khoa" in tenNganh or "dược" in tenNganh or "răng hàm mặt" in tenNganh
-        if isYDuoc:
-            return {
-                "hocPhiKy": 16000000.0,
-                "hocPhiNam": 32000000.0,
-                "hocPhiTrieuNam": 32.0,
-                "hocPhiText": "Khoảng 16 triệu/kỳ (32 triệu/năm)",
-                "phanLoai": "20m_35m"
-            }
-
-        isKinhTeKT = any(k in tenNganh for k in ["công nghệ thông tin", "khoa học máy tính", "kinh tế", "quản trị", "tài chính", "kỹ thuật"])
-        if isKinhTeKT:
-            return {
-                "hocPhiKy": 13500000.0,
-                "hocPhiNam": 27000000.0,
-                "hocPhiTrieuNam": 27.0,
-                "hocPhiText": "Khoảng 13.5 triệu/kỳ (27 triệu/năm)",
-                "phanLoai": "20m_35m"
-            }
-
+        webUrl = uni.get("trangWeb", "") if uni else ""
         return {
-            "hocPhiKy": 9500000.0,
-            "hocPhiNam": 19000000.0,
-            "hocPhiTrieuNam": 19.0,
-            "hocPhiText": "Khoảng 9.5 triệu/kỳ (19 triệu/năm)",
-            "phanLoai": "under_20m"
+            "hocPhiKy": None,
+            "hocPhiNam": None,
+            "hocPhiTrieuNam": None,
+            "hocPhiToiThieu": None,
+            "hocPhiToiDa": None,
+            "hocPhiText": "Chưa có thông tin học phí đã xác minh",
+            "trangThaiHocPhi": "UNVERIFIED",
+            "loaiHocPhi": "CHUA_XAC_DINH",
+            "nguonMinhChung": "Chưa có công bố chính thức hoặc đang cập nhật",
+            "urlNguon": webUrl,
+            "ghiChu": "Cần tra cứu trực tiếp tại đề án tuyển sinh hoặc thông báo của trường",
+            "phanLoai": "unverified"
         }
+
+    @classmethod
+    def uocLuongHocPhi(cls, uni: Dict[str, Any], major: Dict[str, Any]) -> Dict[str, Any]:
+        return cls.traCuuHocPhi(programId=None, uni=uni, major=major)
 
     @classmethod
     def deXuatNguyenVong(cls, hoSoHocSinh: Dict[str, Any]) -> Dict[str, Any]:
@@ -139,6 +160,7 @@ class AdmissionService:
         nganhTarget = str(hoSoHocSinh.get("nganhMongMuon") or "").strip().lower()
 
         ungVienHopLe = []
+        ungVienCanKiemTra = []
 
         for maTh in danhSachTh:
             thId = allCombs.get(maTh, {}).get("id")
@@ -221,28 +243,39 @@ class AdmissionService:
                     else:
                         scoreNganh = 40.0
 
-                loaiTruongStr = str(uni.get("loaiTruong", "")).lower()
-                hocPhiUocTinhTrieu = 48.0 if ("tư thục" in loaiTruongStr or "dân lập" in loaiTruongStr or "quốc tế" in loaiTruongStr) else 24.0
+                hpInfo = cls.traCuuHocPhi(programId=progId, uni=uni, major=major)
+                hocPhiUocTinhTrieu = hpInfo["hocPhiTrieuNam"]
+                trangThaiHp = hpInfo["trangThaiHocPhi"]
                 
                 mucHocPhiFilter = hoSoHocSinh.get("mucHocPhi") or hoSoHocSinh.get("filterTuition") or hoSoHocSinh.get("hocPhiFilter")
                 nganSachVal = hoSoHocSinh.get("nganSach")
 
                 scoreHocPhi = 80.0
-                if mucHocPhiFilter:
-                    if mucHocPhiFilter == "under_20m":
-                        if hocPhiUocTinhTrieu > 28.0:
-                            continue
-                        scoreHocPhi = 100.0 if hocPhiUocTinhTrieu <= 20.0 else 60.0
-                    elif mucHocPhiFilter == "20m_35m":
-                        scoreHocPhi = 100.0 if (20.0 <= hocPhiUocTinhTrieu <= 35.0) else 50.0
-                    elif mucHocPhiFilter == "over_35m":
-                        scoreHocPhi = 100.0 if hocPhiUocTinhTrieu > 35.0 else 70.0
+                nhomHocPhi = "KHONG_LOC"
+                laCanKiemTra = False
 
-                if nganSachVal is not None and float(nganSachVal) > 0:
-                    nsFloat = float(nganSachVal)
-                    if hocPhiUocTinhTrieu > nsFloat * 1.25:
-                        continue
-                    scoreHocPhi = 100.0 if hocPhiUocTinhTrieu <= nsFloat else 50.0
+                coLocNganSach = bool(mucHocPhiFilter or (nganSachVal is not None and str(nganSachVal).strip() != "" and float(nganSachVal) > 0))
+
+                if coLocNganSach:
+                    if trangThaiHp == "UNVERIFIED" or hocPhiUocTinhTrieu is None:
+                        nhomHocPhi = "CAN_KIEM_TRA"
+                        laCanKiemTra = True
+                    else:
+                        isMatch = True
+                        if mucHocPhiFilter == "under_20m":
+                            isMatch = (hocPhiUocTinhTrieu <= 20.0)
+                        elif mucHocPhiFilter == "20m_35m":
+                            isMatch = (20.0 <= hocPhiUocTinhTrieu <= 35.0)
+                        elif mucHocPhiFilter == "over_35m":
+                            isMatch = (hocPhiUocTinhTrieu >= 35.0)
+
+                        if nganSachVal is not None and str(nganSachVal).strip() != "" and float(nganSachVal) > 0:
+                            isMatch = isMatch and (hocPhiUocTinhTrieu <= float(nganSachVal))
+
+                        if not isMatch:
+                            continue
+                        nhomHocPhi = "PHU_HOP"
+                        scoreHocPhi = 100.0
 
                 scoreSoThich = round(0.40 * scoreKv + 0.40 * scoreNganh + 0.20 * scoreHocPhi, 1)
                 doPhuHopTongThe = round(0.70 * diemThuanLoi + 0.30 * scoreSoThich, 1)
@@ -254,7 +287,17 @@ class AdmissionService:
                     "diaChi": uni.get("diaChi", ""),
                     "khuVuc": uniKhuVuc,
                     "loaiTruong": uni.get("loaiTruong", "Đại học"),
-                    "hocPhiUocTinh": f"{int(hocPhiUocTinhTrieu)}.000.000 đ",
+                    "hocPhiKy": hpInfo["hocPhiKy"],
+                    "hocPhiNam": hpInfo["hocPhiNam"],
+                    "hocPhiUocTinh": hpInfo["hocPhiText"],
+                    "hocPhiPhanLoai": hpInfo["phanLoai"],
+                    "trangThaiHocPhi": trangThaiHp,
+                    "loaiHocPhi": hpInfo["loaiHocPhi"],
+                    "nguonMinhChung": hpInfo["nguonMinhChung"],
+                    "urlNguon": hpInfo.get("urlNguon", ""),
+                    "ghiChuHocPhi": hpInfo.get("ghiChu", ""),
+                    "nhomHocPhi": nhomHocPhi,
+                    "chiTieu": int(dc.get("chiTieu") or 100),
                     "nganhHocId": mId,
                     "maNganh": major["maNganh"],
                     "tenNganh": major["tenNganh"],
@@ -291,7 +334,10 @@ class AdmissionService:
                     "mucDoPhuHop": duBao["mucDoPhuHop"],
                     "mucDoRuiRo": duBao["mucDoRuiRo"]
                 }
-                ungVienHopLe.append(mucItem)
+                if laCanKiemTra:
+                    ungVienCanKiemTra.append(mucItem)
+                else:
+                    ungVienHopLe.append(mucItem)
 
         seenProgKeys = set()
         uniqueCandidates = []
@@ -306,21 +352,6 @@ class AdmissionService:
         rawVuaSuc = [c for c in uniqueCandidates if c.get("nhomNguyenVong") == "Vừa sức"]
         rawAnToan = [c for c in uniqueCandidates if c.get("nhomNguyenVong") == "An toàn"]
 
-        if len(rawThuSuc) < 3 and len(rawAnToan) > 15:
-            rawAnToan.sort(key=lambda x: x["diemChuanThamChieu"], reverse=True)
-            for c in rawAnToan[:]:
-                if len(rawThuSuc) < 5 and c["delta"] <= 1.5:
-                    cCopy = dict(c)
-                    cCopy["nhomNguyenVong"] = "Thử sức"
-                    cCopy["mucDoPhuHop"] = "Cân nhắc"
-                    rawThuSuc.append(cCopy)
-                    rawAnToan.remove(c)
-                elif len(rawVuaSuc) < 10 and c["delta"] <= 2.5:
-                    cCopy = dict(c)
-                    cCopy["nhomNguyenVong"] = "Vừa sức"
-                    cCopy["mucDoPhuHop"] = "Phù hợp"
-                    rawVuaSuc.append(cCopy)
-                    rawAnToan.remove(c)
 
         def _sort_thu_suc(x):
             d = x.get("delta", -1.0)
@@ -412,15 +443,24 @@ class AdmissionService:
         highRiskCount = sum(1 for w in danhSachTongHop if w.get("nhomNguyenVong") in ["Thử sức", "Rủi ro cao"])
         firstScore = float(danhSachTongHop[0].get("diemXetTuyen", 0.0)) if danhSachTongHop else 0.0
         
-        isLowScoreAlert = (anToanCount == 0 or highRiskCount >= 10 or (firstScore > 0 and firstScore < 16.0))
+        firstItem = danhSachTongHop[0] if danhSachTongHop else {}
+        firstScale = firstItem.get("scoreScale", "SCALE_30")
+        minSafeScore = 5.0 if firstScale in ["GPA_10", "THANG_10"] else (21.0 if firstScale in ["SCALE_40", "THANG_40"] else 16.0)
+        isLowScoreAlert = (anToanCount == 0 or highRiskCount >= 10 or (firstScore > 0 and firstScore < minSafeScore))
+
+        tsCount = sum(1 for w in danhSachTongHop if w.get("nhomNguyenVong") == "Thử sức")
+        vsCount = sum(1 for w in danhSachTongHop if w.get("nhomNguyenVong") == "Vừa sức")
+        atCount = sum(1 for w in danhSachTongHop if w.get("nhomNguyenVong") == "An toàn")
 
         if not danhSachTongHop:
             thongBao = "Không tìm thấy chương trình phù hợp với thông tin đã nhập."
         elif isLowScoreAlert:
             avgScore = round(firstScore, 2)
             thongBao = f"Điểm xét tuyển ({avgScore}) ở mức thấp so với ngưỡng điểm chuẩn đại học (danh sách không có hoặc rất ít nguyện vọng An toàn). Các nguyện vọng gợi ý tập trung ở mức Thử sức và Vừa sức sát ngưỡng. Thí sinh nên cân nhắc thêm các hệ cao đẳng, xét tuyển học bạ hoặc ngành đào tạo nghề."
+        elif tsCount >= 4 and vsCount >= 8 and atCount >= 4:
+            thongBao = f"Đã tìm thấy danh mục 20 nguyện vọng tối ưu phân tầng chuẩn 25% Thử sức ({tsCount}) - 50% Vừa sức ({vsCount}) - 25% An toàn ({atCount})."
         else:
-            thongBao = "Đã tìm thấy danh mục 20 nguyện vọng tối ưu phân tầng 25% Thử sức - 50% Vừa sức - 25% An toàn."
+            thongBao = f"Đã đề xuất {len(danhSachTongHop)} nguyện vọng phù hợp với phổ điểm ({tsCount} Thử sức, {vsCount} Vừa sức, {atCount} An toàn)."
 
         ketQuaMoiPhuongThuc = {
             maPt: {
@@ -431,10 +471,19 @@ class AdmissionService:
             }
         }
 
+        seenCkKeys = set()
+        uniqueCanKiemTra = []
+        for item in ungVienCanKiemTra:
+            pKey = (item["truongDaiHocId"], item["programId"] or item["nganhHocId"], item["admissionCaseId"], item["maToHop"])
+            if pKey not in seenCkKeys:
+                seenCkKeys.add(pKey)
+                uniqueCanKiemTra.append(item)
+
         return {
             "thanhCong": True,
             "thongBao": thongBao,
             "danhSachTongHop": danhSachTongHop,
+            "danhSachCanKiemTraHocPhi": uniqueCanKiemTra[:15],
             "ketQuaTungPhuongThuc": ketQuaMoiPhuongThuc,
             "phuongThucDangChon": maPt,
             "soLuongToHopDaChon": len(danhSachTh)
@@ -485,9 +534,13 @@ class AdmissionService:
                     "thongBao": f"Mã chương trình '{progId}' không tồn tại trong danh mục tuyển sinh chính thức của hệ thống."
                 }
 
-            if progId in seenProgIds:
+            toHopKey = str(item.get("toHopMonId") or item.get("maToHop") or "")
+            ptKey = str(item.get("phuongThucXetTuyenId") or item.get("maPhuongThuc") or "")
+            wishKey = (progId, toHopKey, ptKey)
+
+            if wishKey in seenProgIds:
                 continue
-            seenProgIds.add(progId)
+            seenProgIds.add(wishKey)
 
             matchedProg = progLookup[progId]
             mId = matchedProg.get("nganhHocId")

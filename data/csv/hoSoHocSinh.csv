@@ -1,22 +1,2 @@
-﻿id,nguoiDungId,diemToan,diemVan,diemAnh,diemLy,diemHoa,diemSinh,diemSu,diemDia,diemGDCD,diemHocBa,diemDanhGiaNangLuc,chungChiQuocTe,khuVucUuTien,doiTuongUuTien,phuongThucMongMuon,ngayCapNhat
-1,2.0,8.8,7.5,8.5,8.2,8.0,6.5,7.0,7.0,8.5,8.5,880.0,IELTS 6.5,KV1,NONE,"PT01,PT02,PT03",2026-01-01 08:00:00
-2,,8.5,8.0,8.5,,,,,,,,,,KV3,NONE,PT01,2026-10-10 18:24:06
-3,2.0,,,,,,,,,,,,,,,,2026-10-10 20:48:44
-4,,8.5,8.0,8.5,,,,,,,,,,KV3,NONE,PT01,2026-10-10 20:48:45
-5,,8.5,8.0,8.5,,,,,,,,,,KV3,NONE,PT01,2026-10-10 22:33:37
-6,,8.5,8.0,8.5,,,,,,,,,,KV3,NONE,PT01,2026-10-10 22:35:11
-7,,8.5,8.0,8.5,,,,,,,,,,KV3,NONE,PT01,2026-10-10 23:32:06
-8,,8.5,8.0,8.5,,,,,,,,,,KV3,NONE,PT01,2026-10-10 23:34:13
-9,,8.5,8.0,8.5,,,,,,,,,,KV3,NONE,PT01,2026-10-10 23:35:20
-10,16.0,,,,,,,,,,,,,,,,2026-10-10 23:35:35
-11,,8.5,8.0,8.5,,,,,,,,,,KV3,NONE,PT01,2026-10-10 23:36:37
-12,,8.5,8.0,8.5,,,,,,,,,,KV3,NONE,PT01,2026-10-10 23:37:54
-13,,8.5,8.0,8.5,,,,,,,,,,KV3,NONE,PT01,2026-10-11 00:42:36
-14,,8.5,8.0,8.5,,,,,,,,,,KV3,NONE,PT01,2026-10-11 00:44:24
-15,,8.5,8.0,8.5,,,,,,,,,,KV3,NONE,PT01,2026-10-11 08:46:14
-16,,8.5,8.0,8.5,,,,,,,,,,KV3,NONE,PT01,2026-10-11 08:46:53
-17,,8.5,8.0,8.5,,,,,,,,,,KV3,NONE,PT01,2026-10-11 08:47:28
-18,,8.5,8.0,8.5,,,,,,,,,,KV3,NONE,PT01,2026-10-11 08:48:01
-19,,8.5,8.0,8.5,,,,,,,,,,KV3,NONE,PT01,2026-10-11 08:57:32
-20,,8.5,8.0,8.5,,,,,,,,,,KV3,NONE,PT01,2026-10-11 09:11:44
-21,,8.5,8.0,8.5,,,,,,,,,,KV3,NONE,PT01,2026-10-11 15:25:08
+id,nguoiDungId,diemToan,diemVan,diemAnh,diemLy,diemHoa,diemSinh,diemSu,diemDia,diemGDCD,diemHocBa,diemDanhGiaNangLuc,chungChiQuocTe,khuVucUuTien,doiTuongUuTien,phuongThucMongMuon,ngayCapNhat
+1,2,8.8,7.5,8.5,8.2,8.0,6.5,7.0,7.0,8.5,8.5,880.0,IELTS 6.5,KV1,NONE,"PT01,PT02,PT03",2026-01-01 08:00:00

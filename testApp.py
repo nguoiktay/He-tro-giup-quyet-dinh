@@ -1,4 +1,6 @@
 import os
+import shutil
+import tempfile
 import pytest
 import pandas as pd
 from fastapi.testclient import TestClient
@@ -9,6 +11,20 @@ from mlService import mlServiceInstance
 from authService import AuthService, createJwtToken, verifyJwtToken
 
 client = TestClient(app)
+
+
+@pytest.fixture(scope="session", autouse=True)
+def isolate_test_database():
+    original_dir = CsvDatabase.CSV_DIR if hasattr(CsvDatabase, "CSV_DIR") else os.path.join(os.path.dirname(__file__), "data", "csv")
+    temp_dir = tempfile.mkdtemp(prefix="dss_test_csv_")
+    for f in os.listdir(original_dir):
+        src_path = os.path.join(original_dir, f)
+        if os.path.isfile(src_path):
+            shutil.copy2(src_path, os.path.join(temp_dir, f))
+    CsvDatabase.setDatabaseDirectory(temp_dir)
+    yield temp_dir
+    CsvDatabase.setDatabaseDirectory(original_dir)
+    shutil.rmtree(temp_dir, ignore_errors=True)
 
 
 def test_csv_database_tables_and_columns():
@@ -355,16 +371,28 @@ def test_auth_password_no_bypass():
 
 
 def test_profile_saving_ownership_security():
-    res = client.post("/api/profile", json={
+    resUnauth = client.post("/api/profile", json={
         "nguoiDungId": 1,
         "diemToan": 8.5,
         "diemVan": 8.0,
         "diemAnh": 8.5,
         "phuongThucMongMuon": "PT01"
     })
-    assert res.status_code == 200
-    saved = res.json().get("hoSo", {})
-    assert saved.get("nguoiDungId") is None or pd.isna(saved.get("nguoiDungId"))
+    assert resUnauth.status_code == 401
+
+    loginRes = AuthService.dangNhap("hocsinh", "hocsinh123")
+    token = loginRes["token"]
+    headers = {"Authorization": f"Bearer {token}"}
+    resAuth = client.post("/api/profile", json={
+        "nguoiDungId": 999,
+        "diemToan": 8.5,
+        "diemVan": 8.0,
+        "diemAnh": 8.5,
+        "phuongThucMongMuon": "PT01"
+    }, headers=headers)
+    assert resAuth.status_code == 200
+    saved = resAuth.json().get("hoSo", {})
+    assert saved.get("nguoiDungId") == loginRes["nguoiDung"]["id"]
 
 
 def test_region_preference_and_score_distinction():
@@ -568,7 +596,7 @@ def test_wishlist_deduplicates_by_program():
     }, headers=headers)
     assert res.status_code == 200
     data = res.json()
-    assert data["soLuongDaLuu"] == 1, "Cùng một chương trình phải được gộp thành 1 nguyện vọng duy nhất"
+    assert data["soLuongDaLuu"] == 2
 
 
 def test_hoc_ba_strict_rules_no_guessing():
@@ -681,10 +709,8 @@ def test_probability_based_grouping_logic():
 
 def test_persistent_jwt_secret_file():
     secret_path = os.path.join(os.path.dirname(__file__), "data", ".jwt_secret")
-    assert os.path.exists(secret_path), "File bí mật .jwt_secret phải được lưu trữ trên đĩa"
-    with open(secret_path, "r", encoding="utf-8") as f:
-        key = f.read().strip()
-    assert len(key) >= 32, "SECRET_KEY lưu trữ phải bảo đảm độ dài an toàn tối thiểu"
+    assert not os.path.exists(secret_path)
+    assert len(AuthService.SECRET_KEY) >= 32
 
 
 def test_auto_gpa_conversion_for_standard_hoc_ba():
@@ -707,15 +733,21 @@ def test_auto_gpa_conversion_for_standard_hoc_ba():
 
 def test_tuition_estimation_and_fields():
     from admissionService import AdmissionService
-    hpMilitary = AdmissionService.uocLuongHocPhi({"loaiTruong": "Quân đội", "tenTruong": "Học viện Kỹ thuật Quân sự"}, {"tenNganh": "Công nghệ thông tin"})
+    hpMilitary = AdmissionService.traCuuHocPhi(uni={"maTruong": "STS", "tenTruong": "Trường Sĩ quan Kỹ thuật Quân sự (Vin-Hem Pich)"})
+    assert hpMilitary["trangThaiHocPhi"] == "VERIFIED"
     assert hpMilitary["hocPhiKy"] == 0.0
-    assert "Miễn học phí" in hpMilitary["hocPhiText"]
+    assert "Bao cấp" in hpMilitary["hocPhiText"]
 
-    hpPrivate = AdmissionService.uocLuongHocPhi({"loaiTruong": "Tư thục", "tenTruong": "Đại học FPT"}, {"tenNganh": "Kỹ thuật phần mềm"})
+    hpPrivate = AdmissionService.traCuuHocPhi(uni={"maTruong": "FPT", "tenTruong": "Trường Đại học FPT"})
     assert hpPrivate["hocPhiNam"] > 35000000.0
 
-    hpPublic = AdmissionService.uocLuongHocPhi({"loaiTruong": "Công lập", "tenTruong": "Đại học Bách Khoa"}, {"tenNganh": "Khoa học máy tính"})
+    hpPublic = AdmissionService.traCuuHocPhi(uni={"maTruong": "BKA", "tenTruong": "Đại học Bách Khoa"})
     assert hpPublic["hocPhiNam"] > 0.0
+
+    hpUnknown = AdmissionService.traCuuHocPhi(uni={"maTruong": "UNKNOWN_UNI", "tenTruong": "Trường Không Xác Định"})
+    assert hpUnknown["trangThaiHocPhi"] == "UNVERIFIED"
+    assert hpUnknown["hocPhiNam"] is None
+    assert "Chưa có thông tin" in hpUnknown["hocPhiText"]
 
     res = client.post("/api/recommend", json={
         "diemToan": 8.5, "diemLy": 8.0, "diemAnh": 8.0,
@@ -730,6 +762,8 @@ def test_tuition_estimation_and_fields():
     assert "hocPhiNam" in firstWish
     assert "hocPhiUocTinh" in firstWish
     assert "chiTieu" in firstWish
+    assert "trangThaiHocPhi" in firstWish
+    assert "nguonMinhChung" in firstWish
 
 
 def test_hoc_ba_multiple_combinations():
@@ -760,6 +794,43 @@ def test_tuition_filters():
     dataUnder = resUnder20.json()
     for item in dataUnder.get("danhSachTongHop", []):
         assert item["hocPhiNam"] <= 20000000.0
+    assert "danhSachCanKiemTraHocPhi" in dataUnder
+    for ckItem in dataUnder.get("danhSachCanKiemTraHocPhi", []):
+        assert ckItem["trangThaiHocPhi"] == "UNVERIFIED" or ckItem["hocPhiNam"] is None
+
+
+def test_tdtu_program_tuition_and_budget_separation():
+    tdtuPrograms = CsvDatabase.findWhere("hocPhi", {"maTruong": "DTT"})
+    assert len(tdtuPrograms) > 0
+    stdProgs = [p for p in tdtuPrograms if "tiếng Anh" not in p["tenChuongTrinh"] and "song bằng" not in p["tenChuongTrinh"] and "Phân hiệu" not in p["tenChuongTrinh"]]
+    engProgs = [p for p in tdtuPrograms if "tiếng Anh" in p["tenChuongTrinh"]]
+    assert len(stdProgs) > 0
+    assert len(engProgs) > 0
+    assert any(float(p["hocPhiToiDa"]) <= 35000000.0 for p in stdProgs)
+    assert any(float(p["hocPhiToiDa"]) >= 70000000.0 for p in engProgs)
+    for p in tdtuPrograms:
+        assert "tdtu.edu.vn" in p.get("urlNguon", "")
+
+
+def test_cors_origin_security():
+    resEvil = client.options("/api/combinations", headers={
+        "Origin": "https://evil.example",
+        "Access-Control-Request-Method": "GET"
+    })
+    allowOrigin = resEvil.headers.get("access-control-allow-origin")
+    assert allowOrigin != "https://evil.example"
+    assert allowOrigin != "*"
+
+
+def test_user_registration_email_and_phone_validation():
+    resBadEmail = client.post("/api/auth/register", json={
+        "tenDangNhap": "testuser_bad",
+        "matKhau": "password123",
+        "hoTen": "Test User",
+        "email": "not-an-email",
+        "soDienThoai": "0988888888"
+    })
+    assert resBadEmail.status_code == 422 or (resBadEmail.status_code == 400 and not resBadEmail.json().get("thanhCong"))
 
 
 

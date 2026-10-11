@@ -4,9 +4,65 @@ import numpy as np
 import pandas as pd
 from typing import Dict, List, Any, Optional
 
+from sklearn.base import BaseEstimator, RegressorMixin
+from sklearn.ensemble import RandomForestRegressor
+
 RF_THPT_PATH = os.path.join(os.path.dirname(__file__), "data", "models", "rf_thpt_best.joblib")
 RF_HOC_BA_PATH = os.path.join(os.path.dirname(__file__), "data", "models", "rf_hoc_ba_metadata.joblib")
 FORECAST_RECORDS_PATH = os.path.join(os.path.dirname(__file__), "data", "processed", "forecast_records_2026.csv")
+
+
+class RFTrendResidualRegressor(BaseEstimator, RegressorMixin):
+    def __init__(self, n_estimators=250, max_depth=6, min_samples_leaf=20, blend_weight=0.15, random_state=42):
+        self.n_estimators = n_estimators
+        self.max_depth = max_depth
+        self.min_samples_leaf = min_samples_leaf
+        self.blend_weight = blend_weight
+        self.random_state = random_state
+        self.rf = None
+
+    def fit(self, X, y):
+        df_x = pd.DataFrame(X).copy()
+        lag1 = df_x["score_lag_1"].fillna(df_x["score_lag_1"].median())
+        delta = y - lag1
+        trend = lag1 - df_x["score_lag_2"].fillna(lag1)
+
+        feats = pd.DataFrame({
+            "score_lag_1": lag1,
+            "score_lag_2": df_x["score_lag_2"].fillna(lag1),
+            "trend": trend,
+            "score_diff_lag": df_x.get("score_diff_lag", pd.Series(0, index=df_x.index)).fillna(0),
+            "rolling": df_x.get("score_rolling_mean_2y", lag1).fillna(lag1)
+        })
+
+        self.rf = RandomForestRegressor(
+            n_estimators=self.n_estimators,
+            max_depth=self.max_depth,
+            min_samples_leaf=self.min_samples_leaf,
+            random_state=self.random_state,
+            n_jobs=-1
+        )
+        self.rf.fit(feats, delta)
+        return self
+
+    def predict(self, X):
+        df_x = pd.DataFrame(X).copy()
+        median_lag = df_x["score_lag_1"].median() if not df_x.empty and df_x["score_lag_1"].notna().any() else 24.0
+        lag1 = df_x["score_lag_1"].fillna(median_lag)
+        trend = lag1 - df_x["score_lag_2"].fillna(lag1)
+
+        feats = pd.DataFrame({
+            "score_lag_1": lag1,
+            "score_lag_2": df_x["score_lag_2"].fillna(lag1),
+            "trend": trend,
+            "score_diff_lag": df_x.get("score_diff_lag", pd.Series(0, index=df_x.index)).fillna(0),
+            "rolling": df_x.get("score_rolling_mean_2y", lag1).fillna(lag1)
+        })
+
+        delta_rf = self.rf.predict(feats)
+        rev = -0.18 * trend
+        comb_delta = self.blend_weight * delta_rf + (1.0 - self.blend_weight) * rev
+        return (lag1 + comb_delta).to_numpy()
 
 
 class MlService:
@@ -206,9 +262,9 @@ class MlService:
         delta = round(studentScore - benchmarkScore, 2)
 
         if coDuBao and uncertaintyRadius is not None and float(uncertaintyRadius) > 0:
-            sigma_base = float(uncertaintyRadius) / 1.28155
+            sigma_base = max(1.80, float(uncertaintyRadius) / 1.28155)
         else:
-            lag = max(1, 2026 - int(namThamChieu if namThamChieu else 2025))
+            lag = max(1, 2027 - int(namThamChieu if namThamChieu else 2026))
             if lag == 1:
                 sigma_base = 1.83
             elif lag == 2:

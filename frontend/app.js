@@ -17,21 +17,47 @@ let savedWishlist = [];
 let currentToken = localStorage.getItem('tuyensinh_token') || '';
 let currentUser = null;
 
+function escapeHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 const COMBINATION_LABELS = {
   'A00': ['Toán', 'Vật lý', 'Hóa học'],
   'A01': ['Toán', 'Vật lý', 'Tiếng Anh'],
   'A02': ['Toán', 'Vật lý', 'Sinh học'],
+  'A03': ['Toán', 'Lịch sử', 'Địa lý'],
+  'A04': ['Toán', 'Vật lý', 'Địa lý'],
   'B00': ['Toán', 'Hóa học', 'Sinh học'],
+  'B01': ['Toán', 'Sinh học', 'Lịch sử'],
+  'B02': ['Toán', 'Sinh học', 'Địa lý'],
+  'B03': ['Toán', 'Sinh học', 'Ngữ văn'],
   'B08': ['Toán', 'Sinh học', 'Tiếng Anh'],
   'C00': ['Ngữ văn', 'Lịch sử', 'Địa lý'],
   'C01': ['Ngữ văn', 'Toán', 'Vật lý'],
   'C02': ['Ngữ văn', 'Toán', 'Hóa học'],
+  'C03': ['Ngữ văn', 'Toán', 'Lịch sử'],
+  'C04': ['Ngữ văn', 'Toán', 'Địa lý'],
+  'C14': ['Toán', 'Ngữ văn', 'GDCD'],
   'C19': ['Ngữ văn', 'Lịch sử', 'GDCD'],
+  'C20': ['Ngữ văn', 'Địa lý', 'GDCD'],
   'D01': ['Toán', 'Ngữ văn', 'Tiếng Anh'],
   'D07': ['Toán', 'Hóa học', 'Tiếng Anh'],
+  'D08': ['Toán', 'Sinh học', 'Tiếng Anh'],
   'D09': ['Toán', 'Lịch sử', 'Tiếng Anh'],
   'D10': ['Toán', 'Địa lý', 'Tiếng Anh'],
-  'D14': ['Ngữ văn', 'Lịch sử', 'Tiếng Anh']
+  'D11': ['Ngữ văn', 'Vật lý', 'Tiếng Anh'],
+  'D12': ['Ngữ văn', 'Hóa học', 'Tiếng Anh'],
+  'D13': ['Ngữ văn', 'Sinh học', 'Tiếng Anh'],
+  'D14': ['Ngữ văn', 'Lịch sử', 'Tiếng Anh'],
+  'D15': ['Ngữ văn', 'Địa lý', 'Tiếng Anh'],
+  'D66': ['Ngữ văn', 'GDCD', 'Tiếng Anh'],
+  'D84': ['Toán', 'GDCD', 'Tiếng Anh']
 };
 
 const UNI_AVATARS = {
@@ -365,10 +391,19 @@ async function handleCalculateAndRecommend() {
       body: JSON.stringify(payload)
     });
     const data = await res.json();
-    if (res.ok && data && data.danhSachTongHop && data.danhSachTongHop.length > 0) {
-      rawRecommendations = data.danhSachTongHop;
+    if (res.ok && data) {
+      window.canKiemTraHocPhi = data.danhSachCanKiemTraHocPhi || [];
+      if (data.danhSachTongHop && data.danhSachTongHop.length > 0) {
+        rawRecommendations = data.danhSachTongHop;
+      } else if (window.canKiemTraHocPhi.length > 0) {
+        rawRecommendations = [];
+      } else {
+        const errMsg = data.detail || data.thongBao || 'Không tìm thấy chương trình phù hợp với thông tin đã nhập.';
+        showResultsError(errMsg);
+        return;
+      }
     } else {
-      const errMsg = data.detail || data.thongBao || 'Không tìm thấy chương trình phù hợp với thông tin đã nhập.';
+      const errMsg = (data && (data.detail || data.thongBao)) || 'Không tìm thấy chương trình phù hợp với thông tin đã nhập.';
       showResultsError(errMsg);
       return;
     }
@@ -396,17 +431,33 @@ const COMBINATION_TO_FIELDS = {
   'A00': ['diemToan', 'diemLy', 'diemHoa'],
   'A01': ['diemToan', 'diemLy', 'diemAnh'],
   'A02': ['diemToan', 'diemLy', 'diemSinh'],
+  'A03': ['diemToan', 'diemSu', 'diemDia'],
+  'A04': ['diemToan', 'diemLy', 'diemDia'],
   'B00': ['diemToan', 'diemHoa', 'diemSinh'],
+  'B01': ['diemToan', 'diemSinh', 'diemSu'],
+  'B02': ['diemToan', 'diemSinh', 'diemDia'],
+  'B03': ['diemToan', 'diemSinh', 'diemVan'],
   'B08': ['diemToan', 'diemSinh', 'diemAnh'],
   'C00': ['diemVan', 'diemSu', 'diemDia'],
   'C01': ['diemVan', 'diemToan', 'diemLy'],
   'C02': ['diemVan', 'diemToan', 'diemHoa'],
+  'C03': ['diemVan', 'diemToan', 'diemSu'],
+  'C04': ['diemVan', 'diemToan', 'diemDia'],
+  'C14': ['diemToan', 'diemVan', 'diemGDCD'],
   'C19': ['diemVan', 'diemSu', 'diemGDCD'],
+  'C20': ['diemVan', 'diemDia', 'diemGDCD'],
   'D01': ['diemToan', 'diemVan', 'diemAnh'],
   'D07': ['diemToan', 'diemHoa', 'diemAnh'],
+  'D08': ['diemToan', 'diemSinh', 'diemAnh'],
   'D09': ['diemToan', 'diemSu', 'diemAnh'],
   'D10': ['diemToan', 'diemDia', 'diemAnh'],
-  'D14': ['diemVan', 'diemSu', 'diemAnh']
+  'D11': ['diemVan', 'diemLy', 'diemAnh'],
+  'D12': ['diemVan', 'diemHoa', 'diemAnh'],
+  'D13': ['diemVan', 'diemSinh', 'diemAnh'],
+  'D14': ['diemVan', 'diemSu', 'diemAnh'],
+  'D15': ['diemVan', 'diemDia', 'diemAnh'],
+  'D66': ['diemVan', 'diemGDCD', 'diemAnh'],
+  'D84': ['diemToan', 'diemGDCD', 'diemAnh']
 };
 
 function getSubjectFieldsForCombination(code) {
@@ -477,7 +528,9 @@ function renderRecommendationCards(items) {
   const slot = document.getElementById('recommendations-cards-slot');
   if (!slot) return;
 
-  if (items.length === 0) {
+  const hasCanKiemTra = window.canKiemTraHocPhi && window.canKiemTraHocPhi.length > 0;
+
+  if (items.length === 0 && !hasCanKiemTra) {
     slot.innerHTML = `
       <div style="background:#ffffff; border-radius:12px; padding:3rem; text-align:center; color:var(--text-muted); border:1px solid var(--border-light);">
         Không tìm thấy chương trình nào phù hợp với bộ lọc hiện tại. Vui lòng thử nới lỏng bộ lọc.
@@ -521,12 +574,12 @@ function renderRecommendationCards(items) {
         </div>
 
         <div class="rec-card-details">
-          <h5>${item.tenTruong}</h5>
-          <h4 class="rec-major-name">${item.tenChuongTrinh || item.tenNganh}</h4>
+          <h5>${escapeHtml(item.tenTruong)}</h5>
+          <h4 class="rec-major-name">${escapeHtml(item.tenChuongTrinh || item.tenNganh)}</h4>
           <div class="rec-tags-row">
-            <span class="rec-pill-tag">Ngành: ${item.tenNganh} (${item.maNganh || 'IT1'})</span>
-            ${item.programId ? `<span class="rec-pill-tag">Mã CT: ${item.programId}</span>` : ''}
-            <span class="rec-pill-tag">${item.nhomNganh || 'Kỹ thuật - Công nghệ'}</span>
+            <span class="rec-pill-tag">Ngành: ${escapeHtml(item.tenNganh)} (${escapeHtml(item.maNganh || 'IT1')})</span>
+            ${item.programId ? `<span class="rec-pill-tag">Mã CT: ${escapeHtml(item.programId)}</span>` : ''}
+            <span class="rec-pill-tag">${escapeHtml(item.nhomNganh || 'Kỹ thuật - Công nghệ')}</span>
           </div>
           <div class="rec-meta-line">
             <span>
@@ -534,28 +587,39 @@ function renderRecommendationCards(items) {
                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                 <circle cx="12" cy="10" r="3"></circle>
               </svg>
-              ${item.khuVuc || 'Hà Nội'}
+              ${escapeHtml(item.khuVuc || 'Toàn quốc')}
             </span>
             <span>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3"></path>
               </svg>
-              ${item.loaiTruong || 'Trường công lập'}
+              ${escapeHtml(item.loaiTruong || 'Trường công lập')}
             </span>
-            <span style="font-weight: 600; color: var(--text-main);">
+            <span style="font-weight: 600; color: var(--text-main); display: inline-flex; align-items: center; gap: 0.35rem; flex-wrap: wrap;">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <line x1="12" y1="1" x2="12" y2="23"></line>
                 <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
               </svg>
-              ${item.hocPhiUocTinh || 'Học phí theo quy định'}
+              <span>${escapeHtml(item.hocPhiUocTinh || 'Học phí theo quy định')}</span>
+              ${(() => {
+                if (item.trangThaiHocPhi === 'VERIFIED') {
+                  return `<span style="font-size:0.7rem; font-weight:700; background:#dcfce7; color:#15803d; padding:1px 6px; border-radius:4px;">Đã xác minh</span>`;
+                } else if (item.trangThaiHocPhi === 'PROJECTED') {
+                  return `<span style="font-size:0.7rem; font-weight:700; background:#e0f2fe; color:#0369a1; padding:1px 6px; border-radius:4px;">Dự kiến</span>`;
+                } else if (item.trangThaiHocPhi === 'PER_CREDIT') {
+                  return `<span style="font-size:0.7rem; font-weight:700; background:#fef3c7; color:#b45309; padding:1px 6px; border-radius:4px;">Theo tín chỉ</span>`;
+                } else {
+                  return `<span style="font-size:0.7rem; font-weight:700; background:#f3f4f6; color:#4b5563; padding:1px 6px; border-radius:4px;">Chưa xác minh</span>`;
+                }
+              })()}
             </span>
-            ${item.chiTieu ? `
+            ${item.chiTieu && item.chiTieu !== 100 ? `
             <span>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                 <circle cx="9" cy="7" r="4"></circle>
               </svg>
-              Chỉ tiêu: ${item.chiTieu}
+              Chỉ tiêu: ${escapeHtml(item.chiTieu)}
             </span>` : ''}
           </div>
         </div>
@@ -569,14 +633,14 @@ function renderRecommendationCards(items) {
             </svg>
             ${statusLabel}
           </div>
-          <div class="predicted-score-label">Điểm tham chiếu (${item.namThamChieu || 2025})</div>
+          <div class="predicted-score-label">Điểm tham chiếu (${item.namThamChieu || 2026})</div>
           <div class="predicted-score-val">${(item.diemChuanThamChieu || 24.0).toFixed(2)}</div>
           ${(() => {
             if (item.coDuBao && item.diemChuanDuBao !== null && item.diemChuanDuBao !== undefined) {
               const label = item.nhanDuBao || (item.loaiDuBao === 'BASELINE_LAG1' ? 'Ước lượng theo điểm năm trước' : 'Dự báo Random Forest');
-              return `<div style="font-size:0.8rem; color:var(--primary); font-weight:700; margin-top:2px;">${label} (${item.namMucTieu || 2026}): ${Number(item.diemChuanDuBao).toFixed(2)}${item.khoangTinCay80 ? ` <span style='font-size:0.72rem; color:var(--text-muted);'>(${item.khoangTinCay80})</span>` : ''}</div>`;
+              return `<div style="font-size:0.8rem; color:var(--primary); font-weight:700; margin-top:2px;">${escapeHtml(label)} (${item.namMucTieu || 2027}): ${Number(item.diemChuanDuBao).toFixed(2)}${item.khoangTinCay80 ? ` <span style='font-size:0.72rem; color:var(--text-muted);'>(${escapeHtml(item.khoangTinCay80)})</span>` : ''}</div>`;
             } else {
-              return `<div style="font-size:0.76rem; color:var(--text-muted); margin-top:2px; font-style:italic;">Điểm chuẩn lịch sử (${item.namThamChieu || 2025})</div>`;
+              return `<div style="font-size:0.76rem; color:var(--text-muted); margin-top:2px; font-style:italic;">Điểm chuẩn lịch sử (${item.namThamChieu || 2026})</div>`;
             }
           })()}
           <div class="delta-badge ${deltaClass}">Chênh lệch: ${deltaSign}</div>
@@ -591,7 +655,97 @@ function renderRecommendationCards(items) {
       </div>
     `;
   }).join('');
+
+  if (hasCanKiemTra) {
+    const ckItemsHtml = window.canKiemTraHocPhi.map((ck, ckIdx) => `
+      <div class="rec-result-card" style="border-left: 4px solid var(--amber, #f59e0b); background: rgba(245, 158, 11, 0.03);">
+        <div class="uni-logo-avatar" style="background:#f59e0b;">CK</div>
+        <div class="rec-card-details">
+          <h5>${escapeHtml(ck.tenTruong)}</h5>
+          <h4 class="rec-major-name">${escapeHtml(ck.tenChuongTrinh || ck.tenNganh)}</h4>
+          <div class="rec-tags-row">
+            <span class="rec-pill-tag">Ngành: ${escapeHtml(ck.tenNganh)}</span>
+            ${ck.programId ? `<span class="rec-pill-tag">Mã CT: ${escapeHtml(ck.programId)}</span>` : ''}
+            <span class="rec-pill-tag" style="background:#fef3c7; color:#b45309; font-weight:700;">Cần kiểm tra học phí</span>
+          </div>
+          <div class="rec-meta-line">
+            <span>${escapeHtml(ck.khuVuc || 'Toàn quốc')}</span>
+            <span>${escapeHtml(ck.loaiTruong || 'Trường')}</span>
+            <span style="color:#b45309; font-weight:600;">
+              Chưa có biểu phí đã xác minh – Cần tra cứu đề án chính thức
+            </span>
+          </div>
+        </div>
+        <div class="rec-score-metrics">
+          <div class="suitability-badge suitability-yellow" style="align-self: flex-end; margin-bottom: 0.4rem;">
+            Chờ xác minh phí
+          </div>
+          <div class="predicted-score-label">Điểm tham chiếu</div>
+          <div class="predicted-score-val">${(ck.diemChuanThamChieu || 24.0).toFixed(2)}</div>
+        </div>
+        <div class="rec-action-buttons">
+          <button class="btn-rec-detail" onclick="openCanKiemTraDetails(${ckIdx})">Xem chi tiết</button>
+        </div>
+      </div>
+    `).join('');
+
+    html += `
+      <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 2px dashed var(--border);">
+        <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.75rem;">
+          <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:#f59e0b;"></span>
+          <h4 style="font-size:1.05rem; font-weight:700; margin:0; color:var(--text-main);">
+            Nhóm chương trình cần kiểm tra học phí (${window.canKiemTraHocPhi.length} chương trình)
+          </h4>
+        </div>
+        <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;">
+          Khi lọc theo ngân sách, các chương trình chưa có thông tin học phí xác minh từ đề án tuyển sinh chính thức được tách riêng để học sinh chủ động tra cứu, không tự ý gán mức 0đ hoặc loại bỏ sai.
+        </p>
+        <div style="display:flex; flex-direction:column; gap:1rem;">
+          ${ckItemsHtml}
+        </div>
+      </div>
+    `;
+  }
+
+  slot.innerHTML = html;
 }
+
+window.openCanKiemTraDetails = function(ckIdx) {
+  const item = window.canKiemTraHocPhi && window.canKiemTraHocPhi[ckIdx];
+  if (!item) return;
+  const modal = document.getElementById('modal-detail-dialog');
+  const body = document.getElementById('detail-modal-body');
+  if (!modal || !body) return;
+
+  body.innerHTML = `
+    <div style="margin-bottom: 1rem;">
+      <h3 style="font-size:1.15rem; font-weight:800; color:var(--text-main); margin-bottom:0.25rem;">
+        ${escapeHtml(item.tenChuongTrinh || item.tenNganh)}
+      </h3>
+      <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:0.75rem;">
+        ${escapeHtml(item.tenTruong)} (${escapeHtml(item.maTruong || '')})
+      </p>
+      <div style="background:#fef3c7; color:#92400e; padding:0.75rem 1rem; border-radius:8px; font-size:0.85rem; margin-bottom:1rem;">
+        <strong>Lưu ý tài chính:</strong> Chương trình này chưa có biểu phí chính thức đã xác minh trong cơ sở dữ liệu. Vui lòng kiểm tra trực tiếp trên đề án tuyển sinh chính thức của trường trước khi đăng ký.
+      </div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem; font-size:0.9rem;">
+        <span style="color:var(--text-muted);">Trạng thái học phí:</span>
+        <span style="font-weight:700; color:#b45309;">Chưa có thông tin học phí đã xác minh</span>
+      </div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem; font-size:0.9rem;">
+        <span style="color:var(--text-muted);">Điểm chuẩn tham chiếu:</span>
+        <span style="font-weight:700; color:var(--primary);">${(item.diemChuanThamChieu || 24.0).toFixed(2)}</span>
+      </div>
+      ${item.urlNguon ? `
+      <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem; font-size:0.9rem;">
+        <span style="color:var(--text-muted);">Trang thông tin trường:</span>
+        <a href="${escapeHtml(item.urlNguon)}" target="_blank" rel="noopener" style="color:var(--primary); text-decoration:underline; font-weight:600;">Xem tại website trường</a>
+      </div>` : ''}
+    </div>
+    <button class="btn-submit-recommend" style="width:100%; margin-left:0;" onclick="closeDetailDialog()">Đóng</button>
+  `;
+  modal.classList.add('active');
+};
 
 window.toggleSaveWishlistItem = function(idx) {
   const item = displayedRecommendations[idx];
@@ -638,54 +792,79 @@ window.openProgramDetails = async function(idx) {
 
   body.innerHTML = `
     <h3 style="font-size: 1.3rem; font-weight: 800; color: var(--primary); margin-bottom: 0.35rem;">
-      ${item.tenChuongTrinh || item.tenNganh || 'Chương trình đào tạo'}
+      ${escapeHtml(item.tenChuongTrinh || item.tenNganh || 'Chương trình đào tạo')}
     </h3>
     <h5 style="color: var(--text-muted); margin-bottom: 1rem; font-size: 0.95rem;">
-      ${item.tenTruong || 'Trường Đại học'} (${item.maTruong || 'Mã trường chưa rõ'})
+      ${escapeHtml(item.tenTruong || 'Trường Đại học')} (${escapeHtml(item.maTruong || 'Mã trường chưa rõ')})
     </h5>
 
     <div style="background: var(--bg-subtle); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 1.25rem;">
       <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem; font-size:0.9rem;">
         <span style="color:var(--text-muted);">Ngành đào tạo:</span>
-        <span style="font-weight:700;">${item.tenNganh || 'Chưa có thông tin'} (${item.maNganh ? item.maNganh : 'Chưa có thông tin'})</span>
+        <span style="font-weight:700;">${escapeHtml(item.tenNganh || 'Chưa có thông tin')} (${escapeHtml(item.maNganh ? item.maNganh : 'Chưa có thông tin')})</span>
       </div>
       ${item.programId ? `
       <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem; font-size:0.9rem;">
         <span style="color:var(--text-muted);">Mã chương trình (Program ID):</span>
-        <span style="font-weight:700;">${item.programId}</span>
+        <span style="font-weight:700;">${escapeHtml(item.programId)}</span>
       </div>` : ''}
       <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem; font-size:0.9rem;">
         <span style="color:var(--text-muted);">Khu vực địa lý:</span>
-        <span style="font-weight:700;">${item.khuVuc ? item.khuVuc : 'Chưa có thông tin'}</span>
+        <span style="font-weight:700;">${escapeHtml(item.khuVuc ? item.khuVuc : 'Chưa có thông tin')}</span>
       </div>
       <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem; font-size:0.9rem;">
-        <span style="color:var(--text-muted);">Mức học phí dự kiến:</span>
-        <span style="font-weight:700; color:var(--text-main);">${item.hocPhiUocTinh || 'Theo quy định'}</span>
+        <span style="color:var(--text-muted);">Mức học phí:</span>
+        <span style="font-weight:700; color:var(--text-main);">${escapeHtml(item.hocPhiUocTinh || 'Theo quy định')}</span>
       </div>
-      ${item.chiTieu ? `
+      <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem; font-size:0.9rem;">
+        <span style="color:var(--text-muted);">Trạng thái biểu phí:</span>
+        <span style="font-weight:700;">
+          ${(() => {
+            if (item.trangThaiHocPhi === 'VERIFIED') return '<span style="color:#15803d;">Đã xác minh chính thức</span>';
+            if (item.trangThaiHocPhi === 'PROJECTED') return '<span style="color:#0369a1;">Dự kiến / Khung trần NĐ 97</span>';
+            if (item.trangThaiHocPhi === 'PER_CREDIT') return '<span style="color:#b45309;">Đơn giá tín chỉ</span>';
+            return '<span style="color:#6b7280;">Chưa xác minh</span>';
+          })()}
+        </span>
+      </div>
+      ${item.nguonMinhChung ? `
+      <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem; font-size:0.9rem;">
+        <span style="color:var(--text-muted);">Nguồn minh chứng:</span>
+        <span style="font-weight:600; text-align:right; max-width:60%;">${escapeHtml(item.nguonMinhChung)}</span>
+      </div>` : ''}
+      ${item.urlNguon ? `
+      <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem; font-size:0.9rem;">
+        <span style="color:var(--text-muted);">Liên kết công bố:</span>
+        <a href="${escapeHtml(item.urlNguon)}" target="_blank" rel="noopener" style="color:var(--primary); text-decoration:underline; font-weight:600;">Xem thông báo chính thức</a>
+      </div>` : ''}
+      ${item.ghiChuHocPhi ? `
+      <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.4rem; background:rgba(0,0,0,0.03); padding:0.4rem 0.6rem; border-radius:4px;">
+        Ghi chú: ${escapeHtml(item.ghiChuHocPhi)}
+      </div>` : ''}
+      ${item.chiTieu && item.chiTieu !== 100 ? `
       <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem; font-size:0.9rem;">
         <span style="color:var(--text-muted);">Chỉ tiêu tuyển sinh:</span>
-        <span style="font-weight:700;">${item.chiTieu} sinh viên</span>
+        <span style="font-weight:700;">${escapeHtml(item.chiTieu)} sinh viên</span>
       </div>` : ''}
       <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem; font-size:0.9rem;">
-        <span style="color:var(--text-muted);">Điểm chuẩn chính thức (${item.namThamChieu || 2025}):</span>
-        <span style="font-weight:700; color:var(--primary);">${scoreText}</span>
+        <span style="color:var(--text-muted);">Điểm chuẩn chính thức (${item.namThamChieu || 2026}):</span>
+        <span style="font-weight:700; color:var(--primary);">${escapeHtml(scoreText)}</span>
       </div>
       <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem; font-size:0.9rem;">
         <span style="color:var(--text-muted);">Hình thức tham chiếu:</span>
         <span style="font-weight:700; color:${item.coDuBao ? 'var(--primary)' : 'var(--text-muted)'};">
-          ${item.coDuBao ? `Dự báo năm ${item.namMucTieu || 2026}: ${Number(item.diemChuanDuBao).toFixed(2)}${item.khoangTinCay80 ? ` (±${item.khoangTinCay80})` : ''}` : `Tra cứu điểm chuẩn công bố`}
+          ${item.coDuBao ? `Dự báo năm ${item.namMucTieu || 2027}: ${Number(item.diemChuanDuBao).toFixed(2)}${item.khoangTinCay80 ? ` (±${escapeHtml(item.khoangTinCay80)})` : ''}` : `Tra cứu điểm chuẩn công bố`}
         </span>
       </div>
       <div style="display:flex; justify-content:space-between; font-size:0.9rem; flex-wrap:wrap; gap:0.25rem;">
         <span style="color:var(--text-muted);">Độ phù hợp nội bộ:</span>
-        <span style="font-weight:700; color:var(--emerald);">${fitTotal}</span>
+        <span style="font-weight:700; color:var(--emerald);">${escapeHtml(fitTotal)}</span>
       </div>
       <div style="font-size:0.8rem; color:var(--text-muted); margin-top:0.35rem;">
-        Thành phần: Thuận lợi điểm ${fitDiem} | Sở thích ${fitSoThich}
+        Thành phần: Thuận lợi điểm ${escapeHtml(fitDiem)} | Sở thích ${escapeHtml(fitSoThich)}
       </div>
       <div style="font-size:0.76rem; color:var(--text-muted); margin-top:0.4rem; font-style:italic;">
-        * Điểm phù hợp (thang 100) được tính từ mức thuận lợi điểm và tiêu chí sở thích, không phải xác suất trúng tuyển.
+        (Lưu ý: Điểm phù hợp thang 100 được tính từ mức thuận lợi điểm và tiêu chí sở thích, không phải xác suất trúng tuyển)
       </div>
     </div>
 
@@ -757,30 +936,30 @@ function renderWishlistView() {
               ${avatarInfo.text}
             </div>
             <div>
-              <h4>${item.tenTruong}</h4>
-              <p>${item.khuVuc || 'Toàn quốc'}</p>
+              <h4>${escapeHtml(item.tenTruong)}</h4>
+              <p>${escapeHtml(item.khuVuc || 'Toàn quốc')}</p>
             </div>
           </div>
 
           <div class="compare-detail-row">
             <span class="compare-label">Ngành học</span>
-            <span class="compare-val">${item.tenNganh}</span>
+            <span class="compare-val">${escapeHtml(item.tenNganh)}</span>
           </div>
           <div class="compare-detail-row">
             <span class="compare-label">Phương thức xét tuyển</span>
-            <span class="compare-val">${item.tenPhuongThuc || 'Xét tuyển'}</span>
+            <span class="compare-val">${escapeHtml(item.tenPhuongThuc || 'Xét tuyển')}</span>
           </div>
           <div class="compare-detail-row">
             <span class="compare-label">Điểm chuẩn</span>
-            <span class="compare-val">${rangeCutoff}</span>
+            <span class="compare-val">${escapeHtml(rangeCutoff)}</span>
           </div>
           <div class="compare-detail-row">
             <span class="compare-label">Học phí (ước tính)</span>
-            <span class="compare-val">${tuition}</span>
+            <span class="compare-val">${escapeHtml(tuition)}</span>
           </div>
           <div class="compare-detail-row">
             <span class="compare-label">Khu vực</span>
-            <span class="compare-val">${item.khuVuc || 'Toàn quốc'}</span>
+            <span class="compare-val">${escapeHtml(item.khuVuc || 'Toàn quốc')}</span>
           </div>
 
           <div class="compare-progress-wrap">
@@ -825,15 +1004,15 @@ function renderWishlistView() {
               <div class="uni-logo-avatar" style="width:30px; height:30px; font-size:0.75rem; background:${avatarInfo.color};">
                 ${avatarInfo.text}
               </div>
-              <span style="font-weight:600;">${item.tenTruong}</span>
+              <span style="font-weight:600;">${escapeHtml(item.tenTruong)}</span>
             </div>
           </td>
           <td style="font-weight:600; color:var(--primary);">
-            <div>${item.tenChuongTrinh || item.tenNganh}</div>
-            ${item.programId ? `<small style="color:var(--text-muted); font-size:0.75rem;">Mã: ${item.programId}</small>` : ''}
+            <div>${escapeHtml(item.tenChuongTrinh || item.tenNganh)}</div>
+            ${item.programId ? `<small style="color:var(--text-muted); font-size:0.75rem;">Mã: ${escapeHtml(item.programId)}</small>` : ''}
           </td>
-          <td>${item.tenPhuongThuc || 'Xét tuyển'}</td>
-          <td style="font-size:0.85rem; color:var(--text-main); font-weight:600;">${item.hocPhiUocTinh || item.hocPhi || 'Theo quy định'}</td>
+          <td>${escapeHtml(item.tenPhuongThuc || 'Xét tuyển')}</td>
+          <td style="font-size:0.85rem; color:var(--text-main); font-weight:600;">${escapeHtml(item.hocPhiUocTinh || item.hocPhi || 'Theo quy định')}</td>
           <td style="font-weight:700;">${(item.diemChuanThamChieu || 24.0).toFixed(2)}</td>
           <td>
             <span class="suitability-badge ${statusClass}">
@@ -991,20 +1170,31 @@ async function loadExploreData() {
 
       return `
         <tr>
-          <td style="font-weight:700;">${r.maTruong || '—'}</td>
+          <td style="font-weight:700;">${escapeHtml(r.maTruong || '—')}</td>
           <td>
             <div style="display:flex; align-items:center; gap:0.6rem;">
               <div class="uni-logo-avatar" style="width:28px; height:28px; font-size:0.75rem; background:${avatar.color};">
                 ${avatar.text}
               </div>
-              <span>${r.tenTruong || 'Chưa rõ'}</span>
+              <span>${escapeHtml(r.tenTruong || 'Chưa rõ')}</span>
             </div>
           </td>
-          <td style="color:var(--primary); font-weight:600;">${r.tenChuongTrinh || r.tenNganh || 'Chưa phân loại'}</td>
-          <td>${r.tenPhuongThuc || 'Xét tuyển'}</td>
-          <td>${r.maToHop || '—'}</td>
+          <td style="color:var(--primary); font-weight:600;">${escapeHtml(r.tenChuongTrinh || r.tenNganh || 'Chưa phân loại')}</td>
+          <td>${escapeHtml(r.tenPhuongThuc || 'Xét tuyển')}</td>
+          <td>${escapeHtml(r.maToHop || '—')}</td>
           <td>${scoreDisplay}</td>
-          <td style="font-size:0.85rem; font-weight:600; color:var(--text-main);">${r.hocPhiUocTinh || 'Theo quy định'}</td>
+          <td style="font-size:0.85rem; font-weight:600; color:var(--text-main);">
+            <div>${escapeHtml(r.hocPhiUocTinh || 'Theo quy định')}</div>
+            <div style="margin-top:2px; display:flex; align-items:center; gap:4px; flex-wrap:wrap;">
+              ${(() => {
+                if (r.trangThaiHocPhi === 'VERIFIED') return `<span style="font-size:0.7rem; background:#dcfce7; color:#15803d; padding:1px 5px; border-radius:3px; font-weight:700;">Đã xác minh</span>`;
+                if (r.trangThaiHocPhi === 'PROJECTED') return `<span style="font-size:0.7rem; background:#e0f2fe; color:#0369a1; padding:1px 5px; border-radius:3px; font-weight:700;">Dự kiến</span>`;
+                if (r.trangThaiHocPhi === 'PER_CREDIT') return `<span style="font-size:0.7rem; background:#fef3c7; color:#b45309; padding:1px 5px; border-radius:3px; font-weight:700;">Tín chỉ</span>`;
+                return `<span style="font-size:0.7rem; background:#f3f4f6; color:#4b5563; padding:1px 5px; border-radius:3px; font-weight:700;">Chưa xác minh</span>`;
+              })()}
+              ${r.urlNguon ? `<a href="${escapeHtml(r.urlNguon)}" target="_blank" rel="noopener" style="font-size:0.72rem; color:var(--primary); text-decoration:underline;">Nguồn</a>` : ''}
+            </div>
+          </td>
         </tr>
       `;
     }).join('');
