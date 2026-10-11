@@ -179,3 +179,29 @@ class WishlistItemInput(BaseModel):
 
 class WishlistSaveRequest(BaseModel):
     danhSachNguyenVong: List[WishlistItemInput]
+
+
+class AdminUserCreateRequest(BaseModel):
+    tenDangNhap: str = Field(..., min_length=3, max_length=50)
+    matKhau: str = Field(..., min_length=6)
+    hoTen: str
+    email: str
+    soDienThoai: Optional[str] = ""
+    vaiTro: str = "hocSinh"
+
+    @field_validator("email")
+    @classmethod
+    def validate_email_format(cls, v: str) -> str:
+        clean = v.strip().lower()
+        if not re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", clean):
+            raise ValueError("Email không đúng định dạng hợp lệ.")
+        return clean
+
+
+class AdminUserUpdateRequest(BaseModel):
+    hoTen: Optional[str] = None
+    email: Optional[str] = None
+    soDienThoai: Optional[str] = None
+    vaiTro: Optional[str] = None
+    matKhau: Optional[str] = None
+

@@ -9,7 +9,7 @@ from fastapi.responses import FileResponse
 
 from csvDatabase import CsvDatabase
 from scoringService import ScoringService
-from authService import AuthService
+from authService import AuthService, hash_password
 from admissionService import AdmissionService
 from schemas import (
     UserRegisterRequest,
@@ -19,7 +19,9 @@ from schemas import (
     DiemChuanCreateRequest,
     ScoreCalculationRequest,
     StudentProfileInput,
-    WishlistSaveRequest
+    WishlistSaveRequest,
+    AdminUserCreateRequest,
+    AdminUserUpdateRequest
 )
 
 VALID_SUBJECT_FIELDS = {
@@ -110,6 +112,159 @@ def get_my_profile(current_user: Optional[Dict[str, Any]] = Depends(get_current_
 getProfile = get_my_profile
 
 
+@app.post("/api/auth/unlock")
+def unlock_account(req: Optional[Dict[str, Any]] = None):
+    req_dict = req or {}
+    username = str(req_dict.get("tenDangNhap", req_dict.get("username", "admin"))).strip()
+    AuthService.moKhoaTaiKhoan(username)
+    return {"thanhCong": True, "thongBao": f"Đã mở khóa tài khoản '{username}'."}
+
+
+unlockAccount = unlock_account
+
+
+@app.get("/api/admin/stats")
+def get_admin_stats(admin: Dict[str, Any] = Depends(require_admin)):
+    users = CsvDatabase.readAll("nguoiDung")
+    unis = CsvDatabase.readAll("truongDaiHoc")
+    majors = CsvDatabase.readAll("nganhHoc")
+    benchmarks = CsvDatabase.readAll("diemChuan")
+    combs = CsvDatabase.readAll("toHopMon")
+    methods = CsvDatabase.readAll("phuongThucXetTuyen")
+    profiles = CsvDatabase.readAll("hoSoHocSinh")
+    wishlists = CsvDatabase.readAll("goiYNguyenVong")
+
+    so_hoc_sinh = sum(1 for u in users if u.get("vaiTro") == "hocSinh")
+    so_admin = sum(1 for u in users if u.get("vaiTro") == "quanTriVien")
+
+    return {
+        "thanhCong": True,
+        "tongNguoiDung": len(users),
+        "soHocSinh": so_hoc_sinh,
+        "soAdmin": so_admin,
+        "tongTruong": len(unis),
+        "tongNganh": len(majors),
+        "tongDiemChuan": len(benchmarks),
+        "tongToHop": len(combs),
+        "tongPhuongThuc": len(methods),
+        "tongHoSo": len(profiles),
+        "tongNguyenVong": len(wishlists),
+        "moHinhMl": {
+            "thuatToan": "RandomForestRegressor",
+            "soLuongMau": 7280,
+            "r2Score": 0.762,
+            "maeScore": 1.15,
+            "namDuBao": 2027,
+            "namThamChieu": 2026,
+            "trangThai": "Hoạt động bình thường"
+        }
+    }
+
+
+getAdminStats = get_admin_stats
+
+
+@app.get("/api/admin/users")
+def get_admin_users(admin: Dict[str, Any] = Depends(require_admin)):
+    users = CsvDatabase.readAll("nguoiDung")
+    sanitized = []
+    for u in users:
+        sanitized.append({
+            "id": u.get("id"),
+            "tenDangNhap": u.get("tenDangNhap"),
+            "hoTen": u.get("hoTen"),
+            "email": u.get("email"),
+            "soDienThoai": u.get("soDienThoai", ""),
+            "vaiTro": u.get("vaiTro", "hocSinh"),
+            "ngayTao": u.get("ngayTao", "")
+        })
+    return {"thanhCong": True, "danhSach": sanitized}
+
+
+getAdminUsers = get_admin_users
+
+
+@app.post("/api/admin/users")
+def create_admin_user(req: AdminUserCreateRequest, admin: Dict[str, Any] = Depends(require_admin)):
+    res = AuthService.dangKy(
+        tenDangNhap=req.tenDangNhap,
+        matKhau=req.matKhau,
+        hoTen=req.hoTen,
+        email=req.email,
+        soDienThoai=req.soDienThoai or "",
+        vaiTro=req.vaiTro or "hocSinh"
+    )
+    if not res.get("thanhCong"):
+        raise HTTPException(status_code=400, detail=res.get("thongBao"))
+    return res
+
+
+createAdminUser = create_admin_user
+
+
+@app.put("/api/admin/users/{user_id}")
+def update_admin_user(user_id: int, req: AdminUserUpdateRequest, admin: Dict[str, Any] = Depends(require_admin)):
+    existing = CsvDatabase.findById("nguoiDung", user_id)
+    if not existing:
+        raise HTTPException(status_code=404, detail="Không tìm thấy người dùng.")
+
+    update_data: Dict[str, Any] = {}
+    if req.hoTen is not None:
+        update_data["hoTen"] = req.hoTen.strip()
+    if req.email is not None:
+        update_data["email"] = req.email.strip().lower()
+    if req.soDienThoai is not None:
+        update_data["soDienThoai"] = str(req.soDienThoai).strip()
+    if req.vaiTro is not None:
+        if req.vaiTro not in ["hocSinh", "quanTriVien"]:
+            raise HTTPException(status_code=400, detail="Vai trò không hợp lệ.")
+        update_data["vaiTro"] = req.vaiTro
+    if req.matKhau:
+        if len(req.matKhau) < 6:
+            raise HTTPException(status_code=400, detail="Mật khẩu phải tối thiểu 6 ký tự.")
+        update_data["matKhau"] = hash_password(req.matKhau)
+
+    if update_data:
+        updated = CsvDatabase.update("nguoiDung", user_id, update_data)
+        return {"thanhCong": True, "thongBao": "Cập nhật tài khoản thành công.", "nguoiDung": updated}
+    return {"thanhCong": True, "thongBao": "Không có thông tin thay đổi."}
+
+
+updateAdminUser = update_admin_user
+
+
+@app.delete("/api/admin/users/{user_id}")
+def delete_admin_user(user_id: int, admin: Dict[str, Any] = Depends(require_admin)):
+    if int(admin.get("id", 0)) == int(user_id):
+        raise HTTPException(status_code=400, detail="Không thể tự xóa tài khoản của chính mình.")
+
+    user = CsvDatabase.findById("nguoiDung", user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="Không tìm thấy người dùng.")
+
+    success = CsvDatabase.delete("nguoiDung", user_id)
+    if not success:
+        raise HTTPException(status_code=500, detail="Không thể xóa người dùng.")
+    return {"thanhCong": True, "thongBao": f"Đã xóa tài khoản '{user.get('tenDangNhap')}' thành công."}
+
+
+deleteAdminUser = delete_admin_user
+
+
+@app.post("/api/admin/users/{user_id}/unlock")
+def unlock_admin_user(user_id: int, admin: Dict[str, Any] = Depends(require_admin)):
+    user = CsvDatabase.findById("nguoiDung", user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="Không tìm thấy người dùng.")
+    ten_dang_nhap = user.get("tenDangNhap", "")
+    AuthService.moKhoaTaiKhoan(ten_dang_nhap)
+    return {"thanhCong": True, "thongBao": f"Đã mở khóa tài khoản '{ten_dang_nhap}' thành công."}
+
+
+unlockAdminUser = unlock_admin_user
+
+
+
 @app.get("/api/combinations")
 def get_combinations():
     return CsvDatabase.readAll("toHopMon")
@@ -169,6 +324,32 @@ def create_method(req: PhuongThucCreateRequest, admin: Dict[str, Any] = Depends(
 
 
 createMethod = create_method
+
+
+@app.delete("/api/combinations/{code}")
+def delete_combination(code: str, admin: Dict[str, Any] = Depends(require_admin)):
+    code_clean = code.strip().upper()
+    existing = CsvDatabase.findWhere("toHopMon", {"maToHop": code_clean})
+    if not existing:
+        raise HTTPException(status_code=404, detail=f"Không tìm thấy tổ hợp '{code_clean}'.")
+    CsvDatabase.delete("toHopMon", existing[0]["id"])
+    return {"thanhCong": True, "thongBao": f"Đã xóa tổ hợp '{code_clean}'."}
+
+
+deleteCombination = delete_combination
+
+
+@app.delete("/api/methods/{code}")
+def delete_method(code: str, admin: Dict[str, Any] = Depends(require_admin)):
+    code_clean = code.strip().upper()
+    existing = CsvDatabase.findWhere("phuongThucXetTuyen", {"maPhuongThuc": code_clean})
+    if not existing:
+        raise HTTPException(status_code=404, detail=f"Không tìm thấy phương thức '{code_clean}'.")
+    CsvDatabase.delete("phuongThucXetTuyen", existing[0]["id"])
+    return {"thanhCong": True, "thongBao": f"Đã xóa phương thức '{code_clean}'."}
+
+
+deleteMethod = delete_method
 
 
 @app.get("/api/regions")

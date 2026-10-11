@@ -30,6 +30,7 @@
           <li><button class="nav-item-btn" id="nav-btn-profile" data-target="view-profile">Khuyến nghị</button></li>
           <li><button class="nav-item-btn" id="nav-btn-wishlist" data-target="view-wishlist">Sắp xếp nguyện vọng</button></li>
           <li><button class="nav-item-btn" id="nav-btn-about" data-target="view-about">Giới thiệu</button></li>
+          <li><button class="nav-item-btn" id="nav-btn-admin" data-target="view-admin" style="display:none; color:#7c3aed; font-weight:700;">🛡️ Quản trị Admin</button></li>
         </ul>
         <div id="auth-header-slot">
           <button class="btn-auth-nav" id="btn-open-auth-modal">
@@ -720,6 +721,327 @@
       </div>
     </section>
 
+    <section class="page-view" id="view-admin">
+      <div class="breadcrumb">
+        <a href="#home" class="btn-crumb-home">Trang chủ</a>
+        <span>&gt;</span>
+        <span class="active">Quản trị hệ thống</span>
+      </div>
+
+      <div class="page-title-header" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <h1>Bảng Điều Khiển <span>Quản Trị Hệ Thống</span></h1>
+          <p>Trung tâm kiểm soát người dùng, phân quyền, quản lý tổ hợp, phương thức, điểm chuẩn và mô hình AI.</p>
+        </div>
+        <div style="display:flex; gap:0.5rem; align-items:center;">
+          <span class="admin-role-badge">Super Admin</span>
+          <button class="btn-filter-refresh" id="btn-admin-refresh" title="Làm mới dữ liệu">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M23 4v6h-6"></path>
+              <path d="M1 20v-6h6"></path>
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+            </svg>
+            Làm mới
+          </button>
+        </div>
+      </div>
+
+      <div class="admin-kpi-grid">
+        <div class="admin-kpi-card">
+          <div class="admin-kpi-icon" style="background:#ede9fe; color:#7c3aed;">👥</div>
+          <div class="admin-kpi-info">
+            <div class="admin-kpi-label">Tổng người dùng</div>
+            <div class="admin-kpi-val" id="admin-stat-users">—</div>
+            <div class="admin-kpi-sub" id="admin-stat-users-sub">Đang tải...</div>
+          </div>
+        </div>
+
+        <div class="admin-kpi-card">
+          <div class="admin-kpi-icon" style="background:#e0f2fe; color:#0284c7;">🏛️</div>
+          <div class="admin-kpi-info">
+            <div class="admin-kpi-label">Trường đại học</div>
+            <div class="admin-kpi-val" id="admin-stat-unis">—</div>
+            <div class="admin-kpi-sub">Cơ sở đào tạo toàn quốc</div>
+          </div>
+        </div>
+
+        <div class="admin-kpi-card">
+          <div class="admin-kpi-icon" style="background:#fef3c7; color:#d97706;">🎓</div>
+          <div class="admin-kpi-info">
+            <div class="admin-kpi-label">Ngành đào tạo</div>
+            <div class="admin-kpi-val" id="admin-stat-majors">—</div>
+            <div class="admin-kpi-sub">Mã ngành tiêu chuẩn</div>
+          </div>
+        </div>
+
+        <div class="admin-kpi-card">
+          <div class="admin-kpi-icon" style="background:var(--emerald-light); color:var(--emerald-text);">📊</div>
+          <div class="admin-kpi-info">
+            <div class="admin-kpi-label">Dữ liệu điểm chuẩn</div>
+            <div class="admin-kpi-val" id="admin-stat-benchmarks">—</div>
+            <div class="admin-kpi-sub">Bản ghi điểm chuẩn lưu trữ</div>
+          </div>
+        </div>
+
+        <div class="admin-kpi-card">
+          <div class="admin-kpi-icon" style="background:#fce7f3; color:#db2777;">📑</div>
+          <div class="admin-kpi-info">
+            <div class="admin-kpi-label">Hồ sơ & Nguyện vọng</div>
+            <div class="admin-kpi-val" id="admin-stat-profiles">—</div>
+            <div class="admin-kpi-sub" id="admin-stat-profiles-sub">Đang tải...</div>
+          </div>
+        </div>
+
+        <div class="admin-kpi-card">
+          <div class="admin-kpi-icon" style="background:#f3e8ff; color:#9333ea;">🤖</div>
+          <div class="admin-kpi-info">
+            <div class="admin-kpi-label">Mô hình Random Forest</div>
+            <div class="admin-kpi-val" id="admin-stat-ai-r2">R² 0.762</div>
+            <div class="admin-kpi-sub">7,280 kịch bản huấn luyện</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-subnav-bar">
+        <button class="admin-subnav-tab active" data-admin-panel="admin-panel-users">
+          👥 Quản lý người dùng
+        </button>
+        <button class="admin-subnav-tab" data-admin-panel="admin-panel-combs">
+          📚 Tổ hợp & Phương thức
+        </button>
+        <button class="admin-subnav-tab" data-admin-panel="admin-panel-benchmarks">
+          📈 Bổ sung điểm chuẩn
+        </button>
+        <button class="admin-subnav-tab" data-admin-panel="admin-panel-system">
+          ⚙️ Cấu hình hệ thống & AI
+        </button>
+      </div>
+
+      <div class="admin-subpanel active" id="admin-panel-users">
+        <div class="admin-card-header">
+          <div>
+            <h3>Danh sách tài khoản người dùng</h3>
+            <p>Quản lý vai trò, phân quyền, đặt lại mật khẩu và kiểm soát truy cập hệ thống.</p>
+          </div>
+          <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
+            <input type="text" id="admin-user-search" class="form-input-text" placeholder="Tìm tên, email..." style="width:200px; padding:0.45rem 0.75rem; font-size:0.85rem;">
+            <select id="admin-user-filter-role" class="form-select-control" style="width:140px; padding:0.45rem 0.75rem; font-size:0.85rem;">
+              <option value="">Tất cả vai trò</option>
+              <option value="quanTriVien">Quản trị viên</option>
+              <option value="hocSinh">Học sinh</option>
+            </select>
+            <button class="btn-submit-recommend" id="btn-admin-add-user" style="margin:0; padding:0.5rem 1rem; font-size:0.85rem; white-space:nowrap;">
+              + Thêm người dùng
+            </button>
+          </div>
+        </div>
+
+        <div class="table-responsive-wrapper" style="margin-top:1rem;">
+          <table class="benchmark-data-table">
+            <thead>
+              <tr>
+                <th style="width:50px;">ID</th>
+                <th>Tên đăng nhập</th>
+                <th>Họ và tên</th>
+                <th>Email</th>
+                <th>Số điện thoại</th>
+                <th>Vai trò</th>
+                <th>Ngày tạo</th>
+                <th style="text-align:right;">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody id="admin-users-table-tbody">
+              <tr><td colspan="8" style="text-align:center; padding:2rem;">Đang tải danh sách người dùng...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="admin-subpanel" id="admin-panel-combs" style="display:none;">
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:1.5rem;">
+          <div class="form-card" style="margin:0;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+              <h3 style="font-size:1.15rem; font-weight:700; color:var(--text-main); margin:0;">Tổ hợp môn xét tuyển</h3>
+              <button class="btn-filter-refresh" id="btn-show-add-comb" style="padding:0.35rem 0.75rem; font-size:0.8rem;">+ Thêm tổ hợp</button>
+            </div>
+            
+            <div id="admin-add-comb-form" style="display:none; background:var(--bg-alt); padding:1rem; border-radius:8px; margin-bottom:1rem; border:1px solid var(--border);">
+              <h4 style="font-size:0.95rem; font-weight:700; margin-bottom:0.75rem;">Thêm tổ hợp mới</h4>
+              <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.5rem; margin-bottom:0.5rem;">
+                <input type="text" id="admin-new-comb-code" class="form-input-text" placeholder="Mã tổ hợp (VD: X01)">
+                <input type="text" id="admin-new-comb-name" class="form-input-text" placeholder="Tên tổ hợp (VD: Toán, Lý, Tin)">
+              </div>
+              <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:0.5rem; margin-bottom:0.75rem;">
+                <select id="admin-new-comb-m1" class="form-select-control"></select>
+                <select id="admin-new-comb-m2" class="form-select-control"></select>
+                <select id="admin-new-comb-m3" class="form-select-control"></select>
+              </div>
+              <div style="display:flex; justify-content:flex-end; gap:0.5rem;">
+                <button class="btn-filter-refresh" id="btn-cancel-add-comb">Hủy</button>
+                <button class="btn-submit-recommend" id="btn-submit-add-comb" style="margin:0; padding:0.4rem 1rem;">Lưu tổ hợp</button>
+              </div>
+            </div>
+
+            <div class="table-responsive-wrapper" style="max-height:420px; overflow-y:auto;">
+              <table class="benchmark-data-table">
+                <thead>
+                  <tr>
+                    <th>Mã</th>
+                    <th>Tên tổ hợp</th>
+                    <th>Các môn</th>
+                    <th style="width:60px;">Xóa</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-combs-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="form-card" style="margin:0;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+              <h3 style="font-size:1.15rem; font-weight:700; color:var(--text-main); margin:0;">Phương thức xét tuyển</h3>
+              <button class="btn-filter-refresh" id="btn-show-add-method" style="padding:0.35rem 0.75rem; font-size:0.8rem;">+ Thêm phương thức</button>
+            </div>
+
+            <div id="admin-add-method-form" style="display:none; background:var(--bg-alt); padding:1rem; border-radius:8px; margin-bottom:1rem; border:1px solid var(--border);">
+              <h4 style="font-size:0.95rem; font-weight:700; margin-bottom:0.75rem;">Thêm phương thức mới</h4>
+              <div style="margin-bottom:0.5rem;">
+                <input type="text" id="admin-new-method-code" class="form-input-text" placeholder="Mã phương thức (VD: PT07)">
+              </div>
+              <div style="margin-bottom:0.5rem;">
+                <input type="text" id="admin-new-method-name" class="form-input-text" placeholder="Tên phương thức">
+              </div>
+              <div style="margin-bottom:0.75rem;">
+                <textarea id="admin-new-method-desc" class="form-input-text" placeholder="Mô tả phương thức..." style="height:60px;"></textarea>
+              </div>
+              <div style="display:flex; justify-content:flex-end; gap:0.5rem;">
+                <button class="btn-filter-refresh" id="btn-cancel-add-method">Hủy</button>
+                <button class="btn-submit-recommend" id="btn-submit-add-method" style="margin:0; padding:0.4rem 1rem;">Lưu phương thức</button>
+              </div>
+            </div>
+
+            <div class="table-responsive-wrapper" style="max-height:420px; overflow-y:auto;">
+              <table class="benchmark-data-table">
+                <thead>
+                  <tr>
+                    <th>Mã</th>
+                    <th>Tên phương thức</th>
+                    <th style="width:60px;">Xóa</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-methods-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-subpanel" id="admin-panel-benchmarks" style="display:none;">
+        <div class="form-card" style="margin:0; max-width:800px;">
+          <h3 style="font-size:1.15rem; font-weight:700; color:var(--text-main); margin-bottom:0.5rem;">Bổ sung dữ liệu điểm chuẩn tuyển sinh</h3>
+          <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:1.25rem;">Thêm mới bản ghi điểm chuẩn tham chiếu vào kho dữ liệu chính thức.</p>
+
+          <form id="admin-add-benchmark-form" onsubmit="return false;">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem; margin-bottom:1rem;">
+              <div class="form-field-group">
+                <label class="form-label">Trường đại học</label>
+                <select id="admin-bm-uni" class="form-select-control" required></select>
+              </div>
+              <div class="form-field-group">
+                <label class="form-label">Ngành đào tạo</label>
+                <select id="admin-bm-major" class="form-select-control" required></select>
+              </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:1rem; margin-bottom:1rem;">
+              <div class="form-field-group">
+                <label class="form-label">Tổ hợp môn</label>
+                <select id="admin-bm-comb" class="form-select-control" required></select>
+              </div>
+              <div class="form-field-group">
+                <label class="form-label">Phương thức xét tuyển</label>
+                <select id="admin-bm-method" class="form-select-control" required></select>
+              </div>
+              <div class="form-field-group">
+                <label class="form-label">Năm tuyển sinh</label>
+                <input type="number" id="admin-bm-year" class="form-input-text" value="2026" min="2020" max="2030" required>
+              </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem; margin-bottom:1.5rem;">
+              <div class="form-field-group">
+                <label class="form-label">Điểm chuẩn (Thang 30)</label>
+                <input type="number" id="admin-bm-score" class="form-input-text" step="0.01" min="0" max="30" placeholder="VD: 25.50" required>
+              </div>
+              <div class="form-field-group">
+                <label class="form-label">Chỉ tiêu tuyển sinh</label>
+                <input type="number" id="admin-bm-chitieu" class="form-input-text" placeholder="VD: 150">
+              </div>
+            </div>
+
+            <button type="button" class="btn-submit-recommend" id="btn-submit-benchmark" style="margin:0; width:100%;">
+              Lưu bản ghi điểm chuẩn mới
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div class="admin-subpanel" id="admin-panel-system" style="display:none;">
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:1.5rem;">
+          <div class="form-card" style="margin:0;">
+            <h3 style="font-size:1.15rem; font-weight:700; color:var(--text-main); margin-bottom:0.75rem;">Thông số Mô hình DSS & AI</h3>
+            <div style="display:flex; flex-direction:column; gap:0.75rem; font-size:0.9rem;">
+              <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-light); padding-bottom:0.5rem;">
+                <span style="color:var(--text-muted);">Mô hình máy học:</span>
+                <span style="font-weight:700;">Random Forest Regressor</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-light); padding-bottom:0.5rem;">
+                <span style="color:var(--text-muted);">Hệ số xác định R² Score:</span>
+                <span style="font-weight:700; color:var(--emerald-text);">0.762</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-light); padding-bottom:0.5rem;">
+                <span style="color:var(--text-muted);">Sai số tuyệt đối trung bình (MAE):</span>
+                <span style="font-weight:700;">1.15 điểm</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-light); padding-bottom:0.5rem;">
+                <span style="color:var(--text-muted);">Số lượng mẫu đào tạo:</span>
+                <span style="font-weight:700;">7,280 kịch bản</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-light); padding-bottom:0.5rem;">
+                <span style="color:var(--text-muted);">Năm tham chiếu / Mục tiêu:</span>
+                <span style="font-weight:700;">2026 ➔ 2027</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-card" style="margin:0;">
+            <h3 style="font-size:1.15rem; font-weight:700; color:var(--text-main); margin-bottom:0.75rem;">Trọng số Quyết định & Phân tầng</h3>
+            <div style="display:flex; flex-direction:column; gap:0.75rem; font-size:0.9rem;">
+              <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-light); padding-bottom:0.5rem;">
+                <span style="color:var(--text-muted);">Trọng số Điểm thuận lợi:</span>
+                <span style="font-weight:700;">70% (0.70)</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-light); padding-bottom:0.5rem;">
+                <span style="color:var(--text-muted);">Trọng số Sở thích / Định hướng:</span>
+                <span style="font-weight:700;">30% (0.30)</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-light); padding-bottom:0.5rem;">
+                <span style="color:var(--text-muted);">Ngưỡng nhóm An toàn:</span>
+                <span style="font-weight:700; color:var(--emerald-text);">≥ 80.0%</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-light); padding-bottom:0.5rem;">
+                <span style="color:var(--text-muted);">Ngưỡng nhóm Vừa sức:</span>
+                <span style="font-weight:700; color:#0284c7;">40.0% - 79.9%</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-light); padding-bottom:0.5rem;">
+                <span style="color:var(--text-muted);">Ngưỡng nhóm Thử sức:</span>
+                <span style="font-weight:700; color:#d97706;">15.0% - 39.9%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer class="site-footer">
@@ -779,6 +1101,52 @@
     <div class="modal-window" style="max-width: 600px;">
       <button class="modal-close-icon" id="btn-close-detail-dialog">&times;</button>
       <div id="detail-modal-body"></div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modal-admin-user-dialog">
+    <div class="modal-window" style="max-width: 520px;">
+      <button class="modal-close-icon" id="btn-close-admin-user-dialog">&times;</button>
+      <h3 style="font-size:1.25rem; font-weight:800; color:var(--text-main); margin-bottom:0.35rem;" id="admin-user-modal-title">
+        Thêm người dùng mới
+      </h3>
+      <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:1.25rem;">
+        Tạo tài khoản hoặc cập nhật phân quyền quản trị hệ thống.
+      </p>
+
+      <form id="admin-user-form" onsubmit="return false;">
+        <input type="hidden" id="admin-user-edit-id" value="">
+        <div class="form-field-group" style="margin-bottom:0.75rem;">
+          <label class="form-label">Tên đăng nhập</label>
+          <input type="text" id="admin-form-username" class="form-input-text" placeholder="ten_dang_nhap" required>
+        </div>
+        <div class="form-field-group" style="margin-bottom:0.75rem;" id="admin-form-pw-group">
+          <label class="form-label" id="admin-form-pw-label">Mật khẩu</label>
+          <input type="password" id="admin-form-password" class="form-input-text" placeholder="******">
+        </div>
+        <div class="form-field-group" style="margin-bottom:0.75rem;">
+          <label class="form-label">Họ và tên</label>
+          <input type="text" id="admin-form-fullname" class="form-input-text" placeholder="Họ và tên" required>
+        </div>
+        <div class="form-field-group" style="margin-bottom:0.75rem;">
+          <label class="form-label">Email</label>
+          <input type="email" id="admin-form-email" class="form-input-text" placeholder="email@example.com" required>
+        </div>
+        <div class="form-field-group" style="margin-bottom:0.75rem;">
+          <label class="form-label">Số điện thoại</label>
+          <input type="text" id="admin-form-phone" class="form-input-text" placeholder="0988888888">
+        </div>
+        <div class="form-field-group" style="margin-bottom:1.25rem;">
+          <label class="form-label">Vai trò</label>
+          <select id="admin-form-role" class="form-select-control">
+            <option value="hocSinh">Học sinh (hocSinh)</option>
+            <option value="quanTriVien">Quản trị viên (quanTriVien)</option>
+          </select>
+        </div>
+        <button class="btn-submit-recommend" id="btn-save-admin-user" style="width:100%; margin:0;">
+          Lưu thông tin
+        </button>
+      </form>
     </div>
   </div>
 

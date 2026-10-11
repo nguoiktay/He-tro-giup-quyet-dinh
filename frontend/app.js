@@ -129,6 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initCombinationSelect();
   initFormActions();
   initAuthModal();
+  initAdminPanelEvents();
   initCatalogsFromApi();
   loadInitialState();
 });
@@ -146,7 +147,7 @@ async function initCatalogsFromApi() {
       const combSelect = document.getElementById('select-active-combination');
       if (combSelect && Array.isArray(combs) && combs.length > 0) {
         const curVal = combSelect.value;
-        combSelect.innerHTML = combs.map(c => 
+        combSelect.innerHTML = combs.map(c =>
           `<option value="${escapeHtml(c.maToHop)}"${c.maToHop === curVal ? ' selected' : ''}>${escapeHtml(c.maToHop)} (${escapeHtml(c.tenToHop)})</option>`
         ).join('');
       }
@@ -157,7 +158,7 @@ async function initCatalogsFromApi() {
       const regionSelect = document.getElementById('filter-region');
       if (regionSelect && Array.isArray(regions)) {
         const curVal = regionSelect.value;
-        regionSelect.innerHTML = '<option value="">Tất cả khu vực</option>' + 
+        regionSelect.innerHTML = '<option value="">Tất cả khu vực</option>' +
           regions.map(r => `<option value="${escapeHtml(r)}"${r === curVal ? ' selected' : ''}>${escapeHtml(r)}</option>`).join('');
       }
     }
@@ -167,7 +168,7 @@ async function initCatalogsFromApi() {
       const typeSelect = document.getElementById('filter-uni-type');
       if (typeSelect && Array.isArray(types)) {
         const curVal = typeSelect.value;
-        typeSelect.innerHTML = '<option value="">Tất cả loại trường</option>' + 
+        typeSelect.innerHTML = '<option value="">Tất cả loại trường</option>' +
           types.map(t => `<option value="${escapeHtml(t)}"${t === curVal ? ' selected' : ''}>${escapeHtml(t)}</option>`).join('');
       }
     }
@@ -287,6 +288,8 @@ function switchView(viewId) {
     } else {
       renderWishlistView();
     }
+  } else if (viewId === 'view-admin') {
+    loadAdminDashboard();
   }
 }
 
@@ -670,7 +673,7 @@ function renderRecommendationCards(items) {
   slot.innerHTML = items.map((item, idx) => {
     const avatarInfo = UNI_AVATARS[item.maTruong] || UNI_AVATARS['DEFAULT'];
     const delta = item.delta !== undefined ? item.delta : Math.round((currentProfile.tongDiem - item.diemChuanThamChieu) * 100) / 100;
-    
+
     const tier = item.nhomNguyenVong || (delta >= 1.5 ? 'An toàn' : (delta >= 0.0 ? 'Vừa sức' : 'Thử sức'));
     let statusClass = 'safe';
     let statusLabel = 'An toàn';
@@ -695,8 +698,8 @@ function renderRecommendationCards(items) {
       return w.truongDaiHocId === item.truongDaiHocId && w.nganhHocId === item.nganhHocId && (w.maToHop === item.maToHop || w.toHopMonId === item.toHopMonId);
     });
 
-            const tuitionBadge = formatTuitionBadge(item);
-            return `
+    const tuitionBadge = formatTuitionBadge(item);
+    return `
       <div class="rec-item-card">
         <div class="uni-logo-avatar" style="background-color: ${avatarInfo.color};">
           ${avatarInfo.text}
@@ -731,16 +734,16 @@ function renderRecommendationCards(items) {
               </svg>
               <span>${escapeHtml(tuitionBadge.shortText)}</span>
               ${(() => {
-                if (item.trangThaiHocPhi === 'VERIFIED') {
-                  return '';
-                } else if (item.trangThaiHocPhi === 'PROJECTED') {
-                  return `<span style="font-size:0.7rem; font-weight:700; background:#e0f2fe; color:#0369a1; padding:1px 6px; border-radius:4px; flex-shrink: 0;">Dự kiến</span>`;
-                } else if (item.trangThaiHocPhi === 'PER_CREDIT') {
-                  return `<span style="font-size:0.7rem; font-weight:700; background:#fef3c7; color:#b45309; padding:1px 6px; border-radius:4px; flex-shrink: 0;">Theo tín chỉ</span>`;
-                } else {
-                  return `<span style="font-size:0.7rem; font-weight:700; background:#f3f4f6; color:#4b5563; padding:1px 6px; border-radius:4px; flex-shrink: 0;">Chưa xác minh</span>`;
-                }
-              })()}
+        if (item.trangThaiHocPhi === 'VERIFIED') {
+          return '';
+        } else if (item.trangThaiHocPhi === 'PROJECTED') {
+          return `<span style="font-size:0.7rem; font-weight:700; background:#e0f2fe; color:#0369a1; padding:1px 6px; border-radius:4px; flex-shrink: 0;">Dự kiến</span>`;
+        } else if (item.trangThaiHocPhi === 'PER_CREDIT') {
+          return `<span style="font-size:0.7rem; font-weight:700; background:#fef3c7; color:#b45309; padding:1px 6px; border-radius:4px; flex-shrink: 0;">Theo tín chỉ</span>`;
+        } else {
+          return `<span style="font-size:0.7rem; font-weight:700; background:#f3f4f6; color:#4b5563; padding:1px 6px; border-radius:4px; flex-shrink: 0;">Chưa xác minh</span>`;
+        }
+      })()}
             </span>
             ${item.chiTieu && item.chiTieu !== 100 ? `
             <span>
@@ -765,13 +768,13 @@ function renderRecommendationCards(items) {
           <div class="predicted-score-label">Điểm tham chiếu (${item.namThamChieu || 2026})</div>
           <div class="predicted-score-val">${(item.diemChuanThamChieu || 24.0).toFixed(2)}</div>
           ${(() => {
-            if (item.coDuBao && item.diemChuanDuBao !== null && item.diemChuanDuBao !== undefined) {
-              const label = item.nhanDuBao || (item.loaiDuBao === 'BASELINE_LAG1' ? 'Ước lượng theo điểm năm trước' : 'Dự báo Random Forest');
-              return `<div style="font-size:0.8rem; color:var(--primary); font-weight:700; margin-top:2px;">${escapeHtml(label)} (${item.namMucTieu || 2027}): ${Number(item.diemChuanDuBao).toFixed(2)}${item.khoangTinCay80 ? ` <span style='font-size:0.72rem; color:var(--text-muted);'>(${escapeHtml(item.khoangTinCay80)})</span>` : ''}</div>`;
-            } else {
-              return `<div style="font-size:0.76rem; color:var(--text-muted); margin-top:2px; font-style:italic;">Điểm chuẩn lịch sử (${item.namThamChieu || 2026})</div>`;
-            }
-          })()}
+        if (item.coDuBao && item.diemChuanDuBao !== null && item.diemChuanDuBao !== undefined) {
+          const label = item.nhanDuBao || (item.loaiDuBao === 'BASELINE_LAG1' ? 'Ước lượng theo điểm năm trước' : 'Dự báo Random Forest');
+          return `<div style="font-size:0.8rem; color:var(--primary); font-weight:700; margin-top:2px;">${escapeHtml(label)} (${item.namMucTieu || 2027}): ${Number(item.diemChuanDuBao).toFixed(2)}${item.khoangTinCay80 ? ` <span style='font-size:0.72rem; color:var(--text-muted);'>(${escapeHtml(item.khoangTinCay80)})</span>` : ''}</div>`;
+        } else {
+          return `<div style="font-size:0.76rem; color:var(--text-muted); margin-top:2px; font-style:italic;">Điểm chuẩn lịch sử (${item.namThamChieu || 2026})</div>`;
+        }
+      })()}
           <div class="delta-badge ${deltaClass}">Chênh lệch: ${deltaSign}</div>
         </div>
 
@@ -839,7 +842,7 @@ function renderRecommendationCards(items) {
   slot.innerHTML = html;
 }
 
-window.openCanKiemTraDetails = function(ckIdx) {
+window.openCanKiemTraDetails = function (ckIdx) {
   const item = window.canKiemTraHocPhi && window.canKiemTraHocPhi[ckIdx];
   if (!item) return;
   const modal = document.getElementById('modal-detail-dialog');
@@ -876,7 +879,7 @@ window.openCanKiemTraDetails = function(ckIdx) {
   modal.classList.add('active');
 };
 
-window.toggleSaveWishlistItem = function(idx) {
+window.toggleSaveWishlistItem = function (idx) {
   const item = displayedRecommendations[idx];
   if (!item) return;
 
@@ -895,7 +898,7 @@ window.toggleSaveWishlistItem = function(idx) {
   renderRecommendationCards(displayedRecommendations);
 };
 
-window.openProgramDetails = async function(idx) {
+window.openProgramDetails = async function (idx) {
   const item = displayedRecommendations[idx];
   if (!item) return;
 
@@ -956,11 +959,11 @@ window.openProgramDetails = async function(idx) {
         <span style="color:var(--text-muted);">Trạng thái biểu phí:</span>
         <span style="font-weight:700;">
           ${(() => {
-            if (item.trangThaiHocPhi === 'VERIFIED') return '<span style="color:#15803d;">Chính thức</span>';
-            if (item.trangThaiHocPhi === 'PROJECTED') return '<span style="color:#0369a1;">Dự kiến (Theo đề án tham khảo)</span>';
-            if (item.trangThaiHocPhi === 'PER_CREDIT') return '<span style="color:#b45309;">Đơn giá tín chỉ</span>';
-            return '<span style="color:#6b7280;">Chưa xác minh</span>';
-          })()}
+      if (item.trangThaiHocPhi === 'VERIFIED') return '<span style="color:var(--emerald-text); font-weight:700;">Chính thức</span>';
+      if (item.trangThaiHocPhi === 'PROJECTED') return '<span style="color:#0369a1;">Dự kiến (Theo đề án tham khảo)</span>';
+      if (item.trangThaiHocPhi === 'PER_CREDIT') return '<span style="color:#b45309;">Đơn giá tín chỉ</span>';
+      return '<span style="color:#6b7280;">Chưa xác minh</span>';
+    })()}
         </span>
       </div>
       ${item.canhBaoTaiChinh ? `
@@ -1020,7 +1023,7 @@ window.openProgramDetails = async function(idx) {
   modal.classList.add('active');
 };
 
-window.closeDetailDialog = function() {
+window.closeDetailDialog = function () {
   const modal = document.getElementById('modal-detail-dialog');
   if (modal) modal.classList.remove('active');
 };
@@ -1124,7 +1127,7 @@ function renderWishlistView() {
     tableTbody.innerHTML = savedWishlist.map((item, idx) => {
       const avatarInfo = UNI_AVATARS[item.maTruong] || UNI_AVATARS['DEFAULT'];
       const delta = item.delta !== undefined ? item.delta : Math.round((currentProfile.tongDiem - (item.diemChuanDuBao || item.diemChuanThamChieu || 24.0)) * 100) / 100;
-      
+
       const tier = item.nhomNguyenVong || (delta >= 1.5 ? 'An toàn' : (delta >= 0.0 ? 'Vừa sức' : 'Thử sức'));
       let statusClass = 'safe';
       let statusLabel = 'An toàn';
@@ -1177,7 +1180,7 @@ function renderWishlistView() {
   }
 }
 
-window.removeWishlistItem = function(idx) {
+window.removeWishlistItem = function (idx) {
   savedWishlist.splice(idx, 1);
   renderWishlistView();
 };
@@ -1294,7 +1297,7 @@ async function loadExploreData() {
   try {
     const res = await fetch(`/api/explore-benchmarks?limit=50&query=${encodeURIComponent(query)}`);
     const records = await res.json();
-    
+
     if (!Array.isArray(records) || records.length === 0) {
       tbody.innerHTML = `
         <tr>
@@ -1330,16 +1333,16 @@ async function loadExploreData() {
           <td style="font-size:0.85rem; font-weight:600; color:var(--text-main);">
             <div title="${escapeHtml(formatTuitionBadge(r).fullText)}">${escapeHtml(formatTuitionBadge(r).shortText)}</div>
             ${(() => {
-              const badge = (() => {
-                if (r.trangThaiHocPhi === 'VERIFIED') return '';
-                if (r.trangThaiHocPhi === 'PROJECTED') return `<span style="font-size:0.7rem; background:#e0f2fe; color:#0369a1; padding:1px 5px; border-radius:3px; font-weight:700;">Dự kiến</span>`;
-                if (r.trangThaiHocPhi === 'PER_CREDIT') return `<span style="font-size:0.7rem; background:#fef3c7; color:#b45309; padding:1px 5px; border-radius:3px; font-weight:700;">Tín chỉ</span>`;
-                return `<span style="font-size:0.7rem; background:#f3f4f6; color:#4b5563; padding:1px 5px; border-radius:3px; font-weight:700;">Chưa xác minh</span>`;
-              })();
-              const link = r.urlNguon ? `<a href="${escapeHtml(r.urlNguon)}" target="_blank" rel="noopener" style="font-size:0.72rem; color:var(--primary); text-decoration:underline;">Nguồn</a>` : '';
-              if (!badge && !link) return '';
-              return `<div style="margin-top:2px; display:flex; align-items:center; gap:4px; flex-wrap:wrap;">${badge}${link}</div>`;
-            })()}
+          const badge = (() => {
+            if (r.trangThaiHocPhi === 'VERIFIED') return '';
+            if (r.trangThaiHocPhi === 'PROJECTED') return `<span style="font-size:0.7rem; background:#e0f2fe; color:#0369a1; padding:1px 5px; border-radius:3px; font-weight:700;">Dự kiến</span>`;
+            if (r.trangThaiHocPhi === 'PER_CREDIT') return `<span style="font-size:0.7rem; background:#fef3c7; color:#b45309; padding:1px 5px; border-radius:3px; font-weight:700;">Tín chỉ</span>`;
+            return `<span style="font-size:0.7rem; background:#f3f4f6; color:#4b5563; padding:1px 5px; border-radius:3px; font-weight:700;">Chưa xác minh</span>`;
+          })();
+          const link = r.urlNguon ? `<a href="${escapeHtml(r.urlNguon)}" target="_blank" rel="noopener" style="font-size:0.72rem; color:var(--primary); text-decoration:underline;">Nguồn</a>` : '';
+          if (!badge && !link) return '';
+          return `<div style="margin-top:2px; display:flex; align-items:center; gap:4px; flex-wrap:wrap;">${badge}${link}</div>`;
+        })()}
           </td>
         </tr>
       `;
@@ -1414,6 +1417,9 @@ function initAuthModal() {
           localStorage.setItem('tuyensinh_token', currentToken);
           updateAuthUI();
           if (modal) modal.classList.remove('active');
+          if (currentUser.vaiTro === 'quanTriVien') {
+            switchView('view-admin');
+          }
           alert(`Đăng nhập thành công! Xin chào ${currentUser.hoTen}`);
         } else {
           alert(data.detail || 'Đăng nhập không thành công.');
@@ -1478,8 +1484,662 @@ async function loadInitialState() {
 
 function updateAuthUI() {
   const lbl = document.getElementById('auth-btn-label');
+  const adminBtn = document.getElementById('nav-btn-admin');
   if (lbl && currentUser) {
     lbl.textContent = currentUser.hoTen || currentUser.tenDangNhap;
   }
+  if (adminBtn) {
+    if (currentUser && currentUser.vaiTro === 'quanTriVien') {
+      adminBtn.style.display = 'inline-flex';
+    } else {
+      adminBtn.style.display = 'none';
+    }
+  }
 }
+
+let adminUsersList = [];
+
+async function loadAdminDashboard() {
+  if (!currentToken) {
+    alert('Vui lòng đăng nhập với tài khoản Quản trị viên.');
+    switchView('view-home');
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/admin/stats', {
+      headers: { 'Authorization': `Bearer ${currentToken}` }
+    });
+    if (!res.ok) {
+      if (res.status === 403) {
+        alert('Tài khoản của bạn không có quyền Quản trị viên (Admin).');
+        switchView('view-home');
+      }
+      return;
+    }
+    const data = await res.json();
+    if (data.thanhCong) {
+      const uEl = document.getElementById('admin-stat-users');
+      const uSub = document.getElementById('admin-stat-users-sub');
+      const uniEl = document.getElementById('admin-stat-unis');
+      const majEl = document.getElementById('admin-stat-majors');
+      const bmEl = document.getElementById('admin-stat-benchmarks');
+      const profEl = document.getElementById('admin-stat-profiles');
+      const profSub = document.getElementById('admin-stat-profiles-sub');
+      const r2El = document.getElementById('admin-stat-ai-r2');
+
+      if (uEl) uEl.textContent = data.tongNguoiDung;
+      if (uSub) uSub.textContent = `${data.soHocSinh} học sinh • ${data.soAdmin} quản trị viên`;
+      if (uniEl) uniEl.textContent = data.tongTruong;
+      if (majEl) majEl.textContent = data.tongNganh;
+      if (bmEl) bmEl.textContent = Number(data.tongDiemChuan).toLocaleString('vi-VN');
+      if (profEl) profEl.textContent = `${data.tongHoSo} hồ sơ`;
+      if (profSub) profSub.textContent = `${data.tongNguyenVong} nguyện vọng đã lưu`;
+      if (r2El && data.moHinhMl) r2El.textContent = `R² ${data.moHinhMl.r2Score}`;
+    }
+
+    await loadAdminUsers();
+    await loadAdminCombinations();
+    await loadAdminMethods();
+    await initAdminBenchmarkDropdowns();
+  } catch (err) {
+    console.error('Lỗi nạp bảng điều khiển admin:', err);
+  }
+}
+
+async function loadAdminUsers() {
+  const tbody = document.getElementById('admin-users-table-tbody');
+  if (!tbody) return;
+
+  try {
+    const res = await fetch('/api/admin/users', {
+      headers: { 'Authorization': `Bearer ${currentToken}` }
+    });
+    if (!res.ok) return;
+    const data = await res.json();
+    adminUsersList = data.danhSach || [];
+    renderAdminUsersTable();
+  } catch (err) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:var(--rose);">Không thể tải danh sách người dùng.</td></tr>';
+  }
+}
+
+function renderAdminUsersTable() {
+  const tbody = document.getElementById('admin-users-table-tbody');
+  if (!tbody) return;
+
+  const searchVal = document.getElementById('admin-user-search')?.value.trim().toLowerCase() || '';
+  const roleVal = document.getElementById('admin-user-filter-role')?.value || '';
+
+  const filtered = adminUsersList.filter(u => {
+    if (roleVal && u.vaiTro !== roleVal) return false;
+    if (searchVal) {
+      const match = (
+        (u.tenDangNhap || '').toLowerCase().includes(searchVal) ||
+        (u.hoTen || '').toLowerCase().includes(searchVal) ||
+        (u.email || '').toLowerCase().includes(searchVal) ||
+        (u.soDienThoai || '').includes(searchVal)
+      );
+      if (!match) return false;
+    }
+    return true;
+  });
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:1.5rem; color:var(--text-muted);">Không tìm thấy người dùng phù hợp.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(u => {
+    const isAdmin = u.vaiTro === 'quanTriVien';
+    const roleTag = isAdmin
+      ? '<span class="admin-role-tag admin">Quản trị viên</span>'
+      : '<span class="admin-role-tag student">Học sinh</span>';
+
+    const isCurrent = currentUser && Number(currentUser.id) === Number(u.id);
+
+    return `
+      <tr>
+        <td style="font-weight:700;">#${escapeHtml(u.id)}</td>
+        <td style="font-weight:700; color:var(--primary);">${escapeHtml(u.tenDangNhap)}</td>
+        <td>${escapeHtml(u.hoTen)}</td>
+        <td>${escapeHtml(u.email)}</td>
+        <td>${escapeHtml(u.soDienThoai || '—')}</td>
+        <td>${roleTag}</td>
+        <td style="font-size:0.8rem; color:var(--text-muted);">${escapeHtml(u.ngayTao || '—')}</td>
+        <td style="text-align:right; white-space:nowrap;">
+          <button class="btn-admin-action" onclick="toggleUserRole(${u.id}, '${escapeHtml(u.vaiTro)}', '${escapeHtml(u.tenDangNhap)}')">
+            ${isAdmin ? 'Hạ cấp Học sinh' : 'Nâng cấp Admin'}
+          </button>
+          <button class="btn-admin-action" onclick="promptResetPassword(${u.id}, '${escapeHtml(u.tenDangNhap)}')">
+            Đổi mật khẩu
+          </button>
+          <button class="btn-admin-action unlock" onclick="unlockAdminUser(${u.id}, '${escapeHtml(u.tenDangNhap)}')">
+            Mở khóa
+          </button>
+          ${!isCurrent ? `
+          <button class="btn-admin-action danger" onclick="deleteAdminUser(${u.id}, '${escapeHtml(u.tenDangNhap)}')">
+            Xóa
+          </button>` : ''}
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+window.toggleUserRole = async function(userId, currentRole, username) {
+  const newRole = currentRole === 'quanTriVien' ? 'hocSinh' : 'quanTriVien';
+  const roleName = newRole === 'quanTriVien' ? 'Quản trị viên (quanTriVien)' : 'Học sinh (hocSinh)';
+  if (!confirm(`Bạn có chắc muốn đổi vai trò của tài khoản '${username}' thành ${roleName}?`)) return;
+
+  try {
+    const res = await fetch(`/api/admin/users/${userId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${currentToken}`
+      },
+      body: JSON.stringify({ vaiTro: newRole })
+    });
+    const data = await res.json();
+    if (res.ok && data.thanhCong) {
+      alert(`Đã đổi vai trò cho '${username}' thành ${roleName}.`);
+      loadAdminDashboard();
+    } else {
+      alert(data.detail || data.thongBao || 'Lỗi cập nhật vai trò.');
+    }
+  } catch (err) {
+    alert('Không thể kết nối đến máy chủ.');
+  }
+};
+
+window.promptResetPassword = async function(userId, username) {
+  const newPw = prompt(`Nhập mật khẩu mới cho tài khoản '${username}' (tối thiểu 6 ký tự):`);
+  if (!newPw) return;
+  if (newPw.length < 6) {
+    alert('Mật khẩu phải từ 6 ký tự trở lên.');
+    return;
+  }
+
+  try {
+    const res = await fetch(`/api/admin/users/${userId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${currentToken}`
+      },
+      body: JSON.stringify({ matKhau: newPw })
+    });
+    const data = await res.json();
+    if (res.ok && data.thanhCong) {
+      alert(`Đã đặt lại mật khẩu cho tài khoản '${username}' thành công.`);
+    } else {
+      alert(data.detail || data.thongBao || 'Lỗi đặt lại mật khẩu.');
+    }
+  } catch (err) {
+    alert('Không thể kết nối đến máy chủ.');
+  }
+};
+
+window.unlockAdminUser = async function(userId, username) {
+  try {
+    const res = await fetch(`/api/admin/users/${userId}/unlock`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${currentToken}` }
+    });
+    const data = await res.json();
+    if (res.ok && data.thanhCong) {
+      alert(`Đã gỡ bỏ lệnh khóa cho tài khoản '${username}'.`);
+    } else {
+      alert(data.detail || data.thongBao || 'Lỗi mở khóa.');
+    }
+  } catch (err) {
+    alert('Không thể kết nối đến máy chủ.');
+  }
+};
+
+window.deleteAdminUser = async function(userId, username) {
+  if (!confirm(`Bạn có chắc chắn muốn XÓA vĩnh viễn tài khoản '${username}'? Thao tác này không thể hoàn tác.`)) return;
+
+  try {
+    const res = await fetch(`/api/admin/users/${userId}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${currentToken}` }
+    });
+    const data = await res.json();
+    if (res.ok && data.thanhCong) {
+      alert(`Đã xóa tài khoản '${username}' thành công.`);
+      loadAdminDashboard();
+    } else {
+      alert(data.detail || data.thongBao || 'Không thể xóa người dùng.');
+    }
+  } catch (err) {
+    alert('Không thể kết nối máy chủ.');
+  }
+};
+
+async function loadAdminCombinations() {
+  const tbody = document.getElementById('admin-combs-tbody');
+  if (!tbody) return;
+
+  try {
+    const res = await fetch('/api/combinations');
+    if (!res.ok) return;
+    const combs = await res.json();
+    tbody.innerHTML = combs.map(c => `
+      <tr>
+        <td style="font-weight:700; color:var(--primary);">${escapeHtml(c.maToHop)}</td>
+        <td>${escapeHtml(c.tenToHop)}</td>
+        <td style="font-size:0.8rem; color:var(--text-muted);">${escapeHtml([c.mon1, c.mon2, c.mon3].join(', '))}</td>
+        <td>
+          <button class="btn-admin-action danger" onclick="deleteAdminCombination('${escapeHtml(c.maToHop)}')">×</button>
+        </td>
+      </tr>
+    `).join('');
+  } catch (err) {
+    console.error('Lỗi nạp tổ hợp:', err);
+  }
+}
+
+window.deleteAdminCombination = async function(code) {
+  if (!confirm(`Bạn có chắc muốn xóa tổ hợp '${code}'?`)) return;
+  try {
+    const res = await fetch(`/api/combinations/${code}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${currentToken}` }
+    });
+    const data = await res.json();
+    if (res.ok && data.thanhCong) {
+      alert(`Đã xóa tổ hợp '${code}'.`);
+      loadAdminCombinations();
+      loadAdminDashboard();
+    } else {
+      alert(data.detail || data.thongBao || 'Lỗi xóa tổ hợp.');
+    }
+  } catch (err) {
+    alert('Không thể kết nối máy chủ.');
+  }
+};
+
+async function loadAdminMethods() {
+  const tbody = document.getElementById('admin-methods-tbody');
+  if (!tbody) return;
+
+  try {
+    const res = await fetch('/api/methods');
+    if (!res.ok) return;
+    const methods = await res.json();
+    tbody.innerHTML = methods.map(m => `
+      <tr>
+        <td style="font-weight:700; color:var(--primary);">${escapeHtml(m.maPhuongThuc)}</td>
+        <td title="${escapeHtml(m.moTa || '')}">${escapeHtml(m.tenPhuongThuc)}</td>
+        <td>
+          <button class="btn-admin-action danger" onclick="deleteAdminMethod('${escapeHtml(m.maPhuongThuc)}')">×</button>
+        </td>
+      </tr>
+    `).join('');
+  } catch (err) {
+    console.error('Lỗi nạp phương thức:', err);
+  }
+}
+
+window.deleteAdminMethod = async function(code) {
+  if (!confirm(`Bạn có chắc muốn xóa phương thức '${code}'?`)) return;
+  try {
+    const res = await fetch(`/api/methods/${code}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${currentToken}` }
+    });
+    const data = await res.json();
+    if (res.ok && data.thanhCong) {
+      alert(`Đã xóa phương thức '${code}'.`);
+      loadAdminMethods();
+      loadAdminDashboard();
+    } else {
+      alert(data.detail || data.thongBao || 'Lỗi xóa phương thức.');
+    }
+  } catch (err) {
+    alert('Không thể kết nối máy chủ.');
+  }
+};
+
+async function initAdminBenchmarkDropdowns() {
+  const uniSel = document.getElementById('admin-bm-uni');
+  const majSel = document.getElementById('admin-bm-major');
+  const combSel = document.getElementById('admin-bm-comb');
+  const metSel = document.getElementById('admin-bm-method');
+
+  if (uniSel && uniSel.children.length === 0) {
+    try {
+      const uRes = await fetch('/api/universities?limit=200');
+      if (uRes.ok) {
+        const unis = await uRes.json();
+        uniSel.innerHTML = unis.map(u => `<option value="${u.id}">${escapeHtml(u.maTruong)} - ${escapeHtml(u.tenTruong)}</option>`).join('');
+      }
+    } catch (e) {}
+  }
+
+  if (majSel && majSel.children.length === 0) {
+    try {
+      const mRes = await fetch('/api/majors?limit=200');
+      if (mRes.ok) {
+        const majors = await mRes.json();
+        majSel.innerHTML = majors.map(m => `<option value="${m.id}">${escapeHtml(m.maNganh)} - ${escapeHtml(m.tenNganh)}</option>`).join('');
+      }
+    } catch (e) {}
+  }
+
+  if (combSel && combSel.children.length === 0) {
+    try {
+      const cRes = await fetch('/api/combinations');
+      if (cRes.ok) {
+        const combs = await cRes.json();
+        combSel.innerHTML = combs.map(c => `<option value="${c.id}">${escapeHtml(c.maToHop)} (${escapeHtml(c.tenToHop)})</option>`).join('');
+      }
+    } catch (e) {}
+  }
+
+  if (metSel && metSel.children.length === 0) {
+    try {
+      const metRes = await fetch('/api/methods');
+      if (metRes.ok) {
+        const methods = await metRes.json();
+        metSel.innerHTML = methods.map(m => `<option value="${m.id}">${escapeHtml(m.maPhuongThuc)} - ${escapeHtml(m.tenPhuongThuc)}</option>`).join('');
+      }
+    } catch (e) {}
+  }
+
+  const subjects = [
+    { id: 'diemToan', name: 'Toán' },
+    { id: 'diemVan', name: 'Ngữ văn' },
+    { id: 'diemAnh', name: 'Tiếng Anh' },
+    { id: 'diemLy', name: 'Vật lý' },
+    { id: 'diemHoa', name: 'Hóa học' },
+    { id: 'diemSinh', name: 'Sinh học' },
+    { id: 'diemSu', name: 'Lịch sử' },
+    { id: 'diemDia', name: 'Địa lý' },
+    { id: 'diemGDCD', name: 'GDCD' },
+    { id: 'diemTinHoc', name: 'Tin học' },
+    { id: 'diemCongNghe', name: 'Công nghệ' }
+  ];
+  const sOptions = subjects.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+  const m1 = document.getElementById('admin-new-comb-m1');
+  const m2 = document.getElementById('admin-new-comb-m2');
+  const m3 = document.getElementById('admin-new-comb-m3');
+  if (m1 && m1.children.length === 0) m1.innerHTML = sOptions;
+  if (m2 && m2.children.length === 0) {
+    m2.innerHTML = sOptions;
+    m2.selectedIndex = 3;
+  }
+  if (m3 && m3.children.length === 0) {
+    m3.innerHTML = sOptions;
+    m3.selectedIndex = 4;
+  }
+}
+
+function initAdminPanelEvents() {
+  const tabs = document.querySelectorAll('.admin-subnav-tab');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      const targetId = tab.getAttribute('data-admin-panel');
+      document.querySelectorAll('.admin-subpanel').forEach(p => {
+        p.style.display = 'none';
+        p.classList.remove('active');
+      });
+
+      const targetPanel = document.getElementById(targetId);
+      if (targetPanel) {
+        targetPanel.style.display = 'block';
+        targetPanel.classList.add('active');
+      }
+    });
+  });
+
+  const btnRefresh = document.getElementById('btn-admin-refresh');
+  if (btnRefresh) {
+    btnRefresh.addEventListener('click', () => {
+      loadAdminDashboard();
+    });
+  }
+
+  const userSearch = document.getElementById('admin-user-search');
+  if (userSearch) {
+    userSearch.addEventListener('input', () => {
+      renderAdminUsersTable();
+    });
+  }
+
+  const roleFilter = document.getElementById('admin-user-filter-role');
+  if (roleFilter) {
+    roleFilter.addEventListener('change', () => {
+      renderAdminUsersTable();
+    });
+  }
+
+  const modalUser = document.getElementById('modal-admin-user-dialog');
+  const btnCloseUser = document.getElementById('btn-close-admin-user-dialog');
+  const btnAddUser = document.getElementById('btn-admin-add-user');
+
+  if (btnAddUser && modalUser) {
+    btnAddUser.addEventListener('click', () => {
+      document.getElementById('admin-user-form')?.reset();
+      document.getElementById('admin-user-modal-title').textContent = 'Thêm người dùng mới';
+      modalUser.classList.add('active');
+    });
+  }
+
+  if (btnCloseUser && modalUser) {
+    btnCloseUser.addEventListener('click', () => {
+      modalUser.classList.remove('active');
+    });
+  }
+
+  const btnSaveUser = document.getElementById('btn-save-admin-user');
+  if (btnSaveUser && modalUser) {
+    btnSaveUser.addEventListener('click', async () => {
+      const u = document.getElementById('admin-form-username')?.value.trim();
+      const p = document.getElementById('admin-form-password')?.value.trim();
+      const f = document.getElementById('admin-form-fullname')?.value.trim();
+      const e = document.getElementById('admin-form-email')?.value.trim();
+      const ph = document.getElementById('admin-form-phone')?.value.trim();
+      const r = document.getElementById('admin-form-role')?.value || 'hocSinh';
+
+      if (!u || !p || !f || !e) {
+        alert('Vui lòng điền đầy đủ các thông tin bắt buộc.');
+        return;
+      }
+      if (p.length < 6) {
+        alert('Mật khẩu tối thiểu 6 ký tự.');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/admin/users', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${currentToken}`
+          },
+          body: JSON.stringify({
+            tenDangNhap: u,
+            matKhau: p,
+            hoTen: f,
+            email: e,
+            soDienThoai: ph,
+            vaiTro: r
+          })
+        });
+        const data = await res.json();
+        if (res.ok && data.thanhCong) {
+          alert('Thêm tài khoản thành công!');
+          modalUser.classList.remove('active');
+          loadAdminDashboard();
+        } else {
+          alert(data.detail || data.thongBao || 'Lỗi thêm tài khoản.');
+        }
+      } catch (err) {
+        alert('Không thể kết nối máy chủ.');
+      }
+    });
+  }
+
+  const btnShowComb = document.getElementById('btn-show-add-comb');
+  const formComb = document.getElementById('admin-add-comb-form');
+  const btnCancelComb = document.getElementById('btn-cancel-add-comb');
+  const btnSubmitComb = document.getElementById('btn-submit-add-comb');
+
+  if (btnShowComb && formComb) {
+    btnShowComb.addEventListener('click', () => {
+      formComb.style.display = formComb.style.display === 'none' ? 'block' : 'none';
+    });
+  }
+  if (btnCancelComb && formComb) {
+    btnCancelComb.addEventListener('click', () => {
+      formComb.style.display = 'none';
+    });
+  }
+  if (btnSubmitComb && formComb) {
+    btnSubmitComb.addEventListener('click', async () => {
+      const code = document.getElementById('admin-new-comb-code')?.value.trim();
+      const name = document.getElementById('admin-new-comb-name')?.value.trim();
+      const m1 = document.getElementById('admin-new-comb-m1')?.value;
+      const m2 = document.getElementById('admin-new-comb-m2')?.value;
+      const m3 = document.getElementById('admin-new-comb-m3')?.value;
+
+      if (!code || !name) {
+        alert('Vui lòng nhập mã và tên tổ hợp.');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/combinations', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${currentToken}`
+          },
+          body: JSON.stringify({ maToHop: code, tenToHop: name, mon1: m1, mon2: m2, mon3: m3 })
+        });
+        const data = await res.json();
+        if (res.ok && data.thanhCong) {
+          alert('Thêm tổ hợp thành công!');
+          formComb.style.display = 'none';
+          document.getElementById('admin-new-comb-code').value = '';
+          document.getElementById('admin-new-comb-name').value = '';
+          loadAdminCombinations();
+          loadAdminDashboard();
+        } else {
+          alert(data.detail || data.thongBao || 'Lỗi thêm tổ hợp.');
+        }
+      } catch (err) {
+        alert('Không thể kết nối máy chủ.');
+      }
+    });
+  }
+
+  const btnShowMethod = document.getElementById('btn-show-add-method');
+  const formMethod = document.getElementById('admin-add-method-form');
+  const btnCancelMethod = document.getElementById('btn-cancel-add-method');
+  const btnSubmitMethod = document.getElementById('btn-submit-add-method');
+
+  if (btnShowMethod && formMethod) {
+    btnShowMethod.addEventListener('click', () => {
+      formMethod.style.display = formMethod.style.display === 'none' ? 'block' : 'none';
+    });
+  }
+  if (btnCancelMethod && formMethod) {
+    btnCancelMethod.addEventListener('click', () => {
+      formMethod.style.display = 'none';
+    });
+  }
+  if (btnSubmitMethod && formMethod) {
+    btnSubmitMethod.addEventListener('click', async () => {
+      const code = document.getElementById('admin-new-method-code')?.value.trim();
+      const name = document.getElementById('admin-new-method-name')?.value.trim();
+      const desc = document.getElementById('admin-new-method-desc')?.value.trim();
+
+      if (!code || !name) {
+        alert('Vui lòng nhập mã và tên phương thức.');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/methods', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${currentToken}`
+          },
+          body: JSON.stringify({ maPhuongThuc: code, tenPhuongThuc: name, moTa: desc })
+        });
+        const data = await res.json();
+        if (res.ok && data.thanhCong) {
+          alert('Thêm phương thức thành công!');
+          formMethod.style.display = 'none';
+          document.getElementById('admin-new-method-code').value = '';
+          document.getElementById('admin-new-method-name').value = '';
+          document.getElementById('admin-new-method-desc').value = '';
+          loadAdminMethods();
+          loadAdminDashboard();
+        } else {
+          alert(data.detail || data.thongBao || 'Lỗi thêm phương thức.');
+        }
+      } catch (err) {
+        alert('Không thể kết nối máy chủ.');
+      }
+    });
+  }
+
+  const btnSubmitBm = document.getElementById('btn-submit-benchmark');
+  if (btnSubmitBm) {
+    btnSubmitBm.addEventListener('click', async () => {
+      const uId = document.getElementById('admin-bm-uni')?.value;
+      const mId = document.getElementById('admin-bm-major')?.value;
+      const cId = document.getElementById('admin-bm-comb')?.value;
+      const metId = document.getElementById('admin-bm-method')?.value;
+      const year = document.getElementById('admin-bm-year')?.value;
+      const score = document.getElementById('admin-bm-score')?.value;
+      const chiTieu = document.getElementById('admin-bm-chitieu')?.value;
+
+      if (!score || isNaN(Number(score))) {
+        alert('Vui lòng nhập điểm chuẩn hợp lệ.');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/benchmarks', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${currentToken}`
+          },
+          body: JSON.stringify({
+            truongDaiHocId: Number(uId),
+            nganhHocId: Number(mId),
+            toHopMonId: Number(cId),
+            phuongThucXetTuyenId: Number(metId),
+            nam: Number(year),
+            diemChuan: Number(score),
+            chiTieu: chiTieu ? Number(chiTieu) : null
+          })
+        });
+        const data = await res.json();
+        if (res.ok && data.thanhCong) {
+          alert('Đã bổ sung dữ liệu điểm chuẩn mới thành công!');
+          document.getElementById('admin-bm-score').value = '';
+          document.getElementById('admin-bm-chitieu').value = '';
+          loadAdminDashboard();
+        } else {
+          alert(data.detail || data.thongBao || 'Lỗi bổ sung điểm chuẩn.');
+        }
+      } catch (err) {
+        alert('Không thể kết nối máy chủ.');
+      }
+    });
+  }
+}
+
 

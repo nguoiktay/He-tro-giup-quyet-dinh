@@ -234,6 +234,15 @@ class AuthService:
             return {"thanhCong": False, "thongBao": "Tên đăng nhập hoặc mật khẩu không chính xác."}
 
     @classmethod
+    def moKhoaTaiKhoan(cls, username: str) -> bool:
+        with _auth_lock:
+            cleaned = str(username or "").strip().lower()
+            if cleaned in _failed_attempts:
+                del _failed_attempts[cleaned]
+                return True
+            return False
+
+    @classmethod
     def layThongTinNguoiDung(cls, token: str) -> Optional[Dict[str, Any]]:
         payload = verify_jwt_token(token)
         if not payload:
