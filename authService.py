@@ -21,14 +21,12 @@ _failed_attempts: Dict[str, Dict[str, Any]] = {}
 
 
 def hash_password(password: str) -> str:
-    """Băm mật khẩu bằng PBKDF2-HMAC-SHA256 với muối ngẫu nhiên 16 bytes."""
     salt = secrets.token_hex(16)
     key = hashlib.pbkdf2_hmac("sha256", password.encode("utf-8"), salt.encode("utf-8"), PBKDF2_ITERATIONS)
     return f"pbkdf2:sha256:{PBKDF2_ITERATIONS}${salt}${key.hex()}"
 
 
 def verify_password(plain_password: str, stored_hash: str) -> bool:
-    """Xác thực mật khẩu đối chiếu với PBKDF2 hoặc mã băm cũ sha256 (hỗ trợ chuyển đổi mượt mà)."""
     if not stored_hash:
         return False
     if str(stored_hash).startswith("pbkdf2:"):
@@ -47,13 +45,11 @@ def verify_password(plain_password: str, stored_hash: str) -> bool:
     if hmac.compare_digest(str(stored_hash), legacy_hash):
         return True
 
-    # Hỗ trợ mã băm SHA-256 thuần túy ban đầu
     raw_sha256 = hashlib.sha256(plain_password.encode("utf-8")).hexdigest()
     return hmac.compare_digest(str(stored_hash), raw_sha256)
 
 
 def create_jwt_token(user_data: Dict[str, Any], expire_seconds: int = 86400) -> str:
-    """Tạo chữ ký JWT (HS256) chuẩn cho phiên người dùng."""
     header = {"alg": "HS256", "typ": "JWT"}
     payload = {
         "userId": user_data.get("id"),
@@ -75,7 +71,6 @@ def create_jwt_token(user_data: Dict[str, Any], expire_seconds: int = 86400) -> 
 
 
 def verify_jwt_token(token: str) -> Optional[Dict[str, Any]]:
-    """Kiểm tra tính hợp lệ và thời hạn của JWT token."""
     try:
         parts = token.strip().split(".")
         if len(parts) != 3:
@@ -104,7 +99,6 @@ def verify_jwt_token(token: str) -> Optional[Dict[str, Any]]:
         return None
 
 
-# Aliases backward compatibility
 hashPassword = hash_password
 verifyPassword = verify_password
 createJwtToken = create_jwt_token
@@ -112,8 +106,6 @@ verifyJwtToken = verify_jwt_token
 
 
 class AuthService:
-    """Nghiệp vụ xác thực người dùng, đăng ký, đăng nhập và bảo vệ giới hạn lần thử."""
-
     SECRET_KEY = SECRET_KEY
 
     @classmethod
@@ -171,7 +163,6 @@ class AuthService:
     def dangNhap(cls, tenDangNhap: str, matKhau: str) -> Dict[str, Any]:
         ten_clean = str(tenDangNhap or "").strip().lower()
 
-        # Giới hạn đăng nhập sai để phòng ngừa brute-force
         with _auth_lock:
             now = time.time()
             attempt = _failed_attempts.get(ten_clean, {})
@@ -193,11 +184,9 @@ class AuthService:
         if not verify_password(matKhau, stored_hash):
             return cls._record_failed_attempt(ten_clean)
 
-        # Xóa số lần thử sai khi đăng nhập thành công
         with _auth_lock:
             _failed_attempts.pop(ten_clean, None)
 
-        # Tự động nâng cấp hash mật khẩu lên PBKDF2 chuẩn nếu đang dùng hash cũ
         needs_upgrade = False
         if not stored_hash.startswith("pbkdf2:"):
             needs_upgrade = True
@@ -269,7 +258,6 @@ def create_admin_account(
     email: str = "admin@dss-admission.edu.vn",
     soDienThoai: str = "0988888888"
 ) -> Dict[str, Any]:
-    """Tạo tài khoản quản trị viên mới qua dòng lệnh CLI hoặc biến môi trường."""
     ten_clean = str(tenDangNhap).strip().lower()
     existing = CsvDatabase.findWhere("nguoiDung", {"tenDangNhap": ten_clean})
     if existing:

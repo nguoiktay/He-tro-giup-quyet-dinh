@@ -913,26 +913,19 @@ def test_no_cross_program_tuition_fallback():
     assert hpUnknown["hocPhiToiDa"] is None
 
 
-# ==============================================================================
-# BỘ TEST KIỂM TRA CHUYÊN BIỆT CHO CÁC MỤC C1 - C8
-# ==============================================================================
-
 def test_c1_failed_login_lockout_and_admin_creation():
     from authService import AuthService, create_admin_account
     fake_user = "brute_force_victim"
     AuthService.dangKy(fake_user, "correct_pass_123", "Nạn nhân test", "victim@test.edu.vn")
 
-    # Đăng nhập sai liên tiếp
     for _ in range(5):
         res_fail = AuthService.dangNhap(fake_user, "wrong_pass")
         assert res_fail["thanhCong"] is False
 
-    # Lần thứ 6 phải bị khóa
     res_locked = AuthService.dangNhap(fake_user, "wrong_pass")
     assert res_locked["thanhCong"] is False
     assert "tạm khóa" in res_locked["thongBao"].lower()
 
-    # Kiểm tra tạo admin CLI
     admin_cli_res = create_admin_account("admin_new_cli", "cli_pass_999", email="admin_cli@dss.vn")
     assert admin_cli_res["thanhCong"] is True
     admin_login = AuthService.dangNhap("admin_new_cli", "cli_pass_999")
@@ -960,7 +953,6 @@ def test_c2_student_profile_fields_preservation_and_email_unique():
     assert save_res.status_code == 200
     saved_data = save_res.json()["hoSo"]
 
-    # Đảm bảo 6 trường không bị mất
     assert saved_data["diemTinHoc"] == 9.5
     assert saved_data["diemCongNghe"] == 9.0
     assert saved_data["diemDanhGiaTuDuy"] == 75.0
@@ -968,7 +960,6 @@ def test_c2_student_profile_fields_preservation_and_email_unique():
     assert saved_data["nganhMongMuon"] == "Khoa học máy tính"
     assert saved_data["nganSach"] == 25.0
 
-    # Kiểm tra trùng email bị từ chối
     reg_dup_email = client.post("/api/auth/register", json={
         "tenDangNhap": "new_distinct_user",
         "matKhau": "password123",
@@ -984,7 +975,6 @@ def test_c3_admin_validation_and_server_side_score_recalculation():
     admin_login = AuthService.dangNhap("admin", "admin123")
     admin_token = admin_login["token"]
 
-    # 1. Tên môn không thuộc danh sách chuẩn
     bad_comb = client.post("/api/combinations", headers={"Authorization": f"Bearer {admin_token}"}, json={
         "maToHop": "BAD01",
         "tenToHop": "Tổ hợp môn lạ",
@@ -995,7 +985,6 @@ def test_c3_admin_validation_and_server_side_score_recalculation():
     assert bad_comb.status_code == 400
     assert "không thuộc danh sách" in bad_comb.json()["detail"].lower()
 
-    # 2. Khóa ngoại không tồn tại
     bad_bc = client.post("/api/benchmarks", headers={"Authorization": f"Bearer {admin_token}"}, json={
         "truongDaiHocId": 999999,
         "nganhHocId": 1,
@@ -1007,7 +996,6 @@ def test_c3_admin_validation_and_server_side_score_recalculation():
     assert bad_bc.status_code == 400
     assert "không tìm thấy trường" in bad_bc.json()["detail"].lower()
 
-    # 3. Điểm chuẩn ngoài thang
     bad_scale_bc = client.post("/api/benchmarks", headers={"Authorization": f"Bearer {admin_token}"}, json={
         "truongDaiHocId": 1,
         "nganhHocId": 1,
@@ -1020,10 +1008,8 @@ def test_c3_admin_validation_and_server_side_score_recalculation():
     assert bad_scale_bc.status_code == 400
     assert "không nằm trong thang điểm" in bad_scale_bc.json()["detail"].lower()
 
-    # 4. Server tự tính lại diemXetTuyen khi lưu nguyện vọng
     user_login = AuthService.dangNhap("hocsinh", "hocsinh123")
     user_token = user_login["token"]
-    # Client cố ý gian lận gửi diemXetTuyen = 99.0
     tampered_wish = [{
         "programId": "PRG_BKA_0001",
         "diemXetTuyen": 99.0,
@@ -1035,7 +1021,6 @@ def test_c3_admin_validation_and_server_side_score_recalculation():
 
     hist = client.get("/api/wishlist-history", headers={"Authorization": f"Bearer {user_token}"}).json()
     saved_wish = [w for w in hist if w["programId"] == "PRG_BKA_0001"][-1]
-    # Server phải tự tính điểm thực tế (<= 30.0), không được là 99.0
     assert saved_wish["diemXetTuyen"] != 99.0
     assert saved_wish["diemXetTuyen"] <= 30.0
 
@@ -1044,7 +1029,6 @@ def test_c4_c5_benchmark_deduplication_and_sigma_floor_removal():
     from admissionService import AdmissionService
     from mlService import mlServiceInstance
 
-    # C4: Thu thập ứng viên chỉ lấy 1 bản ghi mới nhất cho mỗi chương trình
     candidates, _ = AdmissionService._collect_candidates(
         ho_so={"diemToan": 8.0, "diemLy": 8.0, "diemHoa": 8.0, "khuVucUuTien": "KV3", "doiTuongUuTien": "NONE"},
         ma_pt="PT01", pt_id=1, danh_sach_th=["A00"], kv_target=None, nganh_target="",
@@ -1055,17 +1039,14 @@ def test_c4_c5_benchmark_deduplication_and_sigma_floor_removal():
         thong_tin_pt={"id": 1, "maPhuongThuc": "PT01", "tenPhuongThuc": "Thi THPT"}
     )
     bka_bf = [c for c in candidates if c.get("programId") == "PRG_BKA_0001" and c.get("maToHop") == "A00"]
-    # Phải có duy nhất 1 bản ghi mới nhất
     assert len(bka_bf) == 1
 
-    # C5: Bỏ sàn sigma 1.80 khi uncertaintyRadius nhỏ
     res_small_uncertainty = mlServiceInstance.predictSuitability(
         studentScore=25.0,
         benchmarkScore=24.5,
         coDuBao=True,
         uncertaintyRadius=0.3
     )
-    # 0.3 / 1.28155 ≈ 0.234, nếu còn sàn 1.80 thì sigma sẽ là 1.80
     assert res_small_uncertainty["sigma"] < 1.80
     assert "chiSoThuanLoi" in res_small_uncertainty
 
@@ -1078,7 +1059,6 @@ def test_c6_train_cli_flags_support():
     assert "promote" in actions
     assert "sync_forecast" in actions
 
-    # Kiểm tra hỗ trợ các cờ BooleanOptionalAction
     args_true = parser.parse_args(["--save", "--promote", "--sync-forecast"])
     assert args_true.save is True
     assert args_true.promote is True
@@ -1092,7 +1072,6 @@ def test_c6_train_cli_flags_support():
 
 def test_c7_free_tuition_filter_and_metadata_apis():
     from admissionService import AdmissionService
-    # API metadata
     regs = client.get("/api/regions").json()
     assert isinstance(regs, list)
     assert "Miền Bắc" in regs
@@ -1101,7 +1080,6 @@ def test_c7_free_tuition_filter_and_metadata_apis():
     assert isinstance(types, list)
     assert "Công lập" in types
 
-    # Bộ lọc miễn/hỗ trợ học phí
     ho_so_free = {
         "diemToan": 9.0, "diemVan": 9.0, "diemSu": 9.0,
         "phuongThucMongMuon": ["PT01"],
@@ -1121,4 +1099,5 @@ def test_c8_recsys_cohort_uses_14_official_combinations():
     assert len(used_combs) == 14
     for c in ["A00", "A01", "A02", "B00", "B08", "C00", "C01", "C02", "C19", "D01", "D07", "D09", "D10", "D14"]:
         assert c in used_combs
+
 

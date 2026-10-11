@@ -9,8 +9,6 @@ from mlService import mlServiceInstance
 
 
 class AdmissionService:
-    """Nghiệp vụ tuyển sinh: tra cứu học phí, đề xuất nguyện vọng và quản lý danh sách nguyện vọng."""
-
     _hoc_phi_by_prog: Optional[Dict[str, Any]] = None
 
     @classmethod
@@ -30,7 +28,6 @@ class AdmissionService:
         uni: Optional[Dict[str, Any]] = None,
         major: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
-        """Tra cứu biểu phí chính thức theo chương trình đào tạo hoặc cơ sở giáo dục."""
         cls._ensure_hoc_phi_cache()
         matched = None
         prog_key = str(programId or "").strip()
@@ -401,7 +398,6 @@ class AdmissionService:
 
     @classmethod
     def _tier_sort_and_pick(cls, candidates: List[Dict]) -> tuple[Dict[str, List[Dict]], List[Dict]]:
-        """Phân bổ danh mục 20 nguyện vọng đa dạng hóa (tối đa 3 NV/trường) theo chiến lược 5 Thử sức, 10 Vừa sức, 5 An toàn."""
         seen_pkeys = set()
         unique_candidates = []
         for c in candidates:
@@ -551,7 +547,6 @@ class AdmissionService:
 
     @classmethod
     def deXuatNguyenVong(cls, hoSoHocSinh: Dict[str, Any]) -> Dict[str, Any]:
-        """Tư vấn chiến lược nguyện vọng 3 tầng (an toàn, vừa sức, thử sức) và kiểm tra ngân sách học phí."""
         err = cls._validate_input(hoSoHocSinh)
         if err:
             return cls._empty_recommendation_result(err)
@@ -639,7 +634,6 @@ class AdmissionService:
 
     @classmethod
     def luuDanhSachNguyenVong(cls, nguoi_dung_id: int, wishlist_items: List[Dict[str, Any]]) -> Dict[str, Any]:
-        """Lưu nguyện vọng học sinh vào hệ thống, tự động tính lại điểm xét tuyển trên máy chủ."""
         if not nguoi_dung_id:
             return {"thanhCong": False, "thongBao": "Yêu cầu đăng nhập để lưu danh sách nguyện vọng."}
         if not wishlist_items:

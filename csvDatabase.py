@@ -11,7 +11,6 @@ os.makedirs(CSV_DIR, exist_ok=True)
 _lock = threading.RLock()
 _cache: Dict[str, List[Dict[str, Any]]] = {}
 
-# Khai báo dtype chuỗi để pandas không tự ý suy diễn kiểu dữ liệu gây mất mát dữ liệu
 STRING_DTYPES: Dict[str, str] = {
     "soDienThoai": "str",
     "maTruong": "str",
@@ -105,8 +104,6 @@ def _write_df_atomic(df: pd.DataFrame, file_path: str, cols: Optional[List[str]]
 
 
 class CsvDatabase:
-    """Lớp repository lưu trữ dữ liệu dạng CSV hỗ trợ truy cập đa luồng, ghi atomic và bộ nhớ đệm an toàn."""
-
     CSV_DIR = CSV_DIR
 
     FILE_PATHS = {
@@ -218,7 +215,6 @@ class CsvDatabase:
 
             if not os.path.exists(cls.FILE_PATHS["nguoiDung"]):
                 default_users = []
-                # Chỉ tạo tài khoản mặc định ở môi trường phát triển / kiểm thử để chạy unit test
                 if config.ENV != "production":
                     default_users = [
                         {
@@ -486,7 +482,6 @@ class CsvDatabase:
             expected_cols = cls.COLUMNS.get(tableName, [])
             df = pd.read_csv(file_path, dtype=STRING_DTYPES)
 
-            # Bổ sung các cột còn thiếu trong schema nếu có
             for c in expected_cols:
                 if c not in df.columns:
                     df[c] = None
@@ -522,14 +517,12 @@ class CsvDatabase:
                 if rv is None and v is None:
                     continue
 
-                # So khớp chuỗi cho các trường danh tính, mã và tên (không ép float)
                 if k in STRING_MATCH_FIELDS:
                     if str(rv).strip().lower() != str(v).strip().lower():
                         match = False
                         break
                     continue
 
-                # So khớp số cho các trường định lượng
                 try:
                     if float(rv) == float(v):
                         continue
@@ -607,7 +600,6 @@ class CsvDatabase:
                 return True
             return False
 
-    # Snake-case aliases (PEP 8)
     read_all = readAll
     find_by_id = findById
     find_where = findWhere

@@ -24,9 +24,7 @@ def ndcg_at_k(r: List[float], k: int) -> float:
 
 
 def generate_extended_cohort() -> List[Dict[str, Any]]:
-    """Tạo tập kiểm thử độc lập bao phủ đúng 14 tổ hợp môn chính thức trong hệ thống."""
     cohort = []
-    # 14 tổ hợp môn chính thức đã đăng ký trong toHopMon.csv
     combinations = [
         "A00", "A01", "A02", "B00", "B08", "C00",
         "C01", "C02", "C19", "D01", "D07", "D09", "D10", "D14"

@@ -72,13 +72,10 @@ def require_auth(current_user: Optional[Dict[str, Any]] = Depends(get_current_us
     return current_user
 
 
-# Backward-compatible dependency names
 getCurrentUser = get_current_user
 requireAdmin = require_admin
 requireAuth = require_auth
 
-
-# --- Authentication Routes ---
 
 @app.post("/api/auth/register")
 def register(req: UserRegisterRequest):
@@ -112,8 +109,6 @@ def get_my_profile(current_user: Optional[Dict[str, Any]] = Depends(get_current_
 
 getProfile = get_my_profile
 
-
-# --- Catalogs and Metadata Routes ---
 
 @app.get("/api/combinations")
 def get_combinations():
@@ -302,7 +297,6 @@ exploreBenchmarks = explore_benchmarks
 
 @app.post("/api/benchmarks")
 def create_benchmark(req: DiemChuanCreateRequest, admin: Dict[str, Any] = Depends(require_admin)):
-    # Xác thực khóa ngoại
     if not CsvDatabase.findById("truongDaiHoc", req.truongDaiHocId):
         raise HTTPException(status_code=400, detail=f"Không tìm thấy trường đại học với ID {req.truongDaiHocId}.")
     if not CsvDatabase.findById("nganhHoc", req.nganhHocId):
@@ -312,7 +306,6 @@ def create_benchmark(req: DiemChuanCreateRequest, admin: Dict[str, Any] = Depend
     if not CsvDatabase.findById("phuongThucXetTuyen", req.phuongThucXetTuyenId):
         raise HTTPException(status_code=400, detail=f"Không tìm thấy phương thức tuyển sinh với ID {req.phuongThucXetTuyenId}.")
 
-    # Kiểm tra điểm chuẩn trong thang điểm
     scale = req.scoreScale or "SCALE_30"
     max_scale = 10.0 if scale in ("GPA_10", "SCALE_10") else (40.0 if scale in ("SCALE_40", "THANG_40") else (100.0 if scale == "SCALE_100" else (1200.0 if scale == "SCALE_1200" else 30.0)))
     if req.diemChuan < 0.0 or req.diemChuan > max_scale:
@@ -328,8 +321,6 @@ def create_benchmark(req: DiemChuanCreateRequest, admin: Dict[str, Any] = Depend
 
 createBenchmark = create_benchmark
 
-
-# --- Score Calculation and Student Services ---
 
 @app.post("/api/calculate-score")
 def calculate_score(req: ScoreCalculationRequest):
@@ -452,8 +443,6 @@ def get_wishlist_history(user: Dict[str, Any] = Depends(require_auth)):
 
 getWishlistHistory = get_wishlist_history
 
-
-# --- Static Files / Frontend Hosting ---
 
 FRONTEND_DIR = os.path.join(os.path.dirname(__file__), "frontend")
 if os.path.exists(FRONTEND_DIR):

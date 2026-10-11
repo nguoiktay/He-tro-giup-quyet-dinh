@@ -16,8 +16,6 @@ FORECAST_RECORDS_PATH = os.path.join(os.path.dirname(__file__), "data", "process
 
 
 class RFTrendResidualRegressor(BaseEstimator, RegressorMixin):
-    """Mô hình dự báo lai: kết hợp công thức hồi quy xu hướng (85%) và Random Forest học phần dư (15%)."""
-
     def __init__(self, n_estimators=250, max_depth=6, min_samples_leaf=20, blend_weight=0.15, random_state=42):
         self.n_estimators = n_estimators
         self.max_depth = max_depth
@@ -71,8 +69,6 @@ class RFTrendResidualRegressor(BaseEstimator, RegressorMixin):
 
 
 class MlService:
-    """Dịch vụ máy học: cung cấp thông tin dự báo điểm chuẩn và tính toán chỉ số thuận lợi trúng tuyển."""
-
     def __init__(self):
         self.model_thpt = None
         self.model_hoc_ba = None
@@ -164,7 +160,6 @@ class MlService:
         methodCode: str = "PT01",
         combinationCode: str = "A00"
     ) -> Optional[Dict[str, Any]]:
-        """Tra cứu thông tin điểm chuẩn dự báo và khoảng tin cậy 80% từ mô hình."""
         if not getattr(self, "_forecast_by_program", None) or not programId:
             return None
 
@@ -184,7 +179,6 @@ class MlService:
             if c["method_code"] != m_code:
                 continue
 
-            # Xử lý khác biệt chuỗi admissionCaseId (vd: tiền tố CASE_BKA... và mã rút gọn)
             if admissionCaseId and admissionCaseId != "CHUA_RO":
                 c_case = c.get("admission_case_id", "")
                 if c_case and c_case != "CHUA_RO":
@@ -254,10 +248,8 @@ class MlService:
         coDuBao: bool = False,
         forecastType: str = "HISTORICAL_ONLY"
     ) -> Dict[str, Any]:
-        """Tính toán chỉ số thuận lợi điểm và phân tầng nguyện vọng dựa trên độ lệch và độ bất định."""
         delta = round(studentScore - benchmarkScore, 2)
 
-        # Bỏ sàn sigma 1.80 theo yêu cầu refactor C.5
         if coDuBao and uncertaintyRadius is not None and float(uncertaintyRadius) > 0:
             sigma_base = float(uncertaintyRadius) / 1.28155
         else:

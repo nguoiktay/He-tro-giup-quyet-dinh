@@ -239,7 +239,6 @@ def sync_calibrator_and_forecast(
         json.dump(cal_data, f, indent=2, ensure_ascii=False)
     print(f"\n[OK] Đã đồng bộ bộ hiệu chỉnh Conformal: {calibrator_path} (bán kính ±{radius} điểm)")
 
-    # Không ghi đè CSV dự báo nếu predicted_cutoff chưa sinh lại từ model
     if regenerated_predictions:
         forecast_path = os.path.join(data_dir, "processed", "forecast_records_2026.csv")
         if os.path.exists(forecast_path):
