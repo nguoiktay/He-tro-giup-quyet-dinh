@@ -65,7 +65,7 @@ const UNI_AVATARS = {
   'QHI': { color: '#0284c7', text: 'VNU' },
   'KHA': { color: '#059669', text: 'NEU' },
   'NTH': { color: '#e11d48', text: 'FTU' },
-  'DTT': { color: '#0284c7', text: 'PTIT' },
+  'DTT': { color: '#005baa', text: 'TDTU' },
   'UEL': { color: '#0369a1', text: 'UEL' },
   'DEFAULT': { color: '#0ea5e9', text: 'UNI' }
 };
@@ -76,8 +76,52 @@ document.addEventListener('DOMContentLoaded', () => {
   initCombinationSelect();
   initFormActions();
   initAuthModal();
+  initCatalogsFromApi();
   loadInitialState();
 });
+
+async function initCatalogsFromApi() {
+  try {
+    const [combsRes, regionsRes, typesRes] = await Promise.all([
+      fetch(`${API_BASE}/api/combinations`).catch(() => null),
+      fetch(`${API_BASE}/api/regions`).catch(() => null),
+      fetch(`${API_BASE}/api/university-types`).catch(() => null)
+    ]);
+
+    if (combsRes && combsRes.ok) {
+      const combs = await combsRes.json();
+      const combSelect = document.getElementById('select-active-combination');
+      if (combSelect && Array.isArray(combs) && combs.length > 0) {
+        const curVal = combSelect.value;
+        combSelect.innerHTML = combs.map(c => 
+          `<option value="${escapeHtml(c.maToHop)}"${c.maToHop === curVal ? ' selected' : ''}>${escapeHtml(c.maToHop)} (${escapeHtml(c.tenToHop)})</option>`
+        ).join('');
+      }
+    }
+
+    if (regionsRes && regionsRes.ok) {
+      const regions = await regionsRes.json();
+      const regionSelect = document.getElementById('filter-region');
+      if (regionSelect && Array.isArray(regions)) {
+        const curVal = regionSelect.value;
+        regionSelect.innerHTML = '<option value="">Tất cả khu vực</option>' + 
+          regions.map(r => `<option value="${escapeHtml(r)}"${r === curVal ? ' selected' : ''}>${escapeHtml(r)}</option>`).join('');
+      }
+    }
+
+    if (typesRes && typesRes.ok) {
+      const types = await typesRes.json();
+      const typeSelect = document.getElementById('filter-uni-type');
+      if (typeSelect && Array.isArray(types)) {
+        const curVal = typeSelect.value;
+        typeSelect.innerHTML = '<option value="">Tất cả loại trường</option>' + 
+          types.map(t => `<option value="${escapeHtml(t)}"${t === curVal ? ' selected' : ''}>${escapeHtml(t)}</option>`).join('');
+      }
+    }
+  } catch (err) {
+    console.warn('Lỗi tải danh mục từ API:', err);
+  }
+}
 
 function initNavigation() {
   const navBtns = document.querySelectorAll('.nav-item-btn[data-target]');
