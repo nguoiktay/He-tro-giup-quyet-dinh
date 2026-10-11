@@ -111,7 +111,8 @@ button {
 .brand-icon-box {
   width: 44px;
   height: 44px;
-  background-color: var(--primary-light);
+  background-color: rgba(2, 132, 199, 0.08);
+  border: 1px solid rgba(2, 132, 199, 0.2);
   color: var(--primary);
   border-radius: var(--radius-md);
   display: flex;
@@ -192,9 +193,11 @@ button {
 }
 
 .btn-auth-nav {
-  background-color: var(--primary);
-  color: #ffffff;
-  border: none;
+  background-color: rgba(2, 132, 199, 0.08);
+  color: var(--primary);
+  border: 1px solid rgba(2, 132, 199, 0.25);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border-radius: var(--radius-full);
   padding: 0.55rem 1.35rem;
   font-size: 0.9rem;
@@ -202,13 +205,16 @@ button {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  transition: background-color 0.15s ease, transform 0.1s ease;
-  box-shadow: 0 2px 4px rgba(2, 132, 199, 0.2);
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.06);
 }
 
 .btn-auth-nav:hover {
-  background-color: var(--primary-hover);
+  background-color: rgba(2, 132, 199, 0.16);
+  border-color: rgba(2, 132, 199, 0.45);
+  color: var(--primary-hover);
   transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.12);
 }
 
 .main-content {
