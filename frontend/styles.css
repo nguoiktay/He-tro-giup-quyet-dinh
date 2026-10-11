@@ -26,7 +26,7 @@
   --purple-light: #f5f3ff;
   
   --bg-page: #f8fafc;
-  --bg-card: #ffffff;
+  --bg-card: rgba(255, 255, 255, 0.85);
   --bg-subtle: #f1f5f9;
   
   --text-main: #0f172a;
@@ -56,7 +56,13 @@
 
 body {
   font-family: 'Inter', 'Be Vietnam Pro', system-ui, -apple-system, sans-serif;
-  background-color: var(--bg-page);
+  background-color: #f8fafc;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(2, 132, 199, 0.08) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(16, 185, 129, 0.06) 0px, transparent 50%),
+    radial-gradient(at 50% 50%, rgba(2, 132, 199, 0.04) 0px, transparent 60%),
+    radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.05) 0px, transparent 50%);
+  background-attachment: fixed;
   color: var(--text-body);
   line-height: 1.5;
   min-height: 100vh;
@@ -75,12 +81,14 @@ button {
 }
 
 .site-header {
-  background-color: #ffffff;
-  border-bottom: 1px solid var(--border-light);
+  background-color: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.75);
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.03);
 }
 
 .header-container {
@@ -119,6 +127,7 @@ button {
 .brand-texts {
   display: flex;
   flex-direction: column;
+  max-width: 440px;
 }
 
 .brand-title {
@@ -130,9 +139,10 @@ button {
 }
 
 .brand-subtitle {
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   color: var(--text-muted);
   font-weight: 500;
+  line-height: 1.35;
 }
 
 .main-nav {
@@ -257,13 +267,18 @@ button {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background-color: var(--primary-light);
+  background-color: rgba(2, 132, 199, 0.08);
+  border: 1px solid rgba(2, 132, 199, 0.2);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   color: var(--primary);
   border-radius: var(--radius-full);
   padding: 0.4rem 1.1rem;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 600;
   margin-bottom: 1.5rem;
+  max-width: 100%;
+  line-height: 1.4;
 }
 
 .hero-title {
@@ -276,7 +291,7 @@ button {
 }
 
 .hero-title span {
-  color: var(--primary);
+  color: var(--text-main);
 }
 
 .hero-subtitle {
@@ -303,26 +318,28 @@ button {
   cursor: pointer;
   transition: all 0.2s ease;
   border: 1px solid transparent;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .method-choice-card.thpt {
-  background-color: var(--primary-light);
-  border-color: var(--primary-border);
+  background-color: rgba(240, 249, 255, 0.75);
+  border-color: rgba(186, 230, 253, 0.8);
 }
 
 .method-choice-card.thpt:hover {
-  background-color: #e0f2fe;
+  background-color: rgba(224, 242, 254, 0.9);
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
 }
 
 .method-choice-card.hocba {
-  background-color: var(--emerald-light);
-  border-color: var(--emerald-border);
+  background-color: rgba(236, 253, 245, 0.75);
+  border-color: rgba(167, 243, 208, 0.8);
 }
 
 .method-choice-card.hocba:hover {
-  background-color: #d1fae5;
+  background-color: rgba(209, 250, 229, 0.9);
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
 }
@@ -430,7 +447,9 @@ button {
 
 .feature-card {
   background-color: var(--bg-card);
-  border: 1px solid var(--border-light);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
   border-radius: var(--radius-lg);
   padding: 2rem 1.75rem;
   box-shadow: var(--shadow-sm);
@@ -522,7 +541,9 @@ button {
 
 .form-card {
   background-color: var(--bg-card);
-  border: 1px solid var(--border-light);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
   border-radius: var(--radius-lg);
   padding: 2rem;
   box-shadow: var(--shadow-sm);
@@ -1201,7 +1222,9 @@ button {
 
 .wishlist-table-card {
   background-color: var(--bg-card);
-  border: 1px solid var(--border-light);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
   overflow: hidden;
@@ -1344,7 +1367,10 @@ button {
 }
 
 .modal-window {
-  background-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
   border-radius: var(--radius-xl);
   padding: 2rem;
   max-width: 480px;
@@ -1371,8 +1397,10 @@ button {
 }
 
 .site-footer {
-  background-color: #ffffff;
-  border-top: 1px solid var(--border-light);
+  background-color: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(226, 232, 240, 0.75);
   padding: 2.5rem 1.5rem;
   text-align: center;
   color: var(--text-muted);
