@@ -254,14 +254,18 @@ def sync_calibrator_and_forecast(
         print("[INFO] Bỏ qua ghi đè forecast_records_2026.csv do chưa tái sinh predicted_cutoff từ model.")
 
 
-def main():
+def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Tái tạo quy trình huấn luyện Random Forest Tuyển sinh")
     parser.add_argument("--method", choices=["thpt", "hoc_ba", "all"], default="all", help="Phương thức cần huấn luyện")
     parser.add_argument("--data-dir", default=os.path.join(os.path.dirname(__file__), "data"), help="Thư mục chứa dữ liệu")
     parser.add_argument("--save", action=argparse.BooleanOptionalAction, default=True, help="Lưu mô hình đã huấn luyện (--no-save để tắt)")
     parser.add_argument("--promote", action=argparse.BooleanOptionalAction, default=True, help="Lưu vào model chính thức rf_thpt_best.joblib (--no-promote để tắt)")
     parser.add_argument("--sync-forecast", action=argparse.BooleanOptionalAction, default=True, help="Đồng bộ Conformal calibrator (--no-sync-forecast để tắt)")
+    return parser
 
+
+def main():
+    parser = build_parser()
     args = parser.parse_args()
 
     df_thpt, df_hb, df_up, df_um = load_datasets(args.data_dir)

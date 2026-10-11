@@ -690,8 +690,19 @@ class AdmissionService:
 
             pt_id = item.get("phuongThucXetTuyenId") or matched.get("phuongThucXetTuyenId")
             th_id = item.get("toHopMonId") or matched.get("toHopMonId")
-            pt_rec = all_methods.get(pt_id, {})
-            th_rec = all_combs.get(th_id, {})
+            def _find_by_id(dct: Dict[Any, Any], target_id: Any) -> Dict[str, Any]:
+                if target_id is None:
+                    return {}
+                if target_id in dct:
+                    return dct[target_id]
+                try:
+                    int_id = int(float(target_id))
+                    return dct.get(int_id, {})
+                except (ValueError, TypeError):
+                    return {}
+
+            pt_rec = _find_by_id(all_methods, pt_id)
+            th_rec = _find_by_id(all_combs, th_id)
             ma_pt = pt_rec.get("maPhuongThuc", "PT01")
             ma_th = th_rec.get("maToHop", "A00")
             rule_id = matched.get("calculationRuleId", "RULE_THPT_STD_30" if ma_pt == "PT01" else "RULE_HB_STD_30")
@@ -703,7 +714,23 @@ class AdmissionService:
                 if calc.get("hopLe"):
                     server_score = calc.get("diemXetTuyen")
 
-            final_diem = server_score if server_score is not None else item.get("diemXetTuyen")
+            max_scale = 10.0 if scale in ("GPA_10", "SCALE_10", "THANG_10") else (
+                40.0 if scale in ("SCALE_40", "THANG_40") else (
+                    100.0 if scale in ("SCALE_100", "THANG_100") else (
+                        1200.0 if scale in ("SCALE_1200", "THANG_1200") else 30.0
+                    )
+                )
+            )
+
+            if server_score is not None:
+                final_diem = server_score
+            else:
+                raw_diem = item.get("diemXetTuyen")
+                try:
+                    cand_diem = float(raw_diem) if raw_diem is not None else 0.0
+                    final_diem = min(max(cand_diem, 0.0), max_scale)
+                except (ValueError, TypeError):
+                    final_diem = 0.0
 
             validated.append({
                 "truongDaiHocId": matched.get("truongDaiHocId"),
