@@ -1,650 +1,772 @@
 import time
 from typing import Dict, List, Any, Optional
+import pandas as pd
+
+import config
 from csvDatabase import CsvDatabase
 from scoringService import ScoringService
 from mlService import mlServiceInstance
 
 
 class AdmissionService:
+    """Nghiệp vụ tuyển sinh: tra cứu học phí, đề xuất nguyện vọng và quản lý danh sách nguyện vọng."""
 
-    _hocPhiByProg = None
-    _hocPhiByUni = None
-    _hocPhiByName = None
+    _hoc_phi_by_prog: Optional[Dict[str, Any]] = None
 
     @classmethod
-    def _ensureHocPhiCache(cls):
-        if cls._hocPhiByProg is not None:
+    def _ensure_hoc_phi_cache(cls) -> None:
+        if cls._hoc_phi_by_prog is not None:
             return
-        records = CsvDatabase.readAll("hocPhi")
-        cls._hocPhiByProg = {}
-        cls._hocPhiByUni = {}
-        cls._hocPhiByName = {}
-        for r in records:
+        cls._hoc_phi_by_prog = {}
+        for r in CsvDatabase.readAll("hocPhi"):
             pid = str(r.get("programId", "")).strip()
             if pid:
-                cls._hocPhiByProg[pid] = r
-            uCode = str(r.get("maTruong", "")).strip().upper()
-            if uCode and uCode not in cls._hocPhiByUni:
-                cls._hocPhiByUni[uCode] = r
-            uName = str(r.get("tenTruong", "")).strip().lower()
-            if uName and uName not in cls._hocPhiByName:
-                cls._hocPhiByName[uName] = r
+                cls._hoc_phi_by_prog[pid] = r
 
     @classmethod
     def traCuuHocPhi(
         cls,
         programId: Optional[str] = None,
         uni: Optional[Dict[str, Any]] = None,
-        major: Optional[Dict[str, Any]] = None
+        major: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
-        cls._ensureHocPhiCache()
-        progKey = str(programId or "").strip()
+        """Tra cứu biểu phí chính thức theo chương trình đào tạo hoặc cơ sở giáo dục."""
+        cls._ensure_hoc_phi_cache()
         matched = None
-        if progKey:
-            matched = cls._hocPhiByProg.get(progKey)
-        elif uni:
-            uCode = str(uni.get("maTruong", "")).strip().upper()
-            if uCode:
-                uRecs = [r for r in cls._hocPhiByProg.values() if str(r.get("maTruong", "")).strip().upper() == uCode]
-                if uRecs and len({(r.get("hocPhiToiDa"), r.get("trangThaiHocPhi")) for r in uRecs}) == 1:
-                    matched = uRecs[0]
-                elif len(uRecs) == 1:
-                    matched = uRecs[0]
+        prog_key = str(programId or "").strip()
+        if prog_key:
+            matched = cls._hoc_phi_by_prog.get(prog_key)
+
+        if not matched and uni:
+            u_code = str(uni.get("maTruong", "")).strip().upper()
+            if u_code:
+                recs = [
+                    r for r in cls._hoc_phi_by_prog.values()
+                    if str(r.get("maTruong", "")).strip().upper() == u_code
+                ]
+                if recs and len({(r.get("hocPhiToiDa"), r.get("trangThaiHocPhi")) for r in recs}) == 1:
+                    matched = recs[0]
+                elif len(recs) == 1:
+                    matched = recs[0]
             if not matched:
-                uName = str(uni.get("tenTruong", "")).strip().lower()
-                if uName:
-                    uRecs = [r for r in cls._hocPhiByProg.values() if str(r.get("tenTruong", "")).strip().lower() == uName]
-                    if uRecs and len({(r.get("hocPhiToiDa"), r.get("trangThaiHocPhi")) for r in uRecs}) == 1:
-                        matched = uRecs[0]
+                u_name = str(uni.get("tenTruong", "")).strip().lower()
+                if u_name:
+                    recs = [
+                        r for r in cls._hoc_phi_by_prog.values()
+                        if str(r.get("tenTruong", "")).strip().lower() == u_name
+                    ]
+                    if recs and len({(r.get("hocPhiToiDa"), r.get("trangThaiHocPhi")) for r in recs}) == 1:
+                        matched = recs[0]
 
-        if matched:
-            tMin = matched.get("hocPhiToiThieu")
-            tMax = matched.get("hocPhiToiDa")
-            tMinFloat = float(tMin) if tMin is not None and str(tMin).strip() != "" and str(tMin).lower() != "none" else None
-            tMaxFloat = float(tMax) if tMax is not None and str(tMax).strip() != "" and str(tMax).lower() != "none" else None
-
-            tYear = tMaxFloat if tMaxFloat is not None else tMinFloat
-            tKy = None
-            if matched.get("donViTinh") == "VND_KY":
-                tKy = tYear
-            elif tYear == 0.0:
-                tKy = 0.0
-
-            tTrieu = round(tYear / 1000000.0, 1) if tYear is not None else None
-
-            phanLoai = "under_20m"
-            if tTrieu is not None:
-                if tTrieu <= 20.0:
-                    phanLoai = "under_20m"
-                elif tTrieu <= 35.0:
-                    phanLoai = "20m_35m"
-                else:
-                    phanLoai = "over_35m"
-            else:
-                phanLoai = "unverified"
-
+        if not matched:
+            web_url = uni.get("trangWeb", "") if uni else ""
             return {
-                "hocPhiKy": tKy,
-                "hocPhiNam": tYear,
-                "hocPhiTrieuNam": tTrieu,
-                "hocPhiToiThieu": tMinFloat,
-                "hocPhiToiDa": tMaxFloat,
-                "hocPhiText": matched.get("hocPhiDisplay") or "Chưa có thông tin học phí đã xác minh",
-                "trangThaiHocPhi": matched.get("trangThaiHocPhi", "UNVERIFIED"),
-                "loaiHocPhi": matched.get("loaiHocPhi", "CHUA_XAC_DINH"),
-                "nguonMinhChung": matched.get("nguonMinhChung", "Chưa có công bố chính thức"),
-                "urlNguon": matched.get("urlNguon", ""),
-                "ghiChu": matched.get("ghiChu", ""),
-                "phuongPhapSoSanh": "NGUONG_TRAN_AN_TOAN",
-                "phanLoai": phanLoai
+                "hocPhiKy": None,
+                "hocPhiNam": None,
+                "hocPhiTrieuNam": None,
+                "hocPhiToiThieu": None,
+                "hocPhiToiDa": None,
+                "hocPhiText": "Chưa có thông tin học phí đã xác minh",
+                "trangThaiHocPhi": "UNVERIFIED",
+                "loaiHocPhi": "CHUA_XAC_DINH",
+                "nguonMinhChung": "Chưa có công bố chính thức hoặc đang cập nhật",
+                "urlNguon": web_url,
+                "ghiChu": "Cần tra cứu trực tiếp tại đề án tuyển sinh hoặc thông báo của trường",
+                "phuongPhapSoSanh": "CHUA_XAC_DINH",
+                "phanLoai": "unverified",
             }
 
-        webUrl = uni.get("trangWeb", "") if uni else ""
+        def _safe_float(val: Any) -> Optional[float]:
+            if val is None or str(val).strip() in ("", "none", "None"):
+                return None
+            try:
+                return float(val)
+            except (ValueError, TypeError):
+                return None
+
+        t_min = _safe_float(matched.get("hocPhiToiThieu"))
+        t_max = _safe_float(matched.get("hocPhiToiDa"))
+        t_year = t_max if t_max is not None else t_min
+        t_ky = t_year if matched.get("donViTinh") == "VND_KY" else (0.0 if t_year == 0.0 else None)
+        t_trieu = round(t_year / 1_000_000.0, 1) if t_year is not None else None
+
+        if t_trieu is None:
+            phan_loai = "unverified"
+        elif t_year == 0.0 or t_trieu == 0.0 or "miễn" in str(matched.get("loaiHocPhi", "")).lower() or "bao cấp" in str(matched.get("hocPhiDisplay", "")).lower() or "hỗ trợ" in str(matched.get("hocPhiDisplay", "")).lower():
+            phan_loai = "free_subsidized"
+        elif t_trieu <= 20.0:
+            phan_loai = "under_20m"
+        elif t_trieu <= 35.0:
+            phan_loai = "20m_35m"
+        else:
+            phan_loai = "over_35m"
+
         return {
-            "hocPhiKy": None,
-            "hocPhiNam": None,
-            "hocPhiTrieuNam": None,
-            "hocPhiToiThieu": None,
-            "hocPhiToiDa": None,
-            "hocPhiText": "Chưa có thông tin học phí đã xác minh",
-            "trangThaiHocPhi": "UNVERIFIED",
-            "loaiHocPhi": "CHUA_XAC_DINH",
-            "nguonMinhChung": "Chưa có công bố chính thức hoặc đang cập nhật",
-            "urlNguon": webUrl,
-            "ghiChu": "Cần tra cứu trực tiếp tại đề án tuyển sinh hoặc thông báo của trường",
-            "phuongPhapSoSanh": "CHUA_XAC_DINH",
-            "phanLoai": "unverified"
+            "hocPhiKy": t_ky,
+            "hocPhiNam": t_year,
+            "hocPhiTrieuNam": t_trieu,
+            "hocPhiToiThieu": t_min,
+            "hocPhiToiDa": t_max,
+            "hocPhiText": matched.get("hocPhiDisplay") or "Chưa có thông tin học phí đã xác minh",
+            "trangThaiHocPhi": matched.get("trangThaiHocPhi") or "UNVERIFIED",
+            "loaiHocPhi": matched.get("loaiHocPhi") or "CHUA_XAC_DINH",
+            "nguonMinhChung": matched.get("nguonMinhChung") or "",
+            "urlNguon": matched.get("urlNguon") or "",
+            "ghiChu": matched.get("ghiChu") or "",
+            "phuongPhapSoSanh": "NGUONG_TRAN_AN_TOAN" if matched.get("trangThaiHocPhi") == "PROJECTED" else "TRUC_TIEP",
+            "phanLoai": phan_loai,
         }
 
     @classmethod
-    def uocLuongHocPhi(cls, uni: Dict[str, Any], major: Dict[str, Any]) -> Dict[str, Any]:
-        return cls.traCuuHocPhi(programId=None, uni=uni, major=major)
+    def _validate_input(cls, ho_so: Dict[str, Any]) -> Optional[str]:
+        raw_pt = ho_so.get("phuongThucMongMuon") or ho_so.get("phuongThuc")
+        if raw_pt:
+            items = [m.strip().upper() for m in (raw_pt if isinstance(raw_pt, list) else str(raw_pt).split(",")) if m.strip()]
+            if len(items) > 1:
+                return "Chỉ hỗ trợ chọn đúng 1 phương thức xét tuyển (PT01 hoặc PT02) cho mỗi lần tư vấn."
+            if items and items[0] not in ("PT01", "PT02"):
+                return f"Phương thức '{items[0]}' không được hỗ trợ. Hiện chỉ hỗ trợ PT01 (THPT) và PT02 (Học bạ)."
+        return None
 
     @classmethod
-    def deXuatNguyenVong(cls, hoSoHocSinh: Dict[str, Any]) -> Dict[str, Any]:
-        scoreFields = ["diemToan", "diemVan", "diemAnh", "diemLy", "diemHoa", "diemSinh", "diemSu", "diemDia", "diemGDCD", "diemHocBa"]
-        for sf in scoreFields:
-            val = hoSoHocSinh.get(sf)
-            if val is not None:
-                try:
-                    fVal = float(val)
-                    if fVal < 0.0 or fVal > 10.0:
-                        return {"thanhCong": False, "thongBao": f"Điểm môn học {sf} ({fVal}) không hợp lệ! Điểm phải từ 0.0 đến 10.0.", "danhSachTongHop": []}
-                except (ValueError, TypeError):
-                    return {"thanhCong": False, "thongBao": f"Điểm môn học {sf} không hợp lệ!", "danhSachTongHop": []}
+    def _parse_phuong_thuc(cls, raw: Any) -> tuple[str, Optional[str]]:
+        if raw is None:
+            return "PT01", None
+        items = [m.strip().upper() for m in (raw if isinstance(raw, list) else str(raw).split(",")) if m.strip()]
+        if not items:
+            return "PT01", None
+        if len(items) > 1:
+            return items[0], "Chỉ hỗ trợ chọn đúng 1 phương thức xét tuyển (PT01 hoặc PT02) cho mỗi lần tư vấn."
+        if items[0] not in ("PT01", "PT02"):
+            return items[0], f"Phương thức '{items[0]}' không được hỗ trợ. Hiện chỉ hỗ trợ PT01 (THPT) và PT02 (Học bạ)."
+        return items[0], None
 
-        rawPt = hoSoHocSinh.get("phuongThucMongMuon", "PT01")
-        if isinstance(rawPt, list):
-            danhSachPt = [p.strip().upper() for p in rawPt if p.strip()]
+    @classmethod
+    def _parse_to_hop(cls, raw: Any) -> List[str]:
+        if isinstance(raw, list):
+            items = [t.strip().upper() for t in raw if t and str(t).strip()]
         else:
-            danhSachPt = [p.strip().upper() for p in str(rawPt).split(",") if p.strip()]
+            items = [t.strip().upper() for t in str(raw or "").split(",") if t.strip()]
+        return items if items else ["A00"]
 
-        if not danhSachPt:
-            return {"thanhCong": False, "thongBao": "Vui lòng chọn 1 phương thức xét tuyển.", "danhSachTongHop": []}
-        if len(danhSachPt) > 1:
-            return {"thanhCong": False, "thongBao": "Hệ thống chỉ hỗ trợ tư vấn 1 phương thức xét tuyển tại một thời điểm (PT01 hoặc PT02).", "danhSachTongHop": []}
+    @classmethod
+    def _collect_candidates(
+        cls,
+        ho_so: Dict[str, Any],
+        ma_pt: str,
+        pt_id: Optional[int],
+        danh_sach_th: List[str],
+        kv_target: Optional[str],
+        nganh_target: str,
+        all_combs: Dict,
+        all_unis: Dict,
+        all_majors: Dict,
+        all_benchmarks: List,
+        thong_tin_pt: Dict,
+    ) -> tuple[List[Dict], List[Dict]]:
+        hop_le = []
+        can_kiem_tra = []
 
-        maPt = danhSachPt[0]
-        if maPt not in ["PT01", "PT02"]:
-            return {"thanhCong": False, "thongBao": f"Phương thức '{maPt}' chưa được hỗ trợ. Hiện chỉ hỗ trợ PT01 (THPT) và PT02 (Học bạ).", "danhSachTongHop": []}
-
-        rawTh = hoSoHocSinh.get("danhSachToHopDaChon", ["A00"])
-        if isinstance(rawTh, list):
-            danhSachTh = [t.strip().upper() for t in rawTh if t.strip()]
-        else:
-            danhSachTh = [t.strip().upper() for t in str(rawTh).split(",") if t.strip()]
-
-        if not danhSachTh:
-            danhSachTh = ["A00"]
-
-        allMethods = {m["maPhuongThuc"]: m for m in CsvDatabase.readAll("phuongThucXetTuyen")}
-        allCombs = {c["maToHop"]: c for c in CsvDatabase.readAll("toHopMon")}
-        allUnis = {u["id"]: u for u in CsvDatabase.readAll("truongDaiHoc")}
-        allMajors = {m["id"]: m for m in CsvDatabase.readAll("nganhHoc")}
-        allBenchmarks = CsvDatabase.readAll("diemChuan")
-
-        thongTinPt = allMethods.get(maPt, {"maPhuongThuc": maPt, "tenPhuongThuc": f"Phương thức {maPt}"})
-        ptId = thongTinPt.get("id")
-
-        khuVucMongMuon = hoSoHocSinh.get("khuVucMongMuon")
-        kvTarget = khuVucMongMuon.strip() if khuVucMongMuon and khuVucMongMuon.strip() not in ["Tất cả", "Toàn quốc", ""] else None
-        nganhTarget = str(hoSoHocSinh.get("nganhMongMuon") or "").strip().lower()
-
-        ungVienHopLe = []
-        ungVienCanKiemTra = []
-
-        for maTh in danhSachTh:
-            thId = allCombs.get(maTh, {}).get("id")
-
-            matchedBenchmarks = [
-                b for b in allBenchmarks
-                if ptId is not None and int(b.get("phuongThucXetTuyenId", -1)) == int(ptId)
-                and (thId is None or int(b.get("toHopMonId", -1)) == int(thId))
+        for ma_th in danh_sach_th:
+            th_id = all_combs.get(ma_th, {}).get("id")
+            matched = [
+                b for b in all_benchmarks
+                if pt_id is not None and int(b.get("phuongThucXetTuyenId", -1)) == int(pt_id)
+                and (th_id is None or int(b.get("toHopMonId", -1)) == int(th_id))
             ]
 
-            if not matchedBenchmarks:
-                continue
-
-            for dc in matchedBenchmarks:
-                uId = dc.get("truongDaiHocId")
-                mId = dc.get("nganhHocId")
-                uni = allUnis.get(uId, {"maTruong": "UNI", "tenTruong": "Đại học", "khuVuc": "Toàn quốc"})
-                major = allMajors.get(mId, {"maNganh": "UNKNOWN", "tenNganh": "Chưa phân loại", "nhomNganh": "Liên ngành"})
-
-                uniKhuVuc = uni.get("khuVuc", "")
-                if kvTarget and uniKhuVuc != kvTarget:
-                    continue
-
-                ruleId = dc.get("calculationRuleId", "RULE_THPT_STD_30" if maPt == "PT01" else "RULE_HB_STD_30")
-                scale = dc.get("scoreScale", "SCALE_30")
-
-                ketQuaDiem = ScoringService.tinhDiemXetTuyenChuongTrinh(hoSoHocSinh, maPt, maTh, ruleId, scale)
-                if not ketQuaDiem.get("hopLe"):
-                    continue
-
-                diemXetTuyen = ketQuaDiem["diemXetTuyen"]
-                diemChuanLichSu = float(dc.get("diemChuan", 24.0))
-                progId = str(dc.get("programId", "")).strip()
-                caseId = str(dc.get("admissionCaseId", "")).strip()
-
-                fcInfo = mlServiceInstance.getForecastInfo(
-                    universityCode=uni.get("maTruong", ""),
-                    programId=progId,
-                    admissionCaseId=caseId,
-                    methodCode=maPt,
-                    combinationCode=maTh
+            latest_benchmarks = {}
+            for b in sorted(matched, key=lambda x: int(x.get("nam", 0)), reverse=True):
+                p_key = str(b.get("programId") or "").strip() or str(b.get("nganhHocId", ""))
+                dedup_key = (
+                    b.get("truongDaiHocId"),
+                    p_key,
+                    b.get("toHopMonId"),
+                    b.get("phuongThucXetTuyenId"),
                 )
+                if dedup_key not in latest_benchmarks:
+                    latest_benchmarks[dedup_key] = b
 
-                coDuBao = (fcInfo is not None and fcInfo.get("predictedCutoff") is not None)
-                diemDuBao = fcInfo.get("predictedCutoff") if coDuBao else None
-                diemSoSanh = diemDuBao if coDuBao else diemChuanLichSu
-                loaiDuBao = fcInfo.get("forecastType") if fcInfo else "HISTORICAL_ONLY"
-                nhanDuBao = (fcInfo.get("displayLabel") or fcInfo.get("forecastTypeLabel")) if fcInfo else f"Điểm chuẩn năm {dc.get('nam', 2025)}"
-
-                namBc = dc.get("nam", 2025)
-                uRadius = fcInfo.get("uncertaintyRadius", 0.5) if fcInfo else 0.5
-
-                duBao = mlServiceInstance.predictSuitability(
-                    studentScore=diemXetTuyen,
-                    benchmarkScore=diemSoSanh,
-                    methodCode=maPt,
-                    combinationCode=maTh,
-                    scoreScale=scale,
-                    namThamChieu=namBc,
-                    coDuBao=coDuBao,
-                    uncertaintyRadius=uRadius,
-                    forecastType=loaiDuBao,
-                    uniTier=2
+            for dc in latest_benchmarks.values():
+                item = cls._score_one_benchmark(
+                    ho_so, dc, ma_pt, ma_th, th_id, pt_id, thong_tin_pt,
+                    kv_target, nganh_target, all_unis, all_majors, all_combs,
                 )
-
-                diemThuanLoi = duBao["doPhuHop"]
-                
-                scoreKv = 80.0
-                if kvTarget:
-                    scoreKv = 100.0 if uniKhuVuc == kvTarget else 35.0
-
-                scoreNganh = 80.0
-                if nganhTarget:
-                    tenNganhStr = str(major.get("tenNganh", "")).lower()
-                    tenPrgStr = str(dc.get("tenChuongTrinh", "")).lower()
-                    if nganhTarget in tenNganhStr or nganhTarget in tenPrgStr:
-                        scoreNganh = 100.0
-                    elif nganhTarget in str(major.get("nhomNganh", "")).lower():
-                        scoreNganh = 70.0
-                    else:
-                        scoreNganh = 40.0
-
-                hpInfo = cls.traCuuHocPhi(programId=progId, uni=uni, major=major)
-                hocPhiUocTinhTrieu = hpInfo["hocPhiTrieuNam"]
-                trangThaiHp = hpInfo["trangThaiHocPhi"]
-                
-                mucHocPhiFilter = hoSoHocSinh.get("mucHocPhi") or hoSoHocSinh.get("filterTuition") or hoSoHocSinh.get("hocPhiFilter")
-                nganSachVal = hoSoHocSinh.get("nganSach")
-
-                scoreHocPhi = 80.0
-                nhomHocPhi = "KHONG_LOC"
-                laCanKiemTra = False
-
-                coLocNganSach = bool(mucHocPhiFilter or (nganSachVal is not None and str(nganSachVal).strip() != "" and float(nganSachVal) > 0))
-
-                if coLocNganSach:
-                    if trangThaiHp == "UNVERIFIED" or hocPhiUocTinhTrieu is None:
-                        nhomHocPhi = "CAN_KIEM_TRA"
-                        laCanKiemTra = True
-                    else:
-                        isMatch = True
-                        if mucHocPhiFilter == "under_20m":
-                            isMatch = (hocPhiUocTinhTrieu <= 20.0)
-                        elif mucHocPhiFilter == "20m_35m":
-                            isMatch = (20.0 <= hocPhiUocTinhTrieu <= 35.0)
-                        elif mucHocPhiFilter == "over_35m":
-                            isMatch = (hocPhiUocTinhTrieu >= 35.0)
-
-                        if nganSachVal is not None and str(nganSachVal).strip() != "" and float(nganSachVal) > 0:
-                            isMatch = isMatch and (hocPhiUocTinhTrieu <= float(nganSachVal))
-
-                        if not isMatch:
-                            continue
-                        if trangThaiHp == "VERIFIED":
-                            nhomHocPhi = "XAC_MINH_PHU_HOP"
-                        else:
-                            nhomHocPhi = "DU_KIEN_PHU_HOP"
-                        scoreHocPhi = 100.0
-
-                scoreSoThich = round(0.40 * scoreKv + 0.40 * scoreNganh + 0.20 * scoreHocPhi, 1)
-                doPhuHopTongThe = round(0.70 * diemThuanLoi + 0.30 * scoreSoThich, 1)
-
-                canhBaoTaiChinh = "Học phí dự kiến theo đề án tham khảo của trường, có thể thay đổi theo thông báo thu thực tế" if trangThaiHp == "PROJECTED" else None
-
-                mucItem = {
-                    "truongDaiHocId": uId,
-                    "maTruong": uni["maTruong"],
-                    "tenTruong": uni["tenTruong"],
-                    "diaChi": uni.get("diaChi", ""),
-                    "khuVuc": uniKhuVuc,
-                    "loaiTruong": uni.get("loaiTruong", "Đại học"),
-                    "hocPhiKy": hpInfo["hocPhiKy"],
-                    "hocPhiNam": hpInfo["hocPhiNam"],
-                    "hocPhiToiThieu": hpInfo["hocPhiToiThieu"],
-                    "hocPhiToiDa": hpInfo["hocPhiToiDa"],
-                    "hocPhiUocTinh": hpInfo["hocPhiText"],
-                    "hocPhiPhanLoai": hpInfo["phanLoai"],
-                    "trangThaiHocPhi": trangThaiHp,
-                    "loaiHocPhi": hpInfo["loaiHocPhi"],
-                    "nguonMinhChung": hpInfo["nguonMinhChung"],
-                    "urlNguon": hpInfo.get("urlNguon", ""),
-                    "ghiChuHocPhi": hpInfo.get("ghiChu", ""),
-                    "nhomHocPhi": nhomHocPhi,
-                    "phuongPhapSoSanh": hpInfo.get("phuongPhapSoSanh", "NGUONG_TRAN_AN_TOAN"),
-                    "canhBaoTaiChinh": canhBaoTaiChinh,
-                    "chiTieu": int(dc.get("chiTieu") or 100),
-                    "nganhHocId": mId,
-                    "maNganh": major["maNganh"],
-                    "tenNganh": major["tenNganh"],
-                    "tenChuongTrinh": dc.get("tenChuongTrinh") or major["tenNganh"],
-                    "programId": progId,
-                    "admissionCaseId": caseId,
-                    "nhomNganh": major.get("nhomNganh", ""),
-                    "toHopMonId": thId,
-                    "maToHop": maTh,
-                    "tenToHop": allCombs.get(maTh, {}).get("tenToHop", maTh),
-                    "phuongThucXetTuyenId": ptId,
-                    "maPhuongThuc": maPt,
-                    "tenPhuongThuc": thongTinPt.get("tenPhuongThuc", ""),
-                    "scoreScale": scale,
-                    "calculationRuleId": ruleId,
-                    "diemXetTuyen": diemXetTuyen,
-                    "diemChuanThamChieu": diemChuanLichSu,
-                    "namThamChieu": namBc,
-                    "coDuBao": coDuBao,
-                    "diemChuanDuBao": diemDuBao,
-                    "loaiDuBao": loaiDuBao,
-                    "nhanDuBao": nhanDuBao,
-                    "namMucTieu": fcInfo.get("targetYear") if coDuBao else None,
-                    "phienBanMoHinh": fcInfo.get("modelVersion") if coDuBao else None,
-                    "khoangTinCay80": f"{fcInfo['lowerBound80']} – {fcInfo['upperBound80']}" if coDuBao and fcInfo.get("lowerBound80") else None,
-                    "lyDoChuaCoDuBao": None if coDuBao else ("Phương thức học bạ sử dụng điểm chuẩn chính thức công bố" if maPt == "PT02" else "Chương trình chưa có đủ dữ liệu chuỗi thời gian để xây dựng mô hình dự báo"),
-                    "cachTinhDiem": ketQuaDiem.get("cachTinh", ""),
-                    "delta": duBao["delta"],
-                    "xacSuatDo": duBao.get("xacSuatDo", diemThuanLoi),
-                    "doPhuHop": doPhuHopTongThe,
-                    "mucThuanLoiDiem": diemThuanLoi,
-                    "doPhuHopSoThich": scoreSoThich,
-                    "nhomNguyenVong": duBao.get("nhomNguyenVong", "Vừa sức"),
-                    "mucDoPhuHop": duBao["mucDoPhuHop"],
-                    "mucDoRuiRo": duBao["mucDoRuiRo"]
-                }
-                if laCanKiemTra:
-                    ungVienCanKiemTra.append(mucItem)
+                if item is None:
+                    continue
+                if item.get("_can_kiem_tra"):
+                    item.pop("_can_kiem_tra")
+                    can_kiem_tra.append(item)
                 else:
-                    ungVienHopLe.append(mucItem)
+                    hop_le.append(item)
 
-        seenProgKeys = set()
-        uniqueCandidates = []
-        for item in ungVienHopLe:
-            pKey = (item["truongDaiHocId"], item["programId"] or item["nganhHocId"], item["admissionCaseId"], item["maToHop"])
-            if pKey not in seenProgKeys:
-                seenProgKeys.add(pKey)
-                uniqueCandidates.append(item)
+        return hop_le, can_kiem_tra
 
-        
-        rawThuSuc = [c for c in uniqueCandidates if c.get("nhomNguyenVong") == "Thử sức"]
-        rawVuaSuc = [c for c in uniqueCandidates if c.get("nhomNguyenVong") == "Vừa sức"]
-        rawAnToan = [c for c in uniqueCandidates if c.get("nhomNguyenVong") == "An toàn"]
+    @classmethod
+    def _score_one_benchmark(
+        cls,
+        ho_so: Dict[str, Any],
+        dc: Dict,
+        ma_pt: str,
+        ma_th: str,
+        th_id: Optional[int],
+        pt_id: Optional[int],
+        thong_tin_pt: Dict,
+        kv_target: Optional[str],
+        nganh_target: str,
+        all_unis: Dict,
+        all_majors: Dict,
+        all_combs: Dict,
+    ) -> Optional[Dict[str, Any]]:
+        u_id = dc.get("truongDaiHocId")
+        m_id = dc.get("nganhHocId")
+        uni = all_unis.get(u_id, {"maTruong": "UNI", "tenTruong": "Đại học", "khuVuc": "Toàn quốc"})
+        major = all_majors.get(m_id, {"maNganh": "UNKNOWN", "tenNganh": "Chưa phân loại", "nhomNganh": "Liên ngành"})
 
+        uni_khu_vuc = uni.get("khuVuc", "")
+        if kv_target and uni_khu_vuc != kv_target:
+            return None
 
-        def _sort_thu_suc(x):
+        rule_id = dc.get("calculationRuleId", "RULE_THPT_STD_30" if ma_pt == "PT01" else "RULE_HB_STD_30")
+        scale = dc.get("scoreScale", "SCALE_30")
+        ket_qua = ScoringService.tinhDiemXetTuyenChuongTrinh(ho_so, ma_pt, ma_th, rule_id, scale)
+        if not ket_qua.get("hopLe"):
+            return None
+
+        diem_xet_tuyen = ket_qua["diemXetTuyen"]
+        diem_chuan_ls = float(dc.get("diemChuan", 24.0))
+        prog_id = str(dc.get("programId", "")).strip()
+        case_id = str(dc.get("admissionCaseId", "")).strip()
+        nam_bc = dc.get("nam", config.REFERENCE_YEAR)
+
+        fc_info = mlServiceInstance.getForecastInfo(
+            universityCode=uni.get("maTruong", ""),
+            programId=prog_id,
+            admissionCaseId=case_id,
+            methodCode=ma_pt,
+            combinationCode=ma_th,
+        )
+        co_du_bao = fc_info is not None and fc_info.get("predictedCutoff") is not None
+        diem_du_bao = fc_info.get("predictedCutoff") if co_du_bao else None
+        diem_so_sanh = diem_du_bao if co_du_bao else diem_chuan_ls
+        loai_du_bao = fc_info.get("forecastType") if fc_info else "HISTORICAL_ONLY"
+        nhan_du_bao = (fc_info.get("displayLabel") or fc_info.get("forecastTypeLabel")) if fc_info else f"Điểm chuẩn năm {nam_bc}"
+        u_radius = fc_info.get("uncertaintyRadius", 0.5) if fc_info else 0.5
+
+        du_bao = mlServiceInstance.predictSuitability(
+            studentScore=diem_xet_tuyen,
+            benchmarkScore=diem_so_sanh,
+            methodCode=ma_pt,
+            combinationCode=ma_th,
+            scoreScale=scale,
+            namThamChieu=nam_bc,
+            coDuBao=co_du_bao,
+            uncertaintyRadius=u_radius,
+            forecastType=loai_du_bao,
+            uniTier=2,
+        )
+        diem_thuan_loi = du_bao["doPhuHop"]
+
+        score_kv = 100.0 if (kv_target and uni_khu_vuc == kv_target) else (35.0 if kv_target else 80.0)
+        score_nganh = cls._score_nganh(nganh_target, major, dc)
+
+        hp_info = cls.traCuuHocPhi(programId=prog_id, uni=uni, major=major)
+        hp_trieu = hp_info["hocPhiTrieuNam"]
+        trang_thai_hp = hp_info["trangThaiHocPhi"]
+
+        muc_filter = ho_so.get("filterTuition") or ho_so.get("mucHocPhi")
+        ngan_sach = ho_so.get("nganSach") or ho_so.get("mucHocPhi")
+
+        can_kt = False
+        nhom_hp = None
+        canh_bao = None
+
+        if hp_trieu is None:
+            nhom_hp = "CHUA_XAC_MINH"
+            can_kt = True
+        elif not cls._check_tuition_filter(muc_filter, ngan_sach, hp_trieu):
+            return None
+        else:
+            if trang_thai_hp == "VERIFIED":
+                nhom_hp = "XAC_MINH_PHU_HOP"
+            elif trang_thai_hp == "PROJECTED":
+                nhom_hp = "DU_KIEN_PHU_HOP"
+                canh_bao = "Mức phí dự kiến dựa trên đề án, có thể thay đổi theo tín chỉ thực tế."
+            else:
+                nhom_hp = "CHUA_XAC_MINH"
+                can_kt = True
+
+        score_so_thich = round(0.5 * score_kv + 0.5 * score_nganh, 1)
+        do_phu_hop = round(
+            config.WEIGHT_DIEM_THUAN_LOI * diem_thuan_loi + config.WEIGHT_SO_THICH * score_so_thich, 1
+        )
+
+        chi_tieu_val = dc.get("chiTieu")
+        chi_tieu_clean = int(chi_tieu_val) if chi_tieu_val not in (None, "", "None", "null") and not pd.isna(chi_tieu_val) else None
+
+        return {
+            "_can_kiem_tra": can_kt,
+            "truongDaiHocId": u_id,
+            "maTruong": uni["maTruong"],
+            "tenTruong": uni["tenTruong"],
+            "khuVuc": uni_khu_vuc,
+            "khuVucTruong": uni_khu_vuc,
+            "loaiTruong": uni.get("loaiTruong", "Công lập"),
+            "hocPhiUocTinh": hp_info["hocPhiText"],
+            "hocPhiNam": hp_info["hocPhiNam"],
+            "hocPhiKy": hp_info["hocPhiKy"],
+            "trangThaiHocPhi": trang_thai_hp,
+            "trangThaiHocPhiPhuHop": nhom_hp,
+            "loaiHocPhi": hp_info["loaiHocPhi"],
+            "nguonMinhChung": hp_info["nguonMinhChung"],
+            "urlNguon": hp_info.get("urlNguon", ""),
+            "ghiChuHocPhi": hp_info.get("ghiChu", ""),
+            "nhomHocPhi": nhom_hp,
+            "phuongPhapSoSanh": hp_info.get("phuongPhapSoSanh", "NGUONG_TRAN_AN_TOAN"),
+            "canhBaoTaiChinh": canh_bao,
+            "chiTieu": chi_tieu_clean,
+            "nganhHocId": m_id,
+            "maNganh": major["maNganh"],
+            "tenNganh": major["tenNganh"],
+            "tenChuongTrinh": dc.get("tenChuongTrinh") or major["tenNganh"],
+            "programId": prog_id,
+            "admissionCaseId": case_id,
+            "nhomNganh": major.get("nhomNganh", ""),
+            "toHopMonId": th_id,
+            "maToHop": ma_th,
+            "tenToHop": all_combs.get(ma_th, {}).get("tenToHop", ma_th),
+            "phuongThucXetTuyenId": pt_id,
+            "maPhuongThuc": ma_pt,
+            "tenPhuongThuc": thong_tin_pt.get("tenPhuongThuc", ""),
+            "scoreScale": scale,
+            "calculationRuleId": rule_id,
+            "diemXetTuyen": diem_xet_tuyen,
+            "diemChuanThamChieu": diem_chuan_ls,
+            "namThamChieu": nam_bc,
+            "coDuBao": co_du_bao,
+            "diemChuanDuBao": diem_du_bao,
+            "loaiDuBao": loai_du_bao,
+            "nhanDuBao": nhan_du_bao,
+            "namMucTieu": fc_info.get("targetYear") if co_du_bao else config.TARGET_YEAR,
+            "phienBanMoHinh": fc_info.get("modelVersion") if co_du_bao else None,
+            "khoangTinCay80": f"{fc_info['lowerBound80']} – {fc_info['upperBound80']}" if co_du_bao and fc_info.get("lowerBound80") else None,
+            "lyDoChuaCoDuBao": None if co_du_bao else (
+                "Phương thức học bạ sử dụng điểm chuẩn chính thức công bố" if ma_pt == "PT02"
+                else "Chương trình chưa có đủ dữ liệu chuỗi thời gian để xây dựng mô hình dự báo"
+            ),
+            "cachTinhDiem": ket_qua.get("cachTinh", ""),
+            "delta": du_bao["delta"],
+            "xacSuatDo": du_bao.get("xacSuatDo", diem_thuan_loi),
+            "chiSoThuanLoi": diem_thuan_loi,
+            "doPhuHop": do_phu_hop,
+            "mucThuanLoiDiem": diem_thuan_loi,
+            "doPhuHopSoThich": score_so_thich,
+            "nhomNguyenVong": du_bao.get("nhomNguyenVong", "Vừa sức"),
+            "mucDoPhuHop": du_bao["mucDoPhuHop"],
+            "mucDoRuiRo": du_bao["mucDoRuiRo"],
+        }
+
+    @staticmethod
+    def _score_nganh(nganh_target: str, major: Dict, dc: Dict) -> float:
+        if not nganh_target:
+            return 80.0
+        ten_nganh = str(major.get("tenNganh", "")).lower()
+        ten_prg = str(dc.get("tenChuongTrinh", "")).lower()
+        if nganh_target in ten_nganh or nganh_target in ten_prg:
+            return 100.0
+        if nganh_target in str(major.get("nhomNganh", "")).lower():
+            return 70.0
+        return 40.0
+
+    @staticmethod
+    def _check_tuition_filter(muc_filter: Any, ngan_sach: Any, hp_trieu: float) -> bool:
+        ok = True
+        if muc_filter in ("mien_phi", "free_subsidized"):
+            ok = (hp_trieu == 0.0)
+        elif muc_filter == "under_20m":
+            ok = (hp_trieu <= 20.0)
+        elif muc_filter == "20m_35m":
+            ok = (20.0 <= hp_trieu <= 35.0)
+        elif muc_filter == "over_35m":
+            ok = (hp_trieu >= 35.0)
+
+        if ok and ngan_sach is not None and str(ngan_sach).strip() != "":
+            try:
+                ns_val = float(ngan_sach)
+                if ns_val > 0:
+                    ok = (hp_trieu <= ns_val)
+            except (ValueError, TypeError):
+                pass
+        return ok
+
+    @classmethod
+    def _tier_sort_and_pick(cls, candidates: List[Dict]) -> tuple[Dict[str, List[Dict]], List[Dict]]:
+        """Phân bổ danh mục 20 nguyện vọng đa dạng hóa (tối đa 3 NV/trường) theo chiến lược 5 Thử sức, 10 Vừa sức, 5 An toàn."""
+        seen_pkeys = set()
+        unique_candidates = []
+        for c in candidates:
+            pk = (c["truongDaiHocId"], c["programId"] or c["nganhHocId"], c["maToHop"])
+            if pk not in seen_pkeys:
+                seen_pkeys.add(pk)
+                unique_candidates.append(c)
+
+        raw_thu_suc = [c for c in unique_candidates if c.get("nhomNguyenVong") == "Thử sức"]
+        raw_vua_suc = [c for c in unique_candidates if c.get("nhomNguyenVong") == "Vừa sức"]
+        raw_an_toan = [c for c in unique_candidates if c.get("nhomNguyenVong") == "An toàn"]
+
+        def _sort_thu_suc(x: Dict) -> float:
             d = x.get("delta", -1.0)
             return (abs(d) * -10.0) + (x.get("doPhuHopSoThich", 80.0) * 0.3)
 
-        rawThuSuc.sort(key=_sort_thu_suc, reverse=True)
+        raw_thu_suc.sort(key=_sort_thu_suc, reverse=True)
+        raw_vua_suc.sort(key=lambda x: x.get("doPhuHop", 50.0), reverse=True)
 
-        rawVuaSuc.sort(key=lambda x: x.get("doPhuHop", 50.0), reverse=True)
-
-        def _sort_an_toan(x):
+        def _sort_an_toan(x: Dict) -> float:
             d = x.get("delta", 2.0)
-            scaleVal = x.get("scoreScale", "SCALE_30")
-            dOpt = 0.8 if scaleVal == "GPA_10" else (2.8 if scaleVal == "SCALE_40" else 2.2)
-            distPenalty = abs(d - dOpt) * 8.0
-            return (x.get("doPhuHopSoThich", 80.0) * 0.4) + (x.get("diemChuanThamChieu", 20.0) * 1.5) - distPenalty
+            scale_val = x.get("scoreScale", "SCALE_30")
+            d_opt = 0.8 if scale_val in ("GPA_10", "THANG_10") else (2.8 if scale_val in ("SCALE_40", "THANG_40") else 2.2)
+            dist_penalty = abs(d - d_opt) * 8.0
+            return (x.get("doPhuHopSoThich", 80.0) * 0.4) + (x.get("diemChuanThamChieu", 20.0) * 1.5) - dist_penalty
 
-        rawAnToan.sort(key=_sort_an_toan, reverse=True)
+        raw_an_toan.sort(key=_sort_an_toan, reverse=True)
 
-        uniCount = {}
-        thuSucPicks = []
-        vuaSucPicks = []
-        anToanPicks = []
+        uni_count: Dict[int, int] = {}
+        thu_suc_picks: List[Dict] = []
+        vua_suc_picks: List[Dict] = []
+        an_toan_picks: List[Dict] = []
 
-        for c in rawThuSuc:
-            uId = c["truongDaiHocId"]
-            if uniCount.get(uId, 0) < 3:
-                thuSucPicks.append(c)
-                uniCount[uId] = uniCount.get(uId, 0) + 1
-                if len(thuSucPicks) >= 5:
+        for c in raw_thu_suc:
+            u_id = c["truongDaiHocId"]
+            if uni_count.get(u_id, 0) < 3:
+                thu_suc_picks.append(c)
+                uni_count[u_id] = uni_count.get(u_id, 0) + 1
+                if len(thu_suc_picks) >= 5:
                     break
 
-        for c in rawVuaSuc:
-            uId = c["truongDaiHocId"]
-            if uniCount.get(uId, 0) < 3:
-                vuaSucPicks.append(c)
-                uniCount[uId] = uniCount.get(uId, 0) + 1
-                if len(vuaSucPicks) >= 10:
+        for c in raw_vua_suc:
+            u_id = c["truongDaiHocId"]
+            if uni_count.get(u_id, 0) < 3:
+                vua_suc_picks.append(c)
+                uni_count[u_id] = uni_count.get(u_id, 0) + 1
+                if len(vua_suc_picks) >= 10:
                     break
 
-        for c in rawAnToan:
-            uId = c["truongDaiHocId"]
-            if uniCount.get(uId, 0) < 3:
-                anToanPicks.append(c)
-                uniCount[uId] = uniCount.get(uId, 0) + 1
-                if len(anToanPicks) >= 5:
+        for c in raw_an_toan:
+            u_id = c["truongDaiHocId"]
+            if uni_count.get(u_id, 0) < 3:
+                an_toan_picks.append(c)
+                uni_count[u_id] = uni_count.get(u_id, 0) + 1
+                if len(an_toan_picks) >= 5:
                     break
 
-        selectedWishes = []
-        selectedWishes.extend(thuSucPicks)
-        selectedWishes.extend(vuaSucPicks)
-        selectedWishes.extend(anToanPicks)
+        selected = []
+        selected.extend(thu_suc_picks)
+        selected.extend(vua_suc_picks)
+        selected.extend(an_toan_picks)
 
-        if len(selectedWishes) < 20:
-            pickedKeys = {(w["truongDaiHocId"], w["programId"], w["maToHop"]) for w in selectedWishes}
-            for pool in [rawVuaSuc, rawAnToan, rawThuSuc, uniqueCandidates]:
+        if len(selected) < 20:
+            picked_keys = {(w["truongDaiHocId"], w["programId"], w["maToHop"]) for w in selected}
+            for pool in [raw_vua_suc, raw_an_toan, raw_thu_suc, unique_candidates]:
                 for c in pool:
-                    uId = c["truongDaiHocId"]
-                    ck = (uId, c["programId"], c["maToHop"])
-                    if ck not in pickedKeys and uniCount.get(uId, 0) < 3:
-                        selectedWishes.append(c)
-                        pickedKeys.add(ck)
-                        uniCount[uId] = uniCount.get(uId, 0) + 1
-                        if len(selectedWishes) >= 20:
+                    u_id = c["truongDaiHocId"]
+                    ck = (u_id, c["programId"], c["maToHop"])
+                    if ck not in picked_keys and uni_count.get(u_id, 0) < 3:
+                        selected.append(c)
+                        picked_keys.add(ck)
+                        uni_count[u_id] = uni_count.get(u_id, 0) + 1
+                        if len(selected) >= 20:
                             break
-                if len(selectedWishes) >= 20:
+                if len(selected) >= 20:
                     break
 
-        if len(selectedWishes) < 20:
-            pickedKeys = {(w["truongDaiHocId"], w["programId"], w["maToHop"]) for w in selectedWishes}
-            for c in uniqueCandidates:
+        if len(selected) < 20:
+            picked_keys = {(w["truongDaiHocId"], w["programId"], w["maToHop"]) for w in selected}
+            for c in unique_candidates:
                 ck = (c["truongDaiHocId"], c["programId"], c["maToHop"])
-                if ck not in pickedKeys:
-                    selectedWishes.append(c)
-                    pickedKeys.add(ck)
-                    if len(selectedWishes) >= 20:
+                if ck not in picked_keys:
+                    selected.append(c)
+                    picked_keys.add(ck)
+                    if len(selected) >= 20:
                         break
 
-        tierOrder = {"Thử sức": 1, "Vừa sức": 2, "An toàn": 3, "Rủi ro cao": 4}
-        selectedWishes.sort(key=lambda x: (tierOrder.get(x.get("nhomNguyenVong", "Vừa sức"), 2), -x.get("doPhuHop", 50.0)))
+        tier_order = {"Thử sức": 1, "Vừa sức": 2, "An toàn": 3, "Rủi ro cao": 4}
+        selected.sort(key=lambda x: (tier_order.get(x.get("nhomNguyenVong", "Vừa sức"), 2), -x.get("doPhuHop", 50.0)))
 
-        danhSachTongHop = []
-        for idx, item in enumerate(selectedWishes[:20], 1):
-            itemCopy = dict(item)
-            itemCopy["thuTuUuTien"] = f"NV{idx}"
-            itemCopy["stt"] = idx
-            danhSachTongHop.append(itemCopy)
+        tong_hop = []
+        for idx, item in enumerate(selected[:20], 1):
+            cloned = dict(item)
+            cloned["thuTuUuTien"] = f"NV{idx}"
+            cloned["thuTuDeXuat"] = f"NV{idx}"
+            cloned["stt"] = idx
+            tong_hop.append(cloned)
 
-        anToanCount = sum(1 for w in danhSachTongHop if w.get("nhomNguyenVong") == "An toàn")
-        highRiskCount = sum(1 for w in danhSachTongHop if w.get("nhomNguyenVong") in ["Thử sức", "Rủi ro cao"])
-        firstScore = float(danhSachTongHop[0].get("diemXetTuyen", 0.0)) if danhSachTongHop else 0.0
-        
-        firstItem = danhSachTongHop[0] if danhSachTongHop else {}
-        firstScale = firstItem.get("scoreScale", "SCALE_30")
-        minSafeScore = 5.0 if firstScale in ["GPA_10", "THANG_10"] else (21.0 if firstScale in ["SCALE_40", "THANG_40"] else 16.0)
-        isLowScoreAlert = (anToanCount == 0 or highRiskCount >= 10 or (firstScore > 0 and firstScore < minSafeScore))
+        tier_map = {
+            "danhSachAnToan": [w for w in tong_hop if w.get("nhomNguyenVong") == "An toàn"],
+            "danhSachVuaSuc": [w for w in tong_hop if w.get("nhomNguyenVong") == "Vừa sức"],
+            "danhSachThuSuc": [w for w in tong_hop if w.get("nhomNguyenVong") == "Thử sức"],
+        }
+        return tier_map, tong_hop
 
-        tsCount = sum(1 for w in danhSachTongHop if w.get("nhomNguyenVong") == "Thử sức")
-        vsCount = sum(1 for w in danhSachTongHop if w.get("nhomNguyenVong") == "Vừa sức")
-        atCount = sum(1 for w in danhSachTongHop if w.get("nhomNguyenVong") == "An toàn")
+    @classmethod
+    def _build_thong_bao(
+        cls,
+        tong_hop: List[Dict],
+        can_kiem_tra: List[Dict],
+        has_verified_under_budget: bool,
+    ) -> str:
+        if not tong_hop:
+            return (
+                "Chưa tìm thấy nguyện vọng phù hợp với điều kiện điểm hoặc tài chính. "
+                "Vui lòng thử mở rộng vùng khu vực, nới lỏng ngân sách học phí hoặc chọn thêm tổ hợp môn."
+            )
 
-        if not danhSachTongHop:
-            thongBao = "Không tìm thấy chương trình phù hợp với thông tin đã nhập."
-        elif isLowScoreAlert:
-            avgScore = round(firstScore, 2)
-            thongBao = f"Điểm xét tuyển ({avgScore}) ở mức thấp so với ngưỡng điểm chuẩn đại học (danh sách không có hoặc rất ít nguyện vọng An toàn). Các nguyện vọng gợi ý tập trung ở mức Thử sức và Vừa sức sát ngưỡng. Thí sinh nên cân nhắc thêm các hệ cao đẳng, xét tuyển học bạ hoặc ngành đào tạo nghề."
-        elif tsCount >= 4 and vsCount >= 8 and atCount >= 4:
-            thongBao = f"Đã tìm thấy danh mục 20 nguyện vọng tối ưu phân tầng chuẩn 25% Thử sức ({tsCount}) - 50% Vừa sức ({vsCount}) - 25% An toàn ({atCount})."
+        an_toan_count = sum(1 for w in tong_hop if w.get("nhomNguyenVong") == "An toàn")
+        high_risk_count = sum(1 for w in tong_hop if w.get("nhomNguyenVong") in ("Thử sức", "Rủi ro cao"))
+        first_score = float(tong_hop[0].get("diemXetTuyen", 0.0))
+        first_scale = tong_hop[0].get("scoreScale", "SCALE_30")
+        min_safe = 5.0 if first_scale in ("GPA_10", "THANG_10") else (21.0 if first_scale in ("SCALE_40", "THANG_40") else 16.0)
+
+        is_low_score = (an_toan_count == 0 or high_risk_count >= 10 or (first_score > 0 and first_score < min_safe))
+
+        ts_count = sum(1 for w in tong_hop if w.get("nhomNguyenVong") == "Thử sức")
+        vs_count = sum(1 for w in tong_hop if w.get("nhomNguyenVong") == "Vừa sức")
+        at_count = sum(1 for w in tong_hop if w.get("nhomNguyenVong") == "An toàn")
+
+        if is_low_score:
+            avg_score = round(first_score, 2)
+            thong_bao = (
+                f"Điểm xét tuyển ({avg_score}) ở mức thấp so với ngưỡng điểm chuẩn đại học "
+                "(danh sách không có hoặc rất ít nguyện vọng An toàn). Các nguyện vọng gợi ý tập trung ở mức Thử sức và Vừa sức sát ngưỡng. "
+                "Thí sinh nên cân nhắc thêm các hệ cao đẳng, xét tuyển học bạ hoặc ngành đào tạo nghề."
+            )
+        elif ts_count >= 4 and vs_count >= 8 and at_count >= 4:
+            thong_bao = f"Đã tìm thấy danh mục 20 nguyện vọng tối ưu phân tầng chuẩn 25% Thử sức ({ts_count}) - 50% Vừa sức ({vs_count}) - 25% An toàn ({at_count})."
         else:
-            thongBao = f"Đã đề xuất {len(danhSachTongHop)} nguyện vọng phù hợp với phổ điểm ({tsCount} Thử sức, {vsCount} Vừa sức, {atCount} An toàn)."
+            thong_bao = f"Đã đề xuất {len(tong_hop)} nguyện vọng phù hợp với phổ điểm ({ts_count} Thử sức, {vs_count} Vừa sức, {at_count} An toàn)."
 
-        ketQuaMoiPhuongThuc = {
-            maPt: {
-                "thongTinPhuongThuc": thongTinPt,
-                "soLuong": len(danhSachTongHop),
-                "thongBao": thongBao,
-                "danhSach": danhSachTongHop
+        if can_kiem_tra and not has_verified_under_budget:
+            thong_bao += f" Lưu ý: Có {len(can_kiem_tra)} chương trình chưa công bố biểu phí chính thức cần kiểm tra thêm."
+
+        return thong_bao
+
+    @classmethod
+    def deXuatNguyenVong(cls, hoSoHocSinh: Dict[str, Any]) -> Dict[str, Any]:
+        """Tư vấn chiến lược nguyện vọng 3 tầng (an toàn, vừa sức, thử sức) và kiểm tra ngân sách học phí."""
+        err = cls._validate_input(hoSoHocSinh)
+        if err:
+            return cls._empty_recommendation_result(err)
+
+        ma_pt, err = cls._parse_phuong_thuc(hoSoHocSinh.get("phuongThucMongMuon", "PT01"))
+        if err:
+            return cls._empty_recommendation_result(err)
+
+        danh_sach_th = cls._parse_to_hop(hoSoHocSinh.get("danhSachToHopDaChon", ["A00"]))
+
+        all_methods = {m["maPhuongThuc"]: m for m in CsvDatabase.readAll("phuongThucXetTuyen")}
+        all_combs = {c["maToHop"]: c for c in CsvDatabase.readAll("toHopMon")}
+        all_unis = {u["id"]: u for u in CsvDatabase.readAll("truongDaiHoc")}
+        all_majors = {m["id"]: m for m in CsvDatabase.readAll("nganhHoc")}
+        all_benchmarks = CsvDatabase.readAll("diemChuan")
+
+        thong_tin_pt = all_methods.get(ma_pt, {"id": 1, "maPhuongThuc": "PT01", "tenPhuongThuc": "Thi THPT"})
+        pt_id = thong_tin_pt.get("id")
+
+        raw_kv = hoSoHocSinh.get("khuVucMongMuon")
+        kv_target = str(raw_kv).strip() if (raw_kv and str(raw_kv).strip() != "Toàn quốc") else None
+        nganh_target = str(hoSoHocSinh.get("nganhMongMuon") or "").strip().lower()
+
+        hop_le, can_kiem_tra = cls._collect_candidates(
+            hoSoHocSinh, ma_pt, pt_id, danh_sach_th,
+            kv_target, nganh_target,
+            all_combs, all_unis, all_majors, all_benchmarks, thong_tin_pt,
+        )
+
+        tiers, tong_hop = cls._tier_sort_and_pick(hop_le)
+
+        has_verified = any(
+            x.get("trangThaiHocPhi") == "VERIFIED" and x.get("hocPhiNam") is not None
+            for x in tong_hop
+        )
+        thong_bao = cls._build_thong_bao(tong_hop, can_kiem_tra, has_verified)
+
+        seen_ck_keys = set()
+        unique_ck = []
+        for item in can_kiem_tra:
+            ck_key = (item["truongDaiHocId"], item["programId"] or item["nganhHocId"], item["admissionCaseId"], item["maToHop"])
+            if ck_key not in seen_ck_keys:
+                seen_ck_keys.add(ck_key)
+                unique_ck.append(item)
+
+        ket_qua_tung_pt = {
+            ma_pt: {
+                "thongTinPhuongThuc": thong_tin_pt,
+                "soLuong": len(tong_hop),
+                "thongBao": thong_bao,
+                "danhSach": tong_hop,
             }
         }
-
-        seenCkKeys = set()
-        uniqueCanKiemTra = []
-        for item in ungVienCanKiemTra:
-            pKey = (item["truongDaiHocId"], item["programId"] or item["nganhHocId"], item["admissionCaseId"], item["maToHop"])
-            if pKey not in seenCkKeys:
-                seenCkKeys.add(pKey)
-                uniqueCanKiemTra.append(item)
 
         return {
             "thanhCong": True,
-            "thongBao": thongBao,
-            "danhSachTongHop": danhSachTongHop,
-            "danhSachCanKiemTraHocPhi": uniqueCanKiemTra[:15],
-            "ketQuaTungPhuongThuc": ketQuaMoiPhuongThuc,
-            "phuongThucDangChon": maPt,
-            "soLuongToHopDaChon": len(danhSachTh)
+            "thongBao": thong_bao,
+            "phuongThuc": ma_pt,
+            "tenPhuongThuc": thong_tin_pt.get("tenPhuongThuc"),
+            "toHopMon": danh_sach_th,
+            "danhSachTongHop": tong_hop,
+            **tiers,
+            "danhSachCanKiemTraHocPhi": unique_ck[:15],
+            "tongSoGoiY": len(tong_hop),
+            "ketQuaTungPhuongThuc": ket_qua_tung_pt,
+            "phuongThucDangChon": ma_pt,
+            "soLuongToHopDaChon": len(danh_sach_th),
+        }
+
+    @staticmethod
+    def _empty_recommendation_result(thong_bao: str) -> Dict[str, Any]:
+        return {
+            "thanhCong": False,
+            "thongBao": thong_bao,
+            "danhSachTongHop": [],
+            "danhSachAnToan": [],
+            "danhSachVuaSuc": [],
+            "danhSachThuSuc": [],
+            "danhSachCanKiemTraHocPhi": [],
+            "tongSoGoiY": 0,
+            "ketQuaTungPhuongThuc": {},
+            "phuongThucDangChon": "PT01",
+            "soLuongToHopDaChon": 0,
         }
 
     @classmethod
-    def luuDanhSachNguyenVong(cls, nguoiDungId: int, danhSachNguyenVong: List[Dict[str, Any]]) -> Dict[str, Any]:
-        if not nguoiDungId:
+    def luuDanhSachNguyenVong(cls, nguoi_dung_id: int, wishlist_items: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """Lưu nguyện vọng học sinh vào hệ thống, tự động tính lại điểm xét tuyển trên máy chủ."""
+        if not nguoi_dung_id:
             return {"thanhCong": False, "thongBao": "Yêu cầu đăng nhập để lưu danh sách nguyện vọng."}
-
-        if not danhSachNguyenVong:
+        if not wishlist_items:
             return {"thanhCong": False, "thongBao": "Danh sách nguyện vọng lưu không được để trống."}
 
-        userProfiles = CsvDatabase.findWhere("hoSoHocSinh", {"nguoiDungId": nguoiDungId})
-        nowStr = time.strftime("%Y-%m-%d %H:%M:%S")
+        now_str = time.strftime("%Y-%m-%d %H:%M:%S")
 
-        if userProfiles:
-            hoSoId = userProfiles[0]["id"]
+        profiles = CsvDatabase.findWhere("hoSoHocSinh", {"nguoiDungId": nguoi_dung_id})
+        if profiles:
+            ho_so = profiles[0]
+            ho_so_id = ho_so["id"]
         else:
-            newProfile = CsvDatabase.insert("hoSoHocSinh", {
-                "nguoiDungId": nguoiDungId,
-                "ngayCapNhat": nowStr
-            })
-            hoSoId = newProfile["id"]
+            ho_so = CsvDatabase.insert("hoSoHocSinh", {"nguoiDungId": nguoi_dung_id, "ngayCapNhat": now_str})
+            ho_so_id = ho_so["id"]
 
-        allBenchmarks = CsvDatabase.readAll("diemChuan")
-        allMajors = {m["id"]: m for m in CsvDatabase.readAll("nganhHoc")}
-        progLookup = {}
-        for b in allBenchmarks:
-            pid = str(b.get("programId", "")).strip()
-            if pid and pid not in progLookup:
-                progLookup[pid] = b
+        prog_lookup = {
+            str(r.get("programId", "")).strip(): r
+            for r in CsvDatabase.readAll("diemChuan")
+            if str(r.get("programId", "")).strip()
+        }
+        all_majors = {m["id"]: m for m in CsvDatabase.readAll("nganhHoc")}
+        all_methods = {m["id"]: m for m in CsvDatabase.readAll("phuongThucXetTuyen")}
+        all_combs = {c["id"]: c for c in CsvDatabase.readAll("toHopMon")}
 
-        validatedWishes = []
-        seenProgIds = set()
+        validated = []
+        seen_keys = set()
 
-        for idx, item in enumerate(danhSachNguyenVong, 1):
-            progId = str(item.get("programId") or "").strip()
-            if not progId:
-                return {
-                    "thanhCong": False,
-                    "thongBao": f"Nguyện vọng thứ {idx} thiếu mã chương trình đào tạo (programId)."
-                }
+        for item in wishlist_items:
+            prog_id = str(item.get("programId") or "").strip()
+            if not prog_id:
+                return {"thanhCong": False, "thongBao": "Mỗi nguyện vọng lưu bắt buộc phải có mã chương trình chuẩn (programId)."}
+            if prog_id not in prog_lookup:
+                return {"thanhCong": False, "thongBao": f"Mã chương trình '{prog_id}' không tồn tại trong danh mục tuyển sinh chính thức của hệ thống."}
 
-            if progId not in progLookup:
-                return {
-                    "thanhCong": False,
-                    "thongBao": f"Mã chương trình '{progId}' không tồn tại trong danh mục tuyển sinh chính thức của hệ thống."
-                }
-
-            toHopKey = str(item.get("toHopMonId") or item.get("maToHop") or "")
-            ptKey = str(item.get("phuongThucXetTuyenId") or item.get("maPhuongThuc") or "")
-            wishKey = (progId, toHopKey, ptKey)
-
-            if wishKey in seenProgIds:
+            wish_key = (
+                prog_id,
+                str(item.get("toHopMonId") or item.get("maToHop") or ""),
+                str(item.get("phuongThucXetTuyenId") or item.get("maPhuongThuc") or "")
+            )
+            if wish_key in seen_keys:
                 continue
-            seenProgIds.add(wishKey)
+            seen_keys.add(wish_key)
 
-            matchedProg = progLookup[progId]
-            mId = matchedProg.get("nganhHocId")
-            majorInfo = allMajors.get(mId, {})
-            tenChuan = matchedProg.get("tenChuongTrinh") or majorInfo.get("tenNganh") or "Chương trình đào tạo"
-            uId = matchedProg.get("truongDaiHocId")
-            caseId = matchedProg.get("admissionCaseId", "")
+            matched = prog_lookup[prog_id]
+            m_id = matched.get("nganhHocId")
+            major_info = all_majors.get(m_id, {})
+            ten_chuan = matched.get("tenChuongTrinh") or major_info.get("tenNganh") or "Chương trình đào tạo"
 
-            validatedWishes.append({
-                "truongDaiHocId": uId,
-                "nganhHocId": mId,
-                "toHopMonId": item.get("toHopMonId") or matchedProg.get("toHopMonId"),
-                "phuongThucXetTuyenId": item.get("phuongThucXetTuyenId") or matchedProg.get("phuongThucXetTuyenId"),
-                "diemXetTuyen": item.get("diemXetTuyen"),
-                "diemChuanThamChieu": item.get("diemChuanThamChieu") or matchedProg.get("diemChuan"),
+            pt_id = item.get("phuongThucXetTuyenId") or matched.get("phuongThucXetTuyenId")
+            th_id = item.get("toHopMonId") or matched.get("toHopMonId")
+            pt_rec = all_methods.get(pt_id, {})
+            th_rec = all_combs.get(th_id, {})
+            ma_pt = pt_rec.get("maPhuongThuc", "PT01")
+            ma_th = th_rec.get("maToHop", "A00")
+            rule_id = matched.get("calculationRuleId", "RULE_THPT_STD_30" if ma_pt == "PT01" else "RULE_HB_STD_30")
+            scale = matched.get("scoreScale", "SCALE_30")
+
+            server_score = None
+            if ho_so and ma_pt and ma_th:
+                calc = ScoringService.tinhDiemXetTuyenChuongTrinh(ho_so, ma_pt, ma_th, rule_id, scale)
+                if calc.get("hopLe"):
+                    server_score = calc.get("diemXetTuyen")
+
+            final_diem = server_score if server_score is not None else item.get("diemXetTuyen")
+
+            validated.append({
+                "truongDaiHocId": matched.get("truongDaiHocId"),
+                "nganhHocId": m_id,
+                "toHopMonId": th_id,
+                "phuongThucXetTuyenId": pt_id,
+                "diemXetTuyen": final_diem,
+                "diemChuanThamChieu": item.get("diemChuanThamChieu") or matched.get("diemChuan"),
                 "doPhuHop": item.get("doPhuHop"),
                 "mucDoPhuHop": item.get("mucDoPhuHop"),
                 "mucDoRuiRo": item.get("mucDoRuiRo"),
-                "programId": progId,
-                "tenChuongTrinh": tenChuan,
-                "admissionCaseId": caseId
+                "programId": prog_id,
+                "tenChuongTrinh": ten_chuan,
+                "admissionCaseId": matched.get("admissionCaseId", ""),
             })
 
-        allWishes = CsvDatabase.readAll("goiYNguyenVong")
-        remainingWishes = [w for w in allWishes if w.get("hoSoHocSinhId") != hoSoId]
+        all_wishes = CsvDatabase.readAll("goiYNguyenVong")
+        remaining = [w for w in all_wishes if w.get("hoSoHocSinhId") != ho_so_id]
+        max_id = max((int(float(w.get("id", 0))) for w in remaining), default=0)
 
-        maxId = 0
-        for w in remainingWishes:
-            try:
-                maxId = max(maxId, int(float(w.get("id", 0))))
-            except (ValueError, TypeError):
-                pass
-
-        soLuongDaLuu = 0
-        for idx, item in enumerate(validatedWishes, 1):
-            maxId += 1
-            newWish = {
-                "id": maxId,
-                "hoSoHocSinhId": hoSoId,
-                "truongDaiHocId": item["truongDaiHocId"],
-                "nganhHocId": item["nganhHocId"],
-                "toHopMonId": item["toHopMonId"],
-                "phuongThucXetTuyenId": item["phuongThucXetTuyenId"],
-                "diemXetTuyen": item["diemXetTuyen"],
-                "diemChuanThamChieu": item["diemChuanThamChieu"],
-                "doPhuHop": item["doPhuHop"],
-                "mucDoPhuHop": item["mucDoPhuHop"],
-                "mucDoRuiRo": item["mucDoRuiRo"],
+        for idx, item in enumerate(validated, 1):
+            max_id += 1
+            remaining.append({
+                "id": max_id,
+                "hoSoHocSinhId": ho_so_id,
+                **{k: item[k] for k in (
+                    "truongDaiHocId", "nganhHocId", "toHopMonId",
+                    "phuongThucXetTuyenId", "diemXetTuyen",
+                    "diemChuanThamChieu", "doPhuHop",
+                    "mucDoPhuHop", "mucDoRuiRo", "programId",
+                    "tenChuongTrinh", "admissionCaseId"
+                )},
                 "thuTuUuTien": f"NV{idx}",
-                "ngayTao": nowStr,
-                "programId": item["programId"],
-                "tenChuongTrinh": item["tenChuongTrinh"],
-                "admissionCaseId": item["admissionCaseId"]
-            }
-            remainingWishes.append(newWish)
-            soLuongDaLuu += 1
+                "ngayTao": now_str,
+            })
 
-        import pandas as pd
-        dfWishes = pd.DataFrame(remainingWishes)[CsvDatabase.COLUMNS["goiYNguyenVong"]]
-        dfWishes.to_csv(CsvDatabase.FILE_PATHS["goiYNguyenVong"], index=False, encoding="utf-8-sig")
+        df = pd.DataFrame(remaining)[CsvDatabase.COLUMNS["goiYNguyenVong"]]
+        df.to_csv(CsvDatabase.FILE_PATHS["goiYNguyenVong"], index=False, encoding="utf-8-sig")
         CsvDatabase.clearCache("goiYNguyenVong")
 
         return {
             "thanhCong": True,
-            "thongBao": f"Đã lưu thành công {soLuongDaLuu} nguyện vọng hợp lệ vào hệ thống.",
-            "soLuongDaLuu": soLuongDaLuu
+            "thongBao": f"Đã lưu thành công {len(validated)} nguyện vọng hợp lệ vào hệ thống.",
+            "soLuongDaLuu": len(validated),
         }
 
     @classmethod
-    def soSanhPhuongThucCuaNganh(cls, truongDaiHocId: int, nganhHocId: int) -> List[Dict[str, Any]]:
-        allMethods = {m["id"]: m for m in CsvDatabase.readAll("phuongThucXetTuyen")}
-        allCombs = {c["id"]: c for c in CsvDatabase.readAll("toHopMon")}
-        benchmarks = CsvDatabase.findWhere("diemChuan", {"truongDaiHocId": truongDaiHocId, "nganhHocId": nganhHocId})
-
+    def soSanhPhuongThucCuaNganh(cls, truong_id: int, nganh_id: int) -> List[Dict[str, Any]]:
+        all_methods = {m["id"]: m for m in CsvDatabase.readAll("phuongThucXetTuyen")}
+        all_combs = {c["id"]: c for c in CsvDatabase.readAll("toHopMon")}
+        benchmarks = CsvDatabase.findWhere("diemChuan", {"truongDaiHocId": truong_id, "nganhHocId": nganh_id})
         results = []
         for b in benchmarks:
-            pt = allMethods.get(b.get("phuongThucXetTuyenId"), {})
-            th = allCombs.get(b.get("toHopMonId"), {})
+            pt = all_methods.get(b.get("phuongThucXetTuyenId"), {})
+            th = all_combs.get(b.get("toHopMonId"), {})
+            chi_tieu_val = b.get("chiTieu")
+            chi_tieu_clean = int(chi_tieu_val) if chi_tieu_val not in (None, "", "None", "null") and not pd.isna(chi_tieu_val) else None
             results.append({
                 "maPhuongThuc": pt.get("maPhuongThuc", "PT01"),
                 "tenPhuongThuc": pt.get("tenPhuongThuc", "Xét tuyển"),
                 "maToHop": th.get("maToHop", "A00"),
-                "nam": b.get("nam", 2025),
+                "nam": b.get("nam", config.REFERENCE_YEAR),
                 "diemChuan": b.get("diemChuan"),
-                "chiTieu": b.get("chiTieu", 100)
+                "chiTieu": chi_tieu_clean,
             })
         return results
