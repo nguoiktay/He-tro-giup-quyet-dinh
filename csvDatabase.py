@@ -1,9 +1,9 @@
 import os
-import csv
-import json
 import threading
-import pandas as pd
 from typing import Dict, List, Optional, Any
+import pandas as pd
+
+import config
 
 CSV_DIR = os.path.join(os.path.dirname(__file__), "data", "csv")
 os.makedirs(CSV_DIR, exist_ok=True)
@@ -11,8 +11,31 @@ os.makedirs(CSV_DIR, exist_ok=True)
 _lock = threading.RLock()
 _cache: Dict[str, List[Dict[str, Any]]] = {}
 
+# Khai báo dtype chuỗi để pandas không tự ý suy diễn kiểu dữ liệu gây mất mát dữ liệu
+STRING_DTYPES: Dict[str, str] = {
+    "soDienThoai": "str",
+    "maTruong": "str",
+    "maNganh": "str",
+    "maToHop": "str",
+    "maPhuongThuc": "str",
+    "programId": "str",
+    "admissionCaseId": "str",
+    "tenDangNhap": "str",
+    "email": "str",
+    "calculationRuleId": "str",
+    "scoreScale": "str",
+    "chungChiQuocTe": "str",
+}
 
-def inferNganhIdFromName(name: str) -> Optional[int]:
+STRING_MATCH_FIELDS = {
+    "tenDangNhap", "email", "soDienThoai", "maTruong", "maNganh",
+    "maToHop", "maPhuongThuc", "programId", "admissionCaseId",
+    "vaiTro", "khuVuc", "loaiTruong", "khuVucUuTien", "doiTuongUuTien",
+    "khuVucMongMuon", "nganhMongMuon", "calculationRuleId", "scoreScale"
+}
+
+
+def infer_nganh_id_from_name(name: str) -> Optional[int]:
     n = str(name).lower()
     if 'công nghệ thông tin' in n or 'cntt' in n or 'tin học' in n: return 1
     if 'khoa học máy tính' in n: return 2
@@ -58,7 +81,33 @@ def inferNganhIdFromName(name: str) -> Optional[int]:
     if 'quản trị' in n or 'kinh doanh' in n or 'khách sạn' in n or 'du lịch' in n or 'nhân lực' in n: return 9
     return None
 
+inferNganhIdFromName = infer_nganh_id_from_name
+
+
+def _clean_val(val: Any) -> Any:
+    if val is None or pd.isna(val):
+        return None
+    s = str(val).strip()
+    if s.lower() in ("nan", "none", "null"):
+        return None
+    return val
+
+
+def _sanitize_record(row: Dict[str, Any]) -> Dict[str, Any]:
+    return {k: _clean_val(v) for k, v in row.items()}
+
+
+def _write_df_atomic(df: pd.DataFrame, file_path: str, cols: Optional[List[str]] = None) -> None:
+    target_df = df[cols] if cols is not None else df
+    tmp_path = f"{file_path}.tmp.{os.getpid()}_{threading.get_ident()}"
+    target_df.to_csv(tmp_path, index=False, encoding="utf-8-sig")
+    os.replace(tmp_path, file_path)
+
+
 class CsvDatabase:
+    """Lớp repository lưu trữ dữ liệu dạng CSV hỗ trợ truy cập đa luồng, ghi atomic và bộ nhớ đệm an toàn."""
+
+    CSV_DIR = CSV_DIR
 
     FILE_PATHS = {
         "toHopMon": os.path.join(CSV_DIR, "toHopMon.csv"),
@@ -77,15 +126,21 @@ class CsvDatabase:
         "phuongThucXetTuyen": ["id", "maPhuongThuc", "tenPhuongThuc", "moTa"],
         "truongDaiHoc": ["id", "maTruong", "tenTruong", "diaChi", "khuVuc", "loaiTruong", "trangWeb"],
         "nganhHoc": ["id", "maNganh", "tenNganh", "nhomNganh", "moTa"],
-        "diemChuan": ["id", "truongDaiHocId", "nganhHocId", "toHopMonId", "phuongThucXetTuyenId", "nam", "diemChuan", "chiTieu", "programId", "tenChuongTrinh", "admissionCaseId", "scoreScale", "calculationRuleId"],
+        "diemChuan": [
+            "id", "truongDaiHocId", "nganhHocId", "toHopMonId", "phuongThucXetTuyenId",
+            "nam", "diemChuan", "chiTieu", "programId", "tenChuongTrinh",
+            "admissionCaseId", "scoreScale", "calculationRuleId"
+        ],
         "nguoiDung": ["id", "tenDangNhap", "matKhau", "hoTen", "email", "soDienThoai", "vaiTro", "ngayTao"],
         "hoSoHocSinh": [
-            "id", "nguoiDungId", "diemToan", "diemVan", "diemAnh", "diemLy", "diemHoa", 
-            "diemSinh", "diemSu", "diemDia", "diemGDCD", "diemHocBa", "diemDanhGiaNangLuc", 
-            "chungChiQuocTe", "khuVucUuTien", "doiTuongUuTien", "phuongThucMongMuon", "ngayCapNhat"
+            "id", "nguoiDungId", "diemToan", "diemVan", "diemAnh", "diemLy", "diemHoa",
+            "diemSinh", "diemSu", "diemDia", "diemGDCD", "diemTinHoc", "diemCongNghe",
+            "diemHocBa", "diemDanhGiaNangLuc", "diemDanhGiaTuDuy", "chungChiQuocTe",
+            "khuVucUuTien", "doiTuongUuTien", "khuVucMongMuon", "nganhMongMuon",
+            "nganSach", "phuongThucMongMuon", "ngayCapNhat"
         ],
         "goiYNguyenVong": [
-            "id", "hoSoHocSinhId", "truongDaiHocId", "nganhHocId", "toHopMonId", "phuongThucXetTuyenId", 
+            "id", "hoSoHocSinhId", "truongDaiHocId", "nganhHocId", "toHopMonId", "phuongThucXetTuyenId",
             "diemXetTuyen", "diemChuanThamChieu", "doPhuHop", "mucDoPhuHop", "mucDoRuiRo", "thuTuUuTien", "ngayTao",
             "programId", "tenChuongTrinh", "admissionCaseId"
         ],
@@ -97,10 +152,10 @@ class CsvDatabase:
     }
 
     @classmethod
-    def initializeTables(cls):
+    def initializeTables(cls) -> None:
         with _lock:
             if not os.path.exists(cls.FILE_PATHS["toHopMon"]):
-                initialCombinations = [
+                initial_combs = [
                     {"id": 1, "maToHop": "A00", "tenToHop": "Toán, Lý, Hóa", "mon1": "diemToan", "mon2": "diemLy", "mon3": "diemHoa"},
                     {"id": 2, "maToHop": "A01", "tenToHop": "Toán, Lý, Anh", "mon1": "diemToan", "mon2": "diemLy", "mon3": "diemAnh"},
                     {"id": 3, "maToHop": "A02", "tenToHop": "Toán, Lý, Sinh", "mon1": "diemToan", "mon2": "diemLy", "mon3": "diemSinh"},
@@ -116,10 +171,10 @@ class CsvDatabase:
                     {"id": 13, "maToHop": "D10", "tenToHop": "Toán, Địa, Anh", "mon1": "diemToan", "mon2": "diemDia", "mon3": "diemAnh"},
                     {"id": 14, "maToHop": "D14", "tenToHop": "Văn, Sử, Anh", "mon1": "diemVan", "mon2": "diemSu", "mon3": "diemAnh"}
                 ]
-                pd.DataFrame(initialCombinations)[cls.COLUMNS["toHopMon"]].to_csv(cls.FILE_PATHS["toHopMon"], index=False, encoding="utf-8-sig")
+                _write_df_atomic(pd.DataFrame(initial_combs), cls.FILE_PATHS["toHopMon"], cls.COLUMNS["toHopMon"])
 
             if not os.path.exists(cls.FILE_PATHS["phuongThucXetTuyen"]):
-                initialMethods = [
+                initial_methods = [
                     {"id": 1, "maPhuongThuc": "PT01", "tenPhuongThuc": "Xét theo điểm thi tốt nghiệp THPT", "moTa": "Xét tuyển dựa trên tổng điểm thi 3 môn trong kỳ thi tốt nghiệp THPT theo tổ hợp"},
                     {"id": 2, "maPhuongThuc": "PT02", "tenPhuongThuc": "Xét theo học bạ THPT (3 năm hoặc 5-6 học kỳ)", "moTa": "Xét tuyển kết quả học tập bậc THPT theo từng tổ hợp hoặc điểm trung bình chung GPA"},
                     {"id": 3, "maPhuongThuc": "PT03", "tenPhuongThuc": "Xét theo điểm thi Đánh giá năng lực (ĐHQG Hà Nội / ĐHQG TP.HCM)", "moTa": "Xét tuyển điểm kỳ thi HSA (ĐHQG Hà Nội) hoặc APT (ĐHQG TP.HCM) quy đổi"},
@@ -128,293 +183,281 @@ class CsvDatabase:
                     {"id": 6, "maPhuongThuc": "PT06", "tenPhuongThuc": "Xét tuyển kết hợp chứng chỉ quốc tế (IELTS, SAT, ACT...) với học bạ hoặc điểm thi", "moTa": "Quy đổi chứng chỉ ngoại ngữ kết hợp điểm học bạ hoặc môn thi THPT"},
                     {"id": 7, "maPhuongThuc": "PT07", "tenPhuongThuc": "Xét tuyển theo phương thức riêng của trường", "moTa": "Bài thi năng khiếu, phỏng vấn, hồ sơ năng lực theo đề án riêng từng trường"}
                 ]
-                pd.DataFrame(initialMethods)[cls.COLUMNS["phuongThucXetTuyen"]].to_csv(cls.FILE_PATHS["phuongThucXetTuyen"], index=False, encoding="utf-8-sig")
+                _write_df_atomic(pd.DataFrame(initial_methods), cls.FILE_PATHS["phuongThucXetTuyen"], cls.COLUMNS["phuongThucXetTuyen"])
 
             if not os.path.exists(cls.FILE_PATHS["truongDaiHoc"]):
-                srcUniPath = os.path.join(os.path.dirname(__file__), "data", "metadata", "universities_master.csv")
-                if os.path.exists(srcUniPath):
-                    dfSrc = pd.read_csv(srcUniPath)
-                    dfUni = pd.DataFrame({
-                        "id": range(1, len(dfSrc) + 1),
-                        "maTruong": dfSrc["university_code"],
-                        "tenTruong": dfSrc["university_name"],
-                        "diaChi": dfSrc["province"].fillna("Hà Nội"),
-                        "khuVuc": dfSrc["region"].fillna("Miền Bắc"),
-                        "loaiTruong": dfSrc["university_type"].fillna("Công lập"),
-                        "trangWeb": dfSrc["official_website"].fillna("")
+                src_uni = os.path.join(os.path.dirname(__file__), "data", "metadata", "universities_master.csv")
+                if os.path.exists(src_uni):
+                    df_src = pd.read_csv(src_uni)
+                    df_u = pd.DataFrame({
+                        "id": range(1, len(df_src) + 1),
+                        "maTruong": df_src["university_code"],
+                        "tenTruong": df_src["university_name"],
+                        "diaChi": df_src["province"].fillna("Hà Nội"),
+                        "khuVuc": df_src["region"].fillna("Miền Bắc"),
+                        "loaiTruong": df_src["university_type"].fillna("Công lập"),
+                        "trangWeb": df_src["official_website"].fillna("")
                     })
-                    dfUni[cls.COLUMNS["truongDaiHoc"]].to_csv(cls.FILE_PATHS["truongDaiHoc"], index=False, encoding="utf-8-sig")
-                else:
-                    demoUnis = [
-                        {"id": 1, "maTruong": "BKA", "tenTruong": "Đại học Bách khoa Hà Nội", "diaChi": "Hà Nội", "khuVuc": "Miền Bắc", "loaiTruong": "Công lập", "trangWeb": "https://hust.edu.vn"},
-                        {"id": 2, "maTruong": "QHI", "tenTruong": "Trường ĐH Công nghệ - ĐHQGHN", "diaChi": "Hà Nội", "khuVuc": "Miền Bắc", "loaiTruong": "Công lập", "trangWeb": "https://uet.vnu.edu.vn"},
-                        {"id": 3, "maTruong": "KHA", "tenTruong": "Trường Đại học Kinh tế Quốc dân", "diaChi": "Hà Nội", "khuVuc": "Miền Bắc", "loaiTruong": "Công lập", "trangWeb": "https://neu.edu.vn"}
-                    ]
-                    pd.DataFrame(demoUnis)[cls.COLUMNS["truongDaiHoc"]].to_csv(cls.FILE_PATHS["truongDaiHoc"], index=False, encoding="utf-8-sig")
+                    _write_df_atomic(df_u, cls.FILE_PATHS["truongDaiHoc"], cls.COLUMNS["truongDaiHoc"])
 
             if not os.path.exists(cls.FILE_PATHS["nganhHoc"]):
-                srcPrgPath = os.path.join(os.path.dirname(__file__), "data", "metadata", "programs_master.csv")
-                if os.path.exists(srcPrgPath):
-                    dfSrcP = pd.read_csv(srcPrgPath)
-                    dfNganh = pd.DataFrame({
-                        "id": range(1, len(dfSrcP) + 1),
-                        "maNganh": dfSrcP["program_code"].astype(str),
-                        "tenNganh": dfSrcP["program_name"],
-                        "nhomNganh": dfSrcP["field_name"].fillna("Khác"),
-                        "moTa": dfSrcP["degree_level"].fillna("Đại học chính quy")
+                src_prg = os.path.join(os.path.dirname(__file__), "data", "metadata", "programs_master.csv")
+                if os.path.exists(src_prg):
+                    df_p = pd.read_csv(src_prg)
+                    df_n = pd.DataFrame({
+                        "id": range(1, len(df_p) + 1),
+                        "maNganh": df_p["program_code"].astype(str),
+                        "tenNganh": df_p["program_name"],
+                        "nhomNganh": df_p["field_name"].fillna("Khác"),
+                        "moTa": df_p["degree_level"].fillna("Đại học chính quy")
                     })
-                    dfNganh[cls.COLUMNS["nganhHoc"]].to_csv(cls.FILE_PATHS["nganhHoc"], index=False, encoding="utf-8-sig")
+                    _write_df_atomic(df_n, cls.FILE_PATHS["nganhHoc"], cls.COLUMNS["nganhHoc"])
 
             if not os.path.exists(cls.FILE_PATHS["diemChuan"]):
                 cls._initBenchmarksFromCleanData()
 
             if not os.path.exists(cls.FILE_PATHS["nguoiDung"]):
-                defaultUsers = [
-                    {
-                        "id": 1,
-                        "tenDangNhap": "admin",
-                        "matKhau": "ba91268edb819c6f406436b6303606c3d033fbc324ff58684f4d1222b002046f",
-                        "hoTen": "Quản Trị Viên Hệ Thống",
-                        "email": "admin@dss-admission.edu.vn",
-                        "soDienThoai": "0988888888",
-                        "vaiTro": "quanTriVien",
-                        "ngayTao": "2026-01-01 08:00:00"
-                    },
-                    {
-                        "id": 2,
-                        "tenDangNhap": "hocsinh",
-                        "matKhau": "8f92002e71697ca70c59967f90431e8036517f1caaf476140de786fbf45090c1",
-                        "hoTen": "Nguyễn Văn Thí Sinh",
-                        "email": "thisinh@gmail.com",
-                        "soDienThoai": "0912345678",
-                        "vaiTro": "hocSinh",
-                        "ngayTao": "2026-01-01 08:00:00"
-                    }
-                ]
-                pd.DataFrame(defaultUsers)[cls.COLUMNS["nguoiDung"]].to_csv(cls.FILE_PATHS["nguoiDung"], index=False, encoding="utf-8-sig")
+                default_users = []
+                # Chỉ tạo tài khoản mặc định ở môi trường phát triển / kiểm thử để chạy unit test
+                if config.ENV != "production":
+                    default_users = [
+                        {
+                            "id": 1,
+                            "tenDangNhap": "admin",
+                            "matKhau": "ba91268edb819c6f406436b6303606c3d033fbc324ff58684f4d1222b002046f",
+                            "hoTen": "Quản Trị Viên Hệ Thống",
+                            "email": "admin@dss-admission.edu.vn",
+                            "soDienThoai": "0988888888",
+                            "vaiTro": "quanTriVien",
+                            "ngayTao": "2026-01-01 08:00:00"
+                        },
+                        {
+                            "id": 2,
+                            "tenDangNhap": "hocsinh",
+                            "matKhau": "8f92002e71697ca70c59967f90431e8036517f1caaf476140de786fbf45090c1",
+                            "hoTen": "Nguyễn Văn Thí Sinh",
+                            "email": "thisinh@gmail.com",
+                            "soDienThoai": "0912345678",
+                            "vaiTro": "hocSinh",
+                            "ngayTao": "2026-01-01 08:00:00"
+                        }
+                    ]
+                _write_df_atomic(pd.DataFrame(default_users), cls.FILE_PATHS["nguoiDung"], cls.COLUMNS["nguoiDung"])
 
             if not os.path.exists(cls.FILE_PATHS["hoSoHocSinh"]):
-                defaultProfile = [
+                default_profile = [
                     {
                         "id": 1,
                         "nguoiDungId": 2,
                         "diemToan": 8.8, "diemVan": 7.5, "diemAnh": 8.5,
                         "diemLy": 8.2, "diemHoa": 8.0, "diemSinh": 6.5,
                         "diemSu": 7.0, "diemDia": 7.0, "diemGDCD": 8.5,
+                        "diemTinHoc": None, "diemCongNghe": None,
                         "diemHocBa": 8.5, "diemDanhGiaNangLuc": 880.0,
+                        "diemDanhGiaTuDuy": None,
                         "chungChiQuocTe": "IELTS 6.5",
                         "khuVucUuTien": "KV1", "doiTuongUuTien": "NONE",
+                        "khuVucMongMuon": None, "nganhMongMuon": None, "nganSach": None,
                         "phuongThucMongMuon": "PT01,PT02,PT03",
                         "ngayCapNhat": "2026-01-01 08:00:00"
                     }
                 ]
-                pd.DataFrame(defaultProfile)[cls.COLUMNS["hoSoHocSinh"]].to_csv(cls.FILE_PATHS["hoSoHocSinh"], index=False, encoding="utf-8-sig")
+                _write_df_atomic(pd.DataFrame(default_profile), cls.FILE_PATHS["hoSoHocSinh"], cls.COLUMNS["hoSoHocSinh"])
 
             if not os.path.exists(cls.FILE_PATHS["goiYNguyenVong"]):
-                pd.DataFrame(columns=cls.COLUMNS["goiYNguyenVong"]).to_csv(cls.FILE_PATHS["goiYNguyenVong"], index=False, encoding="utf-8-sig")
+                _write_df_atomic(pd.DataFrame(columns=cls.COLUMNS["goiYNguyenVong"]), cls.FILE_PATHS["goiYNguyenVong"], cls.COLUMNS["goiYNguyenVong"])
 
     @classmethod
-    def _initBenchmarksFromCleanData(cls):
-        dfUni = pd.read_csv(cls.FILE_PATHS["truongDaiHoc"])
-        dfNganh = pd.read_csv(cls.FILE_PATHS["nganhHoc"])
-        dfToHop = pd.read_csv(cls.FILE_PATHS["toHopMon"])
+    def _initBenchmarksFromCleanData(cls) -> None:
+        df_uni = pd.read_csv(cls.FILE_PATHS["truongDaiHoc"])
+        df_nganh = pd.read_csv(cls.FILE_PATHS["nganhHoc"])
+        df_tohop = pd.read_csv(cls.FILE_PATHS["toHopMon"])
 
-        uniByCode = dict(zip(dfUni["maTruong"].astype(str), dfUni["id"]))
-        nganhByMa = dict(zip(dfNganh["maNganh"].astype(str), dfNganh["id"]))
-        unknownNganhId = nganhByMa.get("UNKNOWN", len(dfNganh))
-        toHopMap = dict(zip(dfToHop["maToHop"].astype(str), dfToHop["id"]))
+        uni_by_code = dict(zip(df_uni["maTruong"].astype(str), df_uni["id"]))
+        nganh_by_ma = dict(zip(df_nganh["maNganh"].astype(str), df_nganh["id"]))
+        unknown_nganh_id = nganh_by_ma.get("UNKNOWN", len(df_nganh))
+        tohop_map = dict(zip(df_tohop["maToHop"].astype(str), df_tohop["id"]))
 
-        upPath = os.path.join(os.path.dirname(__file__), "data", "metadata", "university_programs.csv")
-        programToMajor = {}
-        if os.path.exists(upPath):
-            dfUp = pd.read_csv(upPath)
-            for _, row in dfUp.iterrows():
+        up_path = os.path.join(os.path.dirname(__file__), "data", "metadata", "university_programs.csv")
+        program_to_major = {}
+        if os.path.exists(up_path):
+            df_up = pd.read_csv(up_path)
+            for _, row in df_up.iterrows():
                 pid = str(row["program_id"]).strip()
                 mid = str(row["major_id"]).replace("MAJ_", "").strip()
-                programToMajor[pid] = mid
+                program_to_major[pid] = mid
 
-        seenKeys = set()
+        seen_keys = set()
         records = []
-        recId = 1
+        rec_id = 1
 
-        thptPath = os.path.join(os.path.dirname(__file__), "data", "processed", "forecast_records_2026.csv")
-        if os.path.exists(thptPath):
-            fcDf = pd.read_csv(thptPath)
-            thptDf = fcDf[fcDf["method_code"].str.upper() == "THPT"]
-            for _, r in thptDf.iterrows():
-                uCode = str(r.get("university_code", "")).strip()
-                uId = uniByCode.get(uCode)
-                if not uId:
+        thpt_path = os.path.join(os.path.dirname(__file__), "data", "processed", "forecast_records_2026.csv")
+        if os.path.exists(thpt_path):
+            fc_df = pd.read_csv(thpt_path)
+            thpt_df = fc_df[fc_df["method_code"].str.upper() == "THPT"]
+            for _, r in thpt_df.iterrows():
+                u_code = str(r.get("university_code", "")).strip()
+                u_id = uni_by_code.get(u_code)
+                if not u_id:
                     continue
-                programId = str(r.get("program_id", "")).strip()
-                programName = str(r.get("program_name", "")).strip()
-                caseId = str(r.get("admission_case_id", "")).strip()
+                prog_id = str(r.get("program_id", "")).strip()
+                prog_name = str(r.get("program_name", "")).strip()
+                case_id = str(r.get("admission_case_id", "")).strip()
                 scale = str(r.get("score_scale", "SCALE_30")).strip()
-                ruleId = str(r.get("calculation_rule_id", "RULE_THPT_STD_30")).strip()
+                rule_id = str(r.get("calculation_rule_id", "RULE_THPT_STD_30")).strip()
 
-                majorCode = programToMajor.get(programId, "UNKNOWN")
-                nganhId = nganhByMa.get(majorCode, unknownNganhId)
-                if nganhId == unknownNganhId and programName:
-                    inferred = inferNganhIdFromName(programName)
+                maj_code = program_to_major.get(prog_id, "UNKNOWN")
+                nganh_id = nganh_by_ma.get(maj_code, unknown_nganh_id)
+                if nganh_id == unknown_nganh_id and prog_name:
+                    inferred = infer_nganh_id_from_name(prog_name)
                     if inferred:
-                        nganhId = inferred
+                        nganh_id = inferred
 
-                score2025 = r.get("historical_cutoff_2025")
-                if pd.isna(score2025) or float(score2025) <= 0:
-                    score2025 = r.get("predicted_cutoff")
-                if pd.isna(score2025) or float(score2025) <= 0:
+                score_2025 = r.get("historical_cutoff_2025")
+                if pd.isna(score_2025) or float(score_2025) <= 0:
+                    score_2025 = r.get("predicted_cutoff")
+                if pd.isna(score_2025) or float(score_2025) <= 0:
                     continue
-                scoreVal = round(float(score2025), 2)
+                score_val = round(float(score_2025), 2)
 
-                combRaw = str(r.get("subject_combination", "")).replace(",", ";")
-                combTokens = [c.strip() for c in combRaw.split(";") if c.strip()]
-                for cToken in combTokens:
-                    tId = toHopMap.get(cToken)
-                    if not tId:
+                comb_tokens = [c.strip() for c in str(r.get("subject_combination", "")).replace(",", ";").split(";") if c.strip()]
+                for c_token in comb_tokens:
+                    t_id = tohop_map.get(c_token)
+                    if not t_id:
                         continue
-                    key = (int(uId), programId or int(nganhId), caseId, int(tId), 1, 2025)
-                    if key in seenKeys:
+                    key = (int(u_id), prog_id or int(nganh_id), case_id, int(t_id), 1, 2025)
+                    if key in seen_keys:
                         continue
-                    seenKeys.add(key)
+                    seen_keys.add(key)
                     records.append({
-                        "id": recId,
-                        "truongDaiHocId": int(uId),
-                        "nganhHocId": int(nganhId),
-                        "toHopMonId": int(tId),
+                        "id": rec_id,
+                        "truongDaiHocId": int(u_id),
+                        "nganhHocId": int(nganh_id),
+                        "toHopMonId": int(t_id),
                         "phuongThucXetTuyenId": 1,
                         "nam": 2025,
-                        "diemChuan": scoreVal,
-                        "chiTieu": 100,
-                        "programId": programId,
-                        "tenChuongTrinh": programName,
-                        "admissionCaseId": caseId,
+                        "diemChuan": score_val,
+                        "chiTieu": None,
+                        "programId": prog_id,
+                        "tenChuongTrinh": prog_name,
+                        "admissionCaseId": case_id,
                         "scoreScale": scale,
-                        "calculationRuleId": ruleId
+                        "calculationRuleId": rule_id
                     })
-                    recId += 1
+                    rec_id += 1
 
-        catalogPath = os.path.join(os.path.dirname(__file__), "data", "processed", "recommendation_catalog.csv")
-        if os.path.exists(catalogPath):
-            catDf = pd.read_csv(catalogPath)
-            catThpt = catDf[catDf["method_code"].str.upper() == "THPT"]
-            for _, r in catThpt.iterrows():
-                uCode = str(r.get("university_code", "")).strip()
-                uId = uniByCode.get(uCode)
-                if not uId:
+        catalog_path = os.path.join(os.path.dirname(__file__), "data", "processed", "recommendation_catalog.csv")
+        if os.path.exists(catalog_path):
+            cat_df = pd.read_csv(catalog_path)
+            cat_thpt = cat_df[cat_df["method_code"].str.upper() == "THPT"]
+            for _, r in cat_thpt.iterrows():
+                u_code = str(r.get("university_code", "")).strip()
+                u_id = uni_by_code.get(u_code)
+                if not u_id:
                     continue
-                programId = str(r.get("program_id", "")).strip()
-                programName = str(r.get("program_name", "")).strip()
-                caseId = str(r.get("admission_code", "")).strip()
+                prog_id = str(r.get("program_id", "")).strip()
+                prog_name = str(r.get("program_name", "")).strip()
+                case_id = str(r.get("admission_code", "")).strip()
                 scale = str(r.get("score_scale", "SCALE_30")).strip()
-                ruleId = str(r.get("calculation_rule_id", "RULE_THPT_STD_30")).strip()
+                rule_id = str(r.get("calculation_rule_id", "RULE_THPT_STD_30")).strip()
 
-                majorCode = str(r.get("major_id", "")).replace("MAJ_", "").strip()
-                nganhId = nganhByMa.get(majorCode, unknownNganhId)
-                if nganhId == unknownNganhId and programName:
-                    inferred = inferNganhIdFromName(programName)
+                maj_code = str(r.get("major_id", "")).replace("MAJ_", "").strip()
+                nganh_id = nganh_by_ma.get(maj_code, unknown_nganh_id)
+                if nganh_id == unknown_nganh_id and prog_name:
+                    inferred = infer_nganh_id_from_name(prog_name)
                     if inferred:
-                        nganhId = inferred
+                        nganh_id = inferred
 
-                bScore = r.get("latest_cutoff_score")
-                if pd.isna(bScore) or float(bScore) <= 0:
+                b_score = r.get("latest_cutoff_score")
+                if pd.isna(b_score) or float(b_score) <= 0:
                     continue
-                scoreVal = round(float(bScore), 2)
-                yearVal = int(r.get("latest_cutoff_year", 2025))
+                score_val = round(float(b_score), 2)
+                year_val = int(r.get("latest_cutoff_year", 2025))
 
-                combRaw = str(r.get("subject_combination", "")).replace(",", ";")
-                combTokens = [c.strip() for c in combRaw.split(";") if c.strip()]
-                for cToken in combTokens:
-                    tId = toHopMap.get(cToken)
-                    if not tId:
+                comb_tokens = [c.strip() for c in str(r.get("subject_combination", "")).replace(",", ";").split(";") if c.strip()]
+                for c_token in comb_tokens:
+                    t_id = tohop_map.get(c_token)
+                    if not t_id:
                         continue
-                    key = (int(uId), programId or int(nganhId), caseId, int(tId), 1, yearVal)
-                    if key in seenKeys:
+                    key = (int(u_id), prog_id or int(nganh_id), case_id, int(t_id), 1, year_val)
+                    if key in seen_keys:
                         continue
-                    seenKeys.add(key)
+                    seen_keys.add(key)
                     records.append({
-                        "id": recId,
-                        "truongDaiHocId": int(uId),
-                        "nganhHocId": int(nganhId),
-                        "toHopMonId": int(tId),
+                        "id": rec_id,
+                        "truongDaiHocId": int(u_id),
+                        "nganhHocId": int(nganh_id),
+                        "toHopMonId": int(t_id),
                         "phuongThucXetTuyenId": 1,
-                        "nam": yearVal,
-                        "diemChuan": scoreVal,
-                        "chiTieu": 100,
-                        "programId": programId,
-                        "tenChuongTrinh": programName,
-                        "admissionCaseId": caseId,
+                        "nam": year_val,
+                        "diemChuan": score_val,
+                        "chiTieu": None,
+                        "programId": prog_id,
+                        "tenChuongTrinh": prog_name,
+                        "admissionCaseId": case_id,
                         "scoreScale": scale,
-                        "calculationRuleId": ruleId
+                        "calculationRuleId": rule_id
                     })
-                    recId += 1
+                    rec_id += 1
 
-        hbPath = os.path.join(os.path.dirname(__file__), "data", "processed", "hoc_ba_cutoff_clean_final.csv")
-        if os.path.exists(hbPath):
-            hbDf = pd.read_csv(hbPath)
-            hbDf = hbDf[hbDf["verification_status"] == "VERIFIED"]
-            for _, r in hbDf.iterrows():
-                uCode = str(r.get("university_code", "")).strip()
-                uId = uniByCode.get(uCode)
-                if not uId:
+        hb_path = os.path.join(os.path.dirname(__file__), "data", "processed", "hoc_ba_cutoff_clean_final.csv")
+        if os.path.exists(hb_path):
+            hb_df = pd.read_csv(hb_path)
+            hb_df = hb_df[hb_df["verification_status"] == "VERIFIED"]
+            for _, r in hb_df.iterrows():
+                u_code = str(r.get("university_code", "")).strip()
+                u_id = uni_by_code.get(u_code)
+                if not u_id:
                     continue
-                majorCode = str(r.get("major_id", "")).replace("MAJ_", "").strip()
-                nganhId = nganhByMa.get(majorCode, unknownNganhId)
-                programId = str(r.get("program_id", "")).strip()
-                programName = str(r.get("program_name", "")).strip()
-                caseId = str(r.get("admission_code", "")).strip()
+                maj_code = str(r.get("major_id", "")).replace("MAJ_", "").strip()
+                nganh_id = nganh_by_ma.get(maj_code, unknown_nganh_id)
+                prog_id = str(r.get("program_id", "")).strip()
+                prog_name = str(r.get("program_name", "")).strip()
+                case_id = str(r.get("admission_code", "")).strip()
                 scale = str(r.get("score_scale", "SCALE_30")).strip()
-                ruleId = str(r.get("calculation_rule_id", "RULE_HB_STD_30")).strip()
+                rule_id = str(r.get("calculation_rule_id", "RULE_HB_STD_30")).strip()
 
-                if nganhId == unknownNganhId and programName:
-                    inferred = inferNganhIdFromName(programName)
+                if nganh_id == unknown_nganh_id and prog_name:
+                    inferred = infer_nganh_id_from_name(prog_name)
                     if inferred:
-                        nganhId = inferred
+                        nganh_id = inferred
 
-                bScore = r.get("benchmark_score")
-                if pd.isna(bScore) or float(bScore) <= 0:
+                b_score = r.get("benchmark_score")
+                if pd.isna(b_score) or float(b_score) <= 0:
                     continue
-                scoreVal = round(float(bScore), 2)
-                yearVal = int(r.get("year", 2026))
+                score_val = round(float(b_score), 2)
+                year_val = int(r.get("year", 2026))
 
-                combRaw = str(r.get("subject_combination", "")).replace(",", ";")
-                combTokens = [c.strip() for c in combRaw.split(";") if c.strip()]
-                for cToken in combTokens:
-                    tId = toHopMap.get(cToken)
-                    if not tId:
+                comb_tokens = [c.strip() for c in str(r.get("subject_combination", "")).replace(",", ";").split(";") if c.strip()]
+                for c_token in comb_tokens:
+                    t_id = tohop_map.get(c_token)
+                    if not t_id:
                         continue
-                    key = (int(uId), programId or int(nganhId), caseId, int(tId), 2, yearVal)
-                    if key in seenKeys:
+                    key = (int(u_id), prog_id or int(nganh_id), case_id, int(t_id), 2, year_val)
+                    if key in seen_keys:
                         continue
-                    seenKeys.add(key)
+                    seen_keys.add(key)
                     records.append({
-                        "id": recId,
-                        "truongDaiHocId": int(uId),
-                        "nganhHocId": int(nganhId),
-                        "toHopMonId": int(tId),
+                        "id": rec_id,
+                        "truongDaiHocId": int(u_id),
+                        "nganhHocId": int(nganh_id),
+                        "toHopMonId": int(t_id),
                         "phuongThucXetTuyenId": 2,
-                        "nam": yearVal,
-                        "diemChuan": scoreVal,
-                        "chiTieu": 100,
-                        "programId": programId,
-                        "tenChuongTrinh": programName,
-                        "admissionCaseId": caseId,
+                        "nam": year_val,
+                        "diemChuan": score_val,
+                        "chiTieu": None,
+                        "programId": prog_id,
+                        "tenChuongTrinh": prog_name,
+                        "admissionCaseId": case_id,
                         "scoreScale": scale,
-                        "calculationRuleId": ruleId
+                        "calculationRuleId": rule_id
                     })
-                    recId += 1
+                    rec_id += 1
 
-        if not records:
-            records = [
-                {"id": 1, "truongDaiHocId": 1, "nganhHocId": 1, "toHopMonId": 1, "phuongThucXetTuyenId": 1, "nam": 2025, "diemChuan": 28.5, "chiTieu": 120, "programId": "", "tenChuongTrinh": "", "admissionCaseId": "", "scoreScale": "SCALE_30", "calculationRuleId": "RULE_THPT_STD_30"},
-                {"id": 2, "truongDaiHocId": 1, "nganhHocId": 1, "toHopMonId": 2, "phuongThucXetTuyenId": 1, "nam": 2025, "diemChuan": 28.2, "chiTieu": 120, "programId": "", "tenChuongTrinh": "", "admissionCaseId": "", "scoreScale": "SCALE_30", "calculationRuleId": "RULE_THPT_STD_30"},
-                {"id": 3, "truongDaiHocId": 1, "nganhHocId": 1, "toHopMonId": 1, "phuongThucXetTuyenId": 2, "nam": 2025, "diemChuan": 29.0, "chiTieu": 50, "programId": "", "tenChuongTrinh": "", "admissionCaseId": "", "scoreScale": "SCALE_30", "calculationRuleId": "RULE_HB_STD_30"}
-            ]
-
-        dfDc = pd.DataFrame(records)[cls.COLUMNS["diemChuan"]]
-        dfDc.to_csv(cls.FILE_PATHS["diemChuan"], index=False, encoding="utf-8-sig")
+        _write_df_atomic(pd.DataFrame(records), cls.FILE_PATHS["diemChuan"], cls.COLUMNS["diemChuan"])
 
     @classmethod
-    def clearCache(cls, tableName: Optional[str] = None):
+    def clearCache(cls, tableName: Optional[str] = None) -> None:
         with _lock:
             if tableName:
                 _cache.pop(tableName, None)
@@ -422,7 +465,7 @@ class CsvDatabase:
                 _cache.clear()
 
     @classmethod
-    def setDatabaseDirectory(cls, newDir: str):
+    def setDatabaseDirectory(cls, newDir: str) -> None:
         with _lock:
             cls.CSV_DIR = newDir
             cls.FILE_PATHS = {
@@ -434,37 +477,32 @@ class CsvDatabase:
     def readAll(cls, tableName: str) -> List[Dict[str, Any]]:
         with _lock:
             if tableName in _cache:
-                return _cache[tableName]
-            filePath = cls.FILE_PATHS.get(tableName)
-            if not filePath or not os.path.exists(filePath):
+                return [dict(r) for r in _cache[tableName]]
+
+            file_path = cls.FILE_PATHS.get(tableName)
+            if not file_path or not os.path.exists(file_path):
                 return []
-            df = pd.read_csv(filePath, dtype={"soDienThoai": str, "maTruong": str, "maNganh": str, "maToHop": str, "maPhuongThuc": str, "programId": str, "admissionCaseId": str})
-            records = df.where(pd.notna(df), None).to_dict(orient="records")
-            cleaned = []
-            for r in records:
-                cleanRow = {}
-                for k, v in r.items():
-                    if pd.isna(v) or v is None:
-                        cleanRow[k] = None
-                    else:
-                        if k == "soDienThoai":
-                            sVal = str(v).strip()
-                            if sVal.endswith(".0"):
-                                sVal = sVal[:-2]
-                            if len(sVal) == 9 and not sVal.startswith("0"):
-                                sVal = "0" + sVal
-                            v = sVal
-                        cleanRow[k] = v
-                cleaned.append(cleanRow)
+
+            expected_cols = cls.COLUMNS.get(tableName, [])
+            df = pd.read_csv(file_path, dtype=STRING_DTYPES)
+
+            # Bổ sung các cột còn thiếu trong schema nếu có
+            for c in expected_cols:
+                if c not in df.columns:
+                    df[c] = None
+
+            raw_records = df[expected_cols].where(pd.notna(df[expected_cols]), None).to_dict(orient="records")
+            cleaned = [_sanitize_record(r) for r in raw_records]
             _cache[tableName] = cleaned
-            return cleaned
+            return [dict(r) for r in cleaned]
 
     @classmethod
     def findById(cls, tableName: str, recordId: int) -> Optional[Dict[str, Any]]:
         records = cls.readAll(tableName)
         for r in records:
-            if int(r.get("id")) == int(recordId):
-                return r
+            r_id = r.get("id")
+            if r_id is not None and int(float(r_id)) == int(recordId):
+                return dict(r)
         return None
 
     @classmethod
@@ -481,92 +519,101 @@ class CsvDatabase:
                 if rv is not None and v is None:
                     match = False
                     break
+                if rv is None and v is None:
+                    continue
+
+                # So khớp chuỗi cho các trường danh tính, mã và tên (không ép float)
+                if k in STRING_MATCH_FIELDS:
+                    if str(rv).strip().lower() != str(v).strip().lower():
+                        match = False
+                        break
+                    continue
+
+                # So khớp số cho các trường định lượng
                 try:
                     if float(rv) == float(v):
                         continue
                 except (ValueError, TypeError):
                     pass
+
                 if str(rv).strip() != str(v).strip():
                     match = False
                     break
+
             if match:
-                matched.append(r)
+                matched.append(dict(r))
         return matched
 
     @classmethod
     def insert(cls, tableName: str, data: Dict[str, Any]) -> Dict[str, Any]:
-        filePath = cls.FILE_PATHS.get(tableName)
-        if not filePath:
+        file_path = cls.FILE_PATHS.get(tableName)
+        if not file_path:
             raise ValueError(f"Bảng {tableName} không tồn tại.")
 
         cols = cls.COLUMNS[tableName]
         with _lock:
-            records = []
-            if os.path.exists(filePath):
-                df = pd.read_csv(filePath)
-                records = df.where(pd.notna(df), None).to_dict(orient="records")
+            existing = cls.readAll(tableName)
+            max_id = max([int(float(r.get("id", 0))) for r in existing], default=0)
+            data["id"] = max_id + 1
 
-            maxId = max([int(r.get("id", 0)) for r in records], default=0)
-            data["id"] = maxId + 1
+            new_row = _sanitize_record({c: data.get(c, None) for c in cols})
+            updated_records = existing + [new_row]
 
-            newRow = {c: data.get(c, None) for c in cols}
-            if "soDienThoai" in newRow and newRow["soDienThoai"] is not None:
-                pStr = str(newRow["soDienThoai"]).strip()
-                if pStr.endswith(".0"):
-                    pStr = pStr[:-2]
-                if len(pStr) == 9 and not pStr.startswith("0"):
-                    pStr = "0" + pStr
-                newRow["soDienThoai"] = pStr
-            records.append(newRow)
-
-            pd.DataFrame(records)[cols].to_csv(filePath, index=False, encoding="utf-8-sig")
-            _cache.pop(tableName, None)
-            return newRow
+            _write_df_atomic(pd.DataFrame(updated_records), file_path, cols)
+            cls.clearCache(tableName)
+            return dict(new_row)
 
     @classmethod
     def update(cls, tableName: str, recordId: int, data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
-        filePath = cls.FILE_PATHS.get(tableName)
-        if not filePath or not os.path.exists(filePath):
+        file_path = cls.FILE_PATHS.get(tableName)
+        if not file_path or not os.path.exists(file_path):
             return None
 
         cols = cls.COLUMNS[tableName]
         with _lock:
-            df = pd.read_csv(filePath)
-            records = df.where(pd.notna(df), None).to_dict(orient="records")
+            records = cls.readAll(tableName)
+            updated_row = None
 
-            updatedRow = None
             for idx, r in enumerate(records):
-                if int(r.get("id")) == int(recordId):
+                if int(float(r.get("id", -1))) == int(recordId):
                     for k, v in data.items():
                         if k in cols and k != "id":
                             r[k] = v
-                    updatedRow = r
-                    records[idx] = r
+                    updated_row = _sanitize_record(r)
+                    records[idx] = updated_row
                     break
 
-            if updatedRow:
-                pd.DataFrame(records)[cols].to_csv(filePath, index=False, encoding="utf-8-sig")
-                _cache.pop(tableName, None)
-            return updatedRow
+            if updated_row:
+                _write_df_atomic(pd.DataFrame(records), file_path, cols)
+                cls.clearCache(tableName)
+                return dict(updated_row)
+            return None
 
     @classmethod
     def delete(cls, tableName: str, recordId: int) -> bool:
-        filePath = cls.FILE_PATHS.get(tableName)
-        if not filePath or not os.path.exists(filePath):
+        file_path = cls.FILE_PATHS.get(tableName)
+        if not file_path or not os.path.exists(file_path):
             return False
 
         cols = cls.COLUMNS[tableName]
         with _lock:
-            df = pd.read_csv(filePath)
-            records = df.where(pd.notna(df), None).to_dict(orient="records")
+            records = cls.readAll(tableName)
+            initial_len = len(records)
+            filtered = [r for r in records if int(float(r.get("id", -1))) != int(recordId)]
 
-            initialLen = len(records)
-            records = [r for r in records if int(r.get("id")) != int(recordId)]
-
-            if len(records) < initialLen:
-                pd.DataFrame(records)[cols].to_csv(filePath, index=False, encoding="utf-8-sig")
-                _cache.pop(tableName, None)
+            if len(filtered) < initial_len:
+                _write_df_atomic(pd.DataFrame(filtered), file_path, cols)
+                cls.clearCache(tableName)
                 return True
             return False
+
+    # Snake-case aliases (PEP 8)
+    read_all = readAll
+    find_by_id = findById
+    find_where = findWhere
+    clear_cache = clearCache
+    set_database_dir = setDatabaseDirectory
+    initialize_tables = initializeTables
+
 
 CsvDatabase.initializeTables()
