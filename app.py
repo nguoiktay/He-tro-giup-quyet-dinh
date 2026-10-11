@@ -1,16 +1,15 @@
 import os
 import datetime
-import math
 from typing import Dict, List, Optional, Any
-from fastapi import FastAPI, HTTPException, Header, Depends, Query, status
+
+from fastapi import FastAPI, HTTPException, Header, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse
 
 from csvDatabase import CsvDatabase
 from scoringService import ScoringService
-from mlService import mlServiceInstance
-from authService import AuthService, verifyJwtToken
+from authService import AuthService
 from admissionService import AdmissionService
 from schemas import (
     UserRegisterRequest,
@@ -22,6 +21,11 @@ from schemas import (
     StudentProfileInput,
     WishlistSaveRequest
 )
+
+VALID_SUBJECT_FIELDS = {
+    "diemToan", "diemVan", "diemAnh", "diemLy", "diemHoa",
+    "diemSinh", "diemSu", "diemDia", "diemGDCD", "diemTinHoc", "diemCongNghe"
+}
 
 app = FastAPI(
     title="Hệ Thống Hỗ Trợ Đề Xuất Nguyện Vọng Đại Học",
@@ -47,26 +51,34 @@ app.add_middleware(
 )
 
 
-def getCurrentUser(authorization: Optional[str] = Header(None)) -> Optional[Dict[str, Any]]:
+def get_current_user(authorization: Optional[str] = Header(None)) -> Optional[Dict[str, Any]]:
     if not authorization:
         return None
     token = authorization.replace("Bearer ", "").strip()
     return AuthService.layThongTinNguoiDung(token)
 
 
-def requireAdmin(currentUser: Optional[Dict[str, Any]] = Depends(getCurrentUser)):
-    if not currentUser:
+def require_admin(current_user: Optional[Dict[str, Any]] = Depends(get_current_user)) -> Dict[str, Any]:
+    if not current_user:
         raise HTTPException(status_code=401, detail="Vui lòng đăng nhập để thực hiện chức năng này.")
-    if currentUser.get("vaiTro") != "quanTriVien":
+    if current_user.get("vaiTro") != "quanTriVien":
         raise HTTPException(status_code=403, detail="Chức năng chỉ dành cho Quản trị viên (Admin).")
-    return currentUser
+    return current_user
 
 
-def requireAuth(currentUser: Optional[Dict[str, Any]] = Depends(getCurrentUser)):
-    if not currentUser:
+def require_auth(current_user: Optional[Dict[str, Any]] = Depends(get_current_user)) -> Dict[str, Any]:
+    if not current_user:
         raise HTTPException(status_code=401, detail="Vui lòng đăng nhập để thực hiện thao tác này.")
-    return currentUser
+    return current_user
 
+
+# Backward-compatible dependency names
+getCurrentUser = get_current_user
+requireAdmin = require_admin
+requireAuth = require_auth
+
+
+# --- Authentication Routes ---
 
 @app.post("/api/auth/register")
 def register(req: UserRegisterRequest):
@@ -92,296 +104,374 @@ def login(req: UserLoginRequest):
 
 
 @app.get("/api/auth/me")
-def getProfile(currentUser: Optional[Dict[str, Any]] = Depends(getCurrentUser)):
-    if not currentUser:
+def get_my_profile(current_user: Optional[Dict[str, Any]] = Depends(get_current_user)):
+    if not current_user:
         raise HTTPException(status_code=401, detail="Chưa đăng nhập hoặc token hết hạn.")
-    return currentUser
+    return current_user
 
+
+getProfile = get_my_profile
+
+
+# --- Catalogs and Metadata Routes ---
 
 @app.get("/api/combinations")
-def getCombinations():
+def get_combinations():
     return CsvDatabase.readAll("toHopMon")
 
 
-@app.post("/api/combinations")
-def createCombination(req: ToHopMonCreateRequest, admin: Dict[str, Any] = Depends(requireAdmin)):
-    existing = CsvDatabase.findWhere("toHopMon", {"maToHop": req.maToHop.upper()})
-    if existing:
-        raise HTTPException(status_code=400, detail=f"Mã tổ hợp '{req.maToHop}' đã tồn tại.")
+getCombinations = get_combinations
 
-    newComb = CsvDatabase.insert("toHopMon", {
-        "maToHop": req.maToHop.upper(),
-        "tenToHop": req.tenToHop,
+
+@app.post("/api/combinations")
+def create_combination(req: ToHopMonCreateRequest, admin: Dict[str, Any] = Depends(require_admin)):
+    for mon in (req.mon1, req.mon2, req.mon3):
+        if mon not in VALID_SUBJECT_FIELDS:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Môn học '{mon}' không thuộc danh sách môn thi chuẩn được hỗ trợ."
+            )
+
+    code = req.maToHop.strip().upper()
+    existing = CsvDatabase.findWhere("toHopMon", {"maToHop": code})
+    if existing:
+        raise HTTPException(status_code=400, detail=f"Mã tổ hợp '{code}' đã tồn tại.")
+
+    new_comb = CsvDatabase.insert("toHopMon", {
+        "maToHop": code,
+        "tenToHop": req.tenToHop.strip(),
         "mon1": req.mon1,
         "mon2": req.mon2,
         "mon3": req.mon3
     })
-    return {"thanhCong": True, "thongBao": "Đã thêm tổ hợp mới.", "toHopMon": newComb}
+    return {"thanhCong": True, "thongBao": "Đã thêm tổ hợp mới.", "toHopMon": new_comb}
+
+
+createCombination = create_combination
 
 
 @app.get("/api/methods")
-def getMethods():
+def get_methods():
     return CsvDatabase.readAll("phuongThucXetTuyen")
 
 
-@app.post("/api/methods")
-def createMethod(req: PhuongThucCreateRequest, admin: Dict[str, Any] = Depends(requireAdmin)):
-    existing = CsvDatabase.findWhere("phuongThucXetTuyen", {"maPhuongThuc": req.maPhuongThuc.upper()})
-    if existing:
-        raise HTTPException(status_code=400, detail=f"Mã phương thức '{req.maPhuongThuc}' đã tồn tại.")
+getMethods = get_methods
 
-    newMethod = CsvDatabase.insert("phuongThucXetTuyen", {
-        "maPhuongThuc": req.maPhuongThuc.upper(),
-        "tenPhuongThuc": req.tenPhuongThuc,
-        "moTa": req.moTa or ""
+
+@app.post("/api/methods")
+def create_method(req: PhuongThucCreateRequest, admin: Dict[str, Any] = Depends(require_admin)):
+    code = req.maPhuongThuc.strip().upper()
+    existing = CsvDatabase.findWhere("phuongThucXetTuyen", {"maPhuongThuc": code})
+    if existing:
+        raise HTTPException(status_code=400, detail=f"Mã phương thức '{code}' đã tồn tại.")
+
+    new_method = CsvDatabase.insert("phuongThucXetTuyen", {
+        "maPhuongThuc": code,
+        "tenPhuongThuc": req.tenPhuongThuc.strip(),
+        "moTa": (req.moTa or "").strip()
     })
-    return {"thanhCong": True, "thongBao": "Đã thêm phương thức tuyển sinh mới.", "phuongThuc": newMethod}
+    return {"thanhCong": True, "thongBao": "Đã thêm phương thức tuyển sinh mới.", "phuongThuc": new_method}
+
+
+createMethod = create_method
+
+
+@app.get("/api/regions")
+def get_regions():
+    unis = CsvDatabase.readAll("truongDaiHoc")
+    regions = sorted({str(u.get("khuVuc", "")).strip() for u in unis if u.get("khuVuc")})
+    return regions or ["Miền Bắc", "Miền Trung", "Miền Nam", "Toàn quốc"]
+
+
+@app.get("/api/university-types")
+def get_university_types():
+    unis = CsvDatabase.readAll("truongDaiHoc")
+    u_types = sorted({str(u.get("loaiTruong", "")).strip() for u in unis if u.get("loaiTruong")})
+    return u_types or ["Công lập", "Tư thục"]
 
 
 @app.get("/api/universities")
-def getUniversities(limit: int = 100, query: Optional[str] = None):
-    clampedLimit = max(1, min(int(limit), 200)) if limit > 0 else 100
+def get_universities(limit: int = 100, query: Optional[str] = None):
+    clamped = max(1, min(int(limit), 200)) if limit > 0 else 100
     unis = CsvDatabase.readAll("truongDaiHoc")
     if query:
-        q = query.lower()
+        q = query.strip().lower()
         unis = [u for u in unis if q in str(u.get("tenTruong", "")).lower() or q in str(u.get("maTruong", "")).lower()]
-    return unis[:clampedLimit]
+    return unis[:clamped]
+
+
+getUniversities = get_universities
 
 
 @app.get("/api/majors")
-def getMajors(limit: int = 100, query: Optional[str] = None):
-    clampedLimit = max(1, min(int(limit), 200)) if limit > 0 else 100
+def get_majors(limit: int = 100, query: Optional[str] = None):
+    clamped = max(1, min(int(limit), 200)) if limit > 0 else 100
     majors = CsvDatabase.readAll("nganhHoc")
     if query:
-        q = query.lower()
+        q = query.strip().lower()
         majors = [m for m in majors if q in str(m.get("tenNganh", "")).lower() or q in str(m.get("maNganh", "")).lower()]
-    return majors[:clampedLimit]
+    return majors[:clamped]
+
+
+getMajors = get_majors
 
 
 @app.get("/api/benchmarks")
-def getBenchmarks(limit: int = 100, truongId: Optional[int] = None, phuongThucId: Optional[int] = None):
-    clampedLimit = max(1, min(int(limit), 200)) if limit > 0 else 100
+def get_benchmarks(limit: int = 100, truongId: Optional[int] = None, phuongThucId: Optional[int] = None):
+    clamped = max(1, min(int(limit), 200)) if limit > 0 else 100
     conds = {}
     if truongId:
         conds["truongDaiHocId"] = truongId
     if phuongThucId:
         conds["phuongThucXetTuyenId"] = phuongThucId
     if conds:
-        return CsvDatabase.findWhere("diemChuan", conds)[:clampedLimit]
-    return CsvDatabase.readAll("diemChuan")[:clampedLimit]
+        return CsvDatabase.findWhere("diemChuan", conds)[:clamped]
+    return CsvDatabase.readAll("diemChuan")[:clamped]
+
+
+getBenchmarks = get_benchmarks
 
 
 @app.get("/api/explore-benchmarks")
-def exploreBenchmarks(query: Optional[str] = None, limit: int = 50):
-    clampedLimit = max(1, min(int(limit), 200)) if limit > 0 else 50
-    allUnis = {u["id"]: u for u in CsvDatabase.readAll("truongDaiHoc")}
-    allMajors = {m["id"]: m for m in CsvDatabase.readAll("nganhHoc")}
-    allCombs = {c["id"]: c for c in CsvDatabase.readAll("toHopMon")}
-    allMethods = {m["id"]: m for m in CsvDatabase.readAll("phuongThucXetTuyen")}
-    allBenchmarks = CsvDatabase.readAll("diemChuan")
+def explore_benchmarks(query: Optional[str] = None, limit: int = 50):
+    clamped = max(1, min(int(limit), 200)) if limit > 0 else 50
+    all_unis = {u["id"]: u for u in CsvDatabase.readAll("truongDaiHoc")}
+    all_majors = {m["id"]: m for m in CsvDatabase.readAll("nganhHoc")}
+    all_combs = {c["id"]: c for c in CsvDatabase.readAll("toHopMon")}
+    all_methods = {m["id"]: m for m in CsvDatabase.readAll("phuongThucXetTuyen")}
+    all_benchmarks = CsvDatabase.readAll("diemChuan")
 
     q = str(query or "").strip().lower()
-
     results = []
-    for b in allBenchmarks:
-        u = allUnis.get(b.get("truongDaiHocId"), {})
-        m = allMajors.get(b.get("nganhHocId"), {})
-        comb = allCombs.get(b.get("toHopMonId"), {})
-        method = allMethods.get(b.get("phuongThucXetTuyenId"), {})
 
-        tenTruong = u.get("tenTruong", "")
-        maTruong = u.get("maTruong", "")
-        tenNganh = b.get("tenChuongTrinh") or m.get("tenNganh", "")
-        maNganh = m.get("maNganh", "")
-        maToHop = comb.get("maToHop", "")
+    for b in all_benchmarks:
+        u = all_unis.get(b.get("truongDaiHocId"), {})
+        m = all_majors.get(b.get("nganhHocId"), {})
+        comb = all_combs.get(b.get("toHopMonId"), {})
+        method = all_methods.get(b.get("phuongThucXetTuyenId"), {})
+
+        ten_truong = u.get("tenTruong", "")
+        ma_truong = u.get("maTruong", "")
+        ten_nganh = b.get("tenChuongTrinh") or m.get("tenNganh", "")
+        ma_nganh = m.get("maNganh", "")
+        ma_to_hop = comb.get("maToHop", "")
 
         if q:
             match = (
-                q in tenTruong.lower() or
-                q in maTruong.lower() or
-                q in tenNganh.lower() or
-                q in maNganh.lower() or
-                q in maToHop.lower()
+                q in ten_truong.lower() or
+                q in ma_truong.lower() or
+                q in ten_nganh.lower() or
+                q in ma_nganh.lower() or
+                q in ma_to_hop.lower()
             )
             if not match:
                 continue
 
-        scoreVal = b.get("diemChuan")
-        hpInfo = AdmissionService.traCuuHocPhi(programId=b.get("programId"), uni=u, major=m)
+        score_val = b.get("diemChuan")
+        hp_info = AdmissionService.traCuuHocPhi(programId=b.get("programId"), uni=u, major=m)
+
+        chi_tieu_val = b.get("chiTieu")
+        chi_tieu_clean = int(chi_tieu_val) if chi_tieu_val not in (None, "", "None", "null") else None
+
         results.append({
-            "maTruong": maTruong,
-            "tenTruong": tenTruong,
-            "tenNganh": tenNganh,
+            "maTruong": ma_truong,
+            "tenTruong": ten_truong,
+            "tenNganh": ten_nganh,
             "tenChuongTrinh": b.get("tenChuongTrinh", ""),
             "programId": b.get("programId", ""),
             "tenPhuongThuc": method.get("tenPhuongThuc", "Xét tuyển"),
             "maPhuongThuc": method.get("maPhuongThuc", "PT01"),
-            "maToHop": maToHop,
-            "nam": b.get("nam", 2025),
-            "diemChuan": float(scoreVal) if (scoreVal is not None and str(scoreVal).strip() != "") else None,
-            "hocPhiUocTinh": hpInfo["hocPhiText"],
-            "trangThaiHocPhi": hpInfo.get("trangThaiHocPhi", "UNVERIFIED"),
-            "nguonMinhChung": hpInfo.get("nguonMinhChung", ""),
-            "urlNguon": hpInfo.get("urlNguon", ""),
-            "chiTieu": int(b.get("chiTieu") or 100)
+            "maToHop": ma_to_hop,
+            "nam": b.get("nam", 2026),
+            "diemChuan": float(score_val) if (score_val is not None and str(score_val).strip() != "") else None,
+            "hocPhiUocTinh": hp_info["hocPhiText"],
+            "trangThaiHocPhi": hp_info.get("trangThaiHocPhi", "UNVERIFIED"),
+            "nguonMinhChung": hp_info.get("nguonMinhChung", ""),
+            "urlNguon": hp_info.get("urlNguon", ""),
+            "chiTieu": chi_tieu_clean
         })
 
-        if len(results) >= clampedLimit:
+        if len(results) >= clamped:
             break
 
     return results
 
 
-@app.post("/api/benchmarks")
-def createBenchmark(req: DiemChuanCreateRequest, admin: Dict[str, Any] = Depends(requireAdmin)):
-    newBc = CsvDatabase.insert("diemChuan", req.model_dump())
-    return {"thanhCong": True, "thongBao": "Đã thêm điểm chuẩn mới.", "diemChuan": newBc}
+exploreBenchmarks = explore_benchmarks
 
+
+@app.post("/api/benchmarks")
+def create_benchmark(req: DiemChuanCreateRequest, admin: Dict[str, Any] = Depends(require_admin)):
+    # Xác thực khóa ngoại
+    if not CsvDatabase.findById("truongDaiHoc", req.truongDaiHocId):
+        raise HTTPException(status_code=400, detail=f"Không tìm thấy trường đại học với ID {req.truongDaiHocId}.")
+    if not CsvDatabase.findById("nganhHoc", req.nganhHocId):
+        raise HTTPException(status_code=400, detail=f"Không tìm thấy ngành học với ID {req.nganhHocId}.")
+    if not CsvDatabase.findById("toHopMon", req.toHopMonId):
+        raise HTTPException(status_code=400, detail=f"Không tìm thấy tổ hợp môn với ID {req.toHopMonId}.")
+    if not CsvDatabase.findById("phuongThucXetTuyen", req.phuongThucXetTuyenId):
+        raise HTTPException(status_code=400, detail=f"Không tìm thấy phương thức tuyển sinh với ID {req.phuongThucXetTuyenId}.")
+
+    # Kiểm tra điểm chuẩn trong thang điểm
+    scale = req.scoreScale or "SCALE_30"
+    max_scale = 10.0 if scale in ("GPA_10", "SCALE_10") else (40.0 if scale in ("SCALE_40", "THANG_40") else (100.0 if scale == "SCALE_100" else (1200.0 if scale == "SCALE_1200" else 30.0)))
+    if req.diemChuan < 0.0 or req.diemChuan > max_scale:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Điểm chuẩn {req.diemChuan} không nằm trong thang điểm hợp lệ (0.0 đến {max_scale}) của thang {scale}."
+        )
+
+    data = req.model_dump()
+    new_bc = CsvDatabase.insert("diemChuan", data)
+    return {"thanhCong": True, "thongBao": "Đã thêm điểm chuẩn mới.", "diemChuan": new_bc}
+
+
+createBenchmark = create_benchmark
+
+
+# --- Score Calculation and Student Services ---
 
 @app.post("/api/calculate-score")
-def calculateScore(req: ScoreCalculationRequest):
-    for mon, diem in req.diemMonHoc.items():
-        if diem is not None:
-            if not isinstance(diem, (int, float)) or not math.isfinite(diem) or diem < 0.0 or diem > 10.0:
-                raise HTTPException(status_code=400, detail=f"Điểm môn '{mon}' phải nằm trong thang điểm hợp lệ từ 0.0 đến 10.0")
-
-    diemToHop = ScoringService.tinhDiemToHop(req.diemMonHoc, req.maToHop)
-    if diemToHop is None:
+def calculate_score(req: ScoreCalculationRequest):
+    diem_to_hop = ScoringService.tinhDiemToHop(req.diemMonHoc, req.maToHop)
+    if diem_to_hop is None:
         raise HTTPException(status_code=400, detail=f"Không đủ điểm các môn bắt buộc của tổ hợp {req.maToHop}")
 
-    diemUuTien = ScoringService.tinhDiemUuTien(req.khuVuc or "KV3", req.doiTuong or "NONE", diemToHop)
-    diemXetTuyen = ScoringService.tinhDiemXetTuyen(diemToHop, diemUuTien)
+    diem_uu_tien = ScoringService.tinhDiemUuTien(req.khuVuc or "KV3", req.doiTuong or "NONE", diem_to_hop)
+    diem_xet_tuyen = ScoringService.tinhDiemXetTuyen(diem_to_hop, diem_uu_tien)
 
     return {
         "maToHop": req.maToHop,
-        "diemToHop": diemToHop,
-        "diemUuTien": diemUuTien,
-        "diemXetTuyen": diemXetTuyen
+        "diemToHop": diem_to_hop,
+        "diemUuTien": diem_uu_tien,
+        "diemXetTuyen": diem_xet_tuyen
     }
 
 
+calculateScore = calculate_score
+
+
 @app.post("/api/profile")
-def saveStudentProfile(req: StudentProfileInput, currentUser: Dict[str, Any] = Depends(requireAuth)):
+def save_student_profile(req: StudentProfileInput, current_user: Dict[str, Any] = Depends(require_auth)):
     data = req.model_dump()
-    data["nguoiDungId"] = currentUser["id"]
+    data["nguoiDungId"] = current_user["id"]
 
     if isinstance(data.get("phuongThucMongMuon"), list):
         data["phuongThucMongMuon"] = ",".join(data["phuongThucMongMuon"])
 
     data["ngayCapNhat"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    existing = CsvDatabase.findWhere("hoSoHocSinh", {"nguoiDungId": currentUser["id"]})
+    existing = CsvDatabase.findWhere("hoSoHocSinh", {"nguoiDungId": current_user["id"]})
     if existing:
-        savedProfile = CsvDatabase.update("hoSoHocSinh", existing[0]["id"], data)
+        saved_profile = CsvDatabase.update("hoSoHocSinh", existing[0]["id"], data)
     else:
-        savedProfile = CsvDatabase.insert("hoSoHocSinh", data)
-    return {"thanhCong": True, "thongBao": "Đã lưu hồ sơ học sinh.", "hoSo": savedProfile}
+        saved_profile = CsvDatabase.insert("hoSoHocSinh", data)
+
+    return {"thanhCong": True, "thongBao": "Đã lưu hồ sơ học sinh.", "hoSo": saved_profile}
+
+
+saveStudentProfile = save_student_profile
 
 
 @app.post("/api/recommend")
-def recommendWishes(req: StudentProfileInput):
-    profileDict = req.model_dump()
-    res = AdmissionService.deXuatNguyenVong(profileDict)
-    return res
+def recommend_wishes(req: StudentProfileInput):
+    profile_dict = req.model_dump()
+    return AdmissionService.deXuatNguyenVong(profile_dict)
+
+
+recommendWishes = recommend_wishes
 
 
 @app.get("/api/compare-methods/{truongDaiHocId}/{nganhHocId}")
-def compareMethods(truongDaiHocId: int, nganhHocId: int):
+def compare_methods(truongDaiHocId: int, nganhHocId: int):
     return AdmissionService.soSanhPhuongThucCuaNganh(truongDaiHocId, nganhHocId)
 
 
+compareMethods = compare_methods
+
+
 @app.post("/api/wishlist/save")
-def saveWishlist(req: WishlistSaveRequest, user: Dict[str, Any] = Depends(requireAuth)):
-    danhSachDict = [item.model_dump() for item in req.danhSachNguyenVong]
-    res = AdmissionService.luuDanhSachNguyenVong(user["id"], danhSachDict)
+def save_wishlist(req: WishlistSaveRequest, user: Dict[str, Any] = Depends(require_auth)):
+    danh_sach_dict = [item.model_dump() for item in req.danhSachNguyenVong]
+    res = AdmissionService.luuDanhSachNguyenVong(user["id"], danh_sach_dict)
     if not res.get("thanhCong"):
         raise HTTPException(status_code=400, detail=res.get("thongBao", "Lưu nguyện vọng thất bại."))
     return res
 
 
+saveWishlist = save_wishlist
+
+
 @app.get("/api/wishlist-history")
-def getWishlistHistory(user: Dict[str, Any] = Depends(requireAuth)):
-    uId = user.get("id")
-    userProfiles = CsvDatabase.findWhere("hoSoHocSinh", {"nguoiDungId": uId})
-    if not userProfiles:
+def get_wishlist_history(user: Dict[str, Any] = Depends(require_auth)):
+    u_id = user.get("id")
+    user_profiles = CsvDatabase.findWhere("hoSoHocSinh", {"nguoiDungId": u_id})
+    if not user_profiles:
         return []
 
-    profileIds = set()
-    for p in userProfiles:
-        try:
-            profileIds.add(int(float(p["id"])))
-        except (ValueError, TypeError):
-            pass
+    profile_ids = {int(float(p["id"])) for p in user_profiles if p.get("id") is not None}
+    all_wishes = CsvDatabase.readAll("goiYNguyenVong")
+    user_wishes = [
+        w for w in all_wishes
+        if w.get("hoSoHocSinhId") is not None and int(float(w["hoSoHocSinhId"])) in profile_ids
+    ]
 
-    allWishes = CsvDatabase.readAll("goiYNguyenVong")
-    userWishes = []
-    for w in allWishes:
-        wHsId = w.get("hoSoHocSinhId")
-        if wHsId is not None:
-            try:
-                if int(float(wHsId)) in profileIds:
-                    userWishes.append(w)
-            except (ValueError, TypeError):
-                pass
+    all_unis = {u["id"]: u for u in CsvDatabase.readAll("truongDaiHoc")}
+    all_majors = {m["id"]: m for m in CsvDatabase.readAll("nganhHoc")}
+    all_combs = {c["id"]: c for c in CsvDatabase.readAll("toHopMon")}
+    all_methods = {m["id"]: m for m in CsvDatabase.readAll("phuongThucXetTuyen")}
 
-    allUnis = {u["id"]: u for u in CsvDatabase.readAll("truongDaiHoc")}
-    allMajors = {m["id"]: m for m in CsvDatabase.readAll("nganhHoc")}
-    allCombs = {c["id"]: c for c in CsvDatabase.readAll("toHopMon")}
-    allMethods = {m["id"]: m for m in CsvDatabase.readAll("phuongThucXetTuyen")}
+    def _clean_str(val: Any) -> str:
+        if val is None:
+            return ""
+        s = str(val).strip()
+        return "" if s.lower() in ("nan", "none", "null") else s
 
     enriched = []
-    for w in userWishes[-20:]:
-        wCopy = dict(w)
-        uni = allUnis.get(w.get("truongDaiHocId"), {})
-        major = allMajors.get(w.get("nganhHocId"), {})
-        comb = allCombs.get(w.get("toHopMonId"), {})
-        method = allMethods.get(w.get("phuongThucXetTuyenId"), {})
+    for w in user_wishes[-20:]:
+        w_copy = dict(w)
+        uni = all_unis.get(w.get("truongDaiHocId"), {})
+        major = all_majors.get(w.get("nganhHocId"), {})
+        comb = all_combs.get(w.get("toHopMonId"), {})
+        method = all_methods.get(w.get("phuongThucXetTuyenId"), {})
 
-        rawPrgName = w.get("tenChuongTrinh")
-        rawPrgId = w.get("programId")
-        rawCaseId = w.get("admissionCaseId")
-
-        def _cleanStr(val: Any) -> str:
-            if val is None:
-                return ""
-            s = str(val).strip()
-            return "" if s.lower() in ("nan", "none", "null") else s
-
-        wCopy["tenTruong"] = uni.get("tenTruong", "Đại học")
-        wCopy["maTruong"] = uni.get("maTruong", "UNI")
-        wCopy["tenNganh"] = major.get("tenNganh", "Ngành học")
-        wCopy["tenChuongTrinh"] = _cleanStr(rawPrgName) or major.get("tenNganh", "Ngành học")
-        wCopy["programId"] = _cleanStr(rawPrgId)
-        wCopy["admissionCaseId"] = _cleanStr(rawCaseId)
-        wCopy["maNganh"] = major.get("maNganh", "")
-        wCopy["maToHop"] = comb.get("maToHop", "")
-        wCopy["tenPhuongThuc"] = method.get("tenPhuongThuc", "")
-        wCopy["maPhuongThuc"] = method.get("maPhuongThuc", "")
-        enriched.append(wCopy)
+        w_copy["tenTruong"] = uni.get("tenTruong", "Đại học")
+        w_copy["maTruong"] = uni.get("maTruong", "UNI")
+        w_copy["tenNganh"] = major.get("tenNganh", "Ngành học")
+        w_copy["tenChuongTrinh"] = _clean_str(w.get("tenChuongTrinh")) or major.get("tenNganh", "Ngành học")
+        w_copy["programId"] = _clean_str(w.get("programId"))
+        w_copy["admissionCaseId"] = _clean_str(w.get("admissionCaseId"))
+        w_copy["maNganh"] = major.get("maNganh", "")
+        w_copy["maToHop"] = comb.get("maToHop", "")
+        w_copy["tenPhuongThuc"] = method.get("tenPhuongThuc", "")
+        w_copy["maPhuongThuc"] = method.get("maPhuongThuc", "")
+        enriched.append(w_copy)
 
     return enriched
 
+
+getWishlistHistory = get_wishlist_history
+
+
+# --- Static Files / Frontend Hosting ---
 
 FRONTEND_DIR = os.path.join(os.path.dirname(__file__), "frontend")
 if os.path.exists(FRONTEND_DIR):
     app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="static")
 
     @app.get("/")
-    def serveRoot():
+    def serve_root():
         return FileResponse(os.path.join(FRONTEND_DIR, "index.html"))
 
     @app.get("/{filename}")
-    def serveStaticFile(filename: str):
-        targetPath = os.path.join(FRONTEND_DIR, filename)
-        if os.path.isfile(targetPath):
-            return FileResponse(targetPath)
+    def serve_static_file(filename: str):
+        target_path = os.path.join(FRONTEND_DIR, filename)
+        if os.path.isfile(target_path):
+            return FileResponse(target_path)
         return FileResponse(os.path.join(FRONTEND_DIR, "index.html"))
 
 
 if __name__ == "__main__":
     import uvicorn
-    print(" Hệ thống đề xuất và lựa chọn  nguyện vọng đại học tối ưu cho học sinh THPT sử dụng thuật toán Random Forest ")
-    print(" Server dang chay tai: http://127.0.0.1:8000")
-    print(" Mo trinh duyet va truy cap dia chi tren de su dung.")
+    print("Hệ thống đề xuất nguyện vọng đại học đang khởi động trên http://127.0.0.1:8000")
     uvicorn.run("app:app", host="127.0.0.1", port=8000, reload=True)
-
