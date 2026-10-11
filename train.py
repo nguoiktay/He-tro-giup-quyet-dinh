@@ -5,7 +5,7 @@ import argparse
 import joblib
 import numpy as np
 import pandas as pd
-from typing import Dict, Any, Tuple
+from typing import Dict, Any, Tuple, Optional
 
 from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
@@ -37,15 +37,13 @@ def load_datasets(data_dir: str) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFra
     return df_thpt, df_hb, df_up, df_um
 
 
-
-
 def train_thpt_branch(
     df_thpt: pd.DataFrame,
     df_up: pd.DataFrame,
     df_um: pd.DataFrame,
-    save_path: str = None
+    save_path: Optional[str] = None
 ) -> Dict[str, Any]:
-    print("\nHuấn luyện mô hình điểm thi THPT (Hyperparameter Tuning & Cross-Validation)")
+    print("\nHuấn luyện mô hình điểm thi THPT: Dự báo lai (công thức xu hướng + RF)")
 
     if not df_up.empty:
         up_sub = df_up[["program_id", "major_group_id", "program_type"]].drop_duplicates("program_id")
@@ -120,7 +118,7 @@ def train_thpt_branch(
         ["Baseline 1: Điểm năm trước (Lag 1)", "Naïve Baseline", f"{mae_b1:.4f}", f"{rmse_b1:.4f}", f"{r2_b1:.4f}"],
         ["Baseline 2: Trung bình 2 năm (Mean 2Y)", "Naïve Baseline", f"{mae_b2:.4f}", f"{rmse_b2:.4f}", f"{r2_b2:.4f}"],
         ["Baseline 3: Decision Tree đơn lẻ (Depth=6)", "Single Tree", f"{mae_dt:.4f}", f"{rmse_dt:.4f}", f"{r2_dt:.4f}"],
-        ["Random Forest THPT (Tuned Residual)", "Ensemble ML", f"{mae_rf:.4f}", f"{rmse_rf:.4f}", f"{r2_rf:.4f}"]
+        ["Dự báo lai (công thức xu hướng + RF)", "Hybrid Ensemble", f"{mae_rf:.4f}", f"{rmse_rf:.4f}", f"{r2_rf:.4f}"]
     ]
     col_w = [42, 18, 12, 12, 12]
     print("".join(h.ljust(col_w[i]) for i, h in enumerate(headers)))
@@ -129,7 +127,7 @@ def train_thpt_branch(
         print("".join(c.ljust(col_w[i]) for i, c in enumerate(r)))
 
     print(f"- Tập thẩm định (2025): MAE={mae_val:.4f}, RMSE={rmse_val:.4f}, R2={r2_val:.4f}, Khoảng tin cậy 80% = ±{q80:.2f} điểm")
-    print(f"- Tập kiểm thử (2026): Random Forest MAE={mae_rf:.4f} < Baseline Lag-1 MAE={mae_b1:.4f} (R2={r2_rf:.4f})")
+    print(f"- Tập kiểm thử (2026): Dự báo lai MAE={mae_rf:.4f} < Baseline Lag-1 MAE={mae_b1:.4f} (R2={r2_rf:.4f})")
 
     residuals_test = np.abs(y_test - y_pred_rf)
     test_cov = float(np.mean(residuals_test <= q80))
@@ -146,11 +144,12 @@ def train_thpt_branch(
         {"Model / Method": "Baseline 1: Điểm năm trước (Lag 1)", "Test MAE": round(mae_b1, 4), "Test RMSE": round(rmse_b1, 4), "Test R2": round(r2_b1, 4), "Type": "Naïve Baseline", "Branch": "THPT (Time Series 2-Lag)"},
         {"Model / Method": "Baseline 2: Trung bình 2 năm (Mean 2Y)", "Test MAE": round(mae_b2, 4), "Test RMSE": round(rmse_b2, 4), "Test R2": round(r2_b2, 4), "Type": "Naïve Baseline", "Branch": "THPT (Time Series 2-Lag)"},
         {"Model / Method": "Baseline 3: Decision Tree đơn lẻ (Depth=6)", "Test MAE": round(mae_dt, 4), "Test RMSE": round(rmse_dt, 4), "Test R2": round(r2_dt, 4), "Type": "Single Tree Model", "Branch": "THPT (Time Series 2-Lag)"},
-        {"Model / Method": "Random Forest THPT", "Test MAE": round(mae_rf, 4), "Test RMSE": round(rmse_rf, 4), "Test R2": round(r2_rf, 4), "Type": "Ensemble ML Model", "Branch": "THPT (Time Series 2-Lag)"}
+        {"Model / Method": "Dự báo lai (công thức xu hướng + RF)", "Test MAE": round(mae_rf, 4), "Test RMSE": round(rmse_rf, 4), "Test R2": round(r2_rf, 4), "Type": "Hybrid Ensemble", "Branch": "THPT (Time Series 2-Lag)"}
     ])
     df_bench.to_csv(bench_csv, index=False, encoding="utf-8-sig")
 
     return {
+        "model": model,
         "mae": mae_rf, "rmse": rmse_rf, "r2": r2_rf, "q80": q80,
         "test_cov": test_cov, "val_size": len(val_df), "test_size": len(test_df)
     }
@@ -160,7 +159,7 @@ def train_hoc_ba_branch(
     df_hb: pd.DataFrame,
     df_up: pd.DataFrame,
     df_um: pd.DataFrame,
-    save_path: str = None
+    save_path: Optional[str] = None
 ) -> Dict[str, Any]:
     print("\nHuấn luyện và đánh giá phương thức Học bạ (thang 30)")
 
@@ -212,10 +211,11 @@ def train_hoc_ba_branch(
 def sync_calibrator_and_forecast(
     data_dir: str,
     q80: float,
-    val_size: int = None,
-    test_size: int = None,
-    test_coverage: float = None
-):
+    val_size: Optional[int] = None,
+    test_size: Optional[int] = None,
+    test_coverage: Optional[float] = None,
+    regenerated_predictions: bool = False
+) -> None:
     models_dir = os.path.join(data_dir, "models")
     calibrator_path = os.path.join(models_dir, "conformal_calibrator_thpt.json")
     radius = round(float(q80), 2)
@@ -239,32 +239,36 @@ def sync_calibrator_and_forecast(
         json.dump(cal_data, f, indent=2, ensure_ascii=False)
     print(f"\n[OK] Đã đồng bộ bộ hiệu chỉnh Conformal: {calibrator_path} (bán kính ±{radius} điểm)")
 
-    forecast_path = os.path.join(data_dir, "processed", "forecast_records_2026.csv")
-    if os.path.exists(forecast_path):
-        df_fc = pd.read_csv(forecast_path)
-        mask = df_fc["forecast_status"].str.upper() == "PREDICTED_TIME_SERIES"
-        df_fc.loc[mask, "uncertainty_radius_80"] = radius
-        df_fc.loc[mask, "lower_bound_80"] = (df_fc.loc[mask, "predicted_cutoff"] - radius).round(2)
-        df_fc.loc[mask, "upper_bound_80"] = (df_fc.loc[mask, "predicted_cutoff"] + radius).round(2)
-        df_fc.to_csv(forecast_path, index=False)
-        print(f"[OK] Đã đồng bộ bảng dữ liệu dự báo: {forecast_path}")
+    # Không ghi đè CSV dự báo nếu predicted_cutoff chưa sinh lại từ model
+    if regenerated_predictions:
+        forecast_path = os.path.join(data_dir, "processed", "forecast_records_2026.csv")
+        if os.path.exists(forecast_path):
+            df_fc = pd.read_csv(forecast_path)
+            mask = df_fc["forecast_status"].str.upper() == "PREDICTED_TIME_SERIES"
+            df_fc.loc[mask, "uncertainty_radius_80"] = radius
+            df_fc.loc[mask, "lower_bound_80"] = (df_fc.loc[mask, "predicted_cutoff"] - radius).round(2)
+            df_fc.loc[mask, "upper_bound_80"] = (df_fc.loc[mask, "predicted_cutoff"] + radius).round(2)
+            df_fc.to_csv(forecast_path, index=False)
+            print(f"[OK] Đã đồng bộ bảng dữ liệu dự báo: {forecast_path}")
+    else:
+        print("[INFO] Bỏ qua ghi đè forecast_records_2026.csv do chưa tái sinh predicted_cutoff từ model.")
 
 
 def main():
     parser = argparse.ArgumentParser(description="Tái tạo quy trình huấn luyện Random Forest Tuyển sinh")
     parser.add_argument("--method", choices=["thpt", "hoc_ba", "all"], default="all", help="Phương thức cần huấn luyện")
     parser.add_argument("--data-dir", default=os.path.join(os.path.dirname(__file__), "data"), help="Thư mục chứa dữ liệu")
-    parser.add_argument("--save", action="store_true", default=True, help="Lưu mô hình đã huấn luyện")
-    parser.add_argument("--promote", action="store_true", default=True, help="Lưu trực tiếp vào model chính thức rf_thpt_best.joblib")
-    parser.add_argument("--sync-forecast", action="store_true", default=True, help="Đồng bộ Conformal calibrator")
+    parser.add_argument("--save", action=argparse.BooleanOptionalAction, default=True, help="Lưu mô hình đã huấn luyện (--no-save để tắt)")
+    parser.add_argument("--promote", action=argparse.BooleanOptionalAction, default=True, help="Lưu vào model chính thức rf_thpt_best.joblib (--no-promote để tắt)")
+    parser.add_argument("--sync-forecast", action=argparse.BooleanOptionalAction, default=True, help="Đồng bộ Conformal calibrator (--no-sync-forecast để tắt)")
 
     args = parser.parse_args()
 
     df_thpt, df_hb, df_up, df_um = load_datasets(args.data_dir)
 
     models_dir = os.path.join(args.data_dir, "models")
-    thpt_model_path = os.path.join(models_dir, "rf_thpt_best.joblib") if args.save else None
-    hb_model_path = os.path.join(models_dir, "rf_hoc_ba_metadata.joblib") if args.save else None
+    thpt_model_path = os.path.join(models_dir, "rf_thpt_best.joblib") if (args.save and args.promote) else None
+    hb_model_path = os.path.join(models_dir, "rf_hoc_ba_metadata.joblib") if (args.save and args.promote) else None
 
     res_thpt = None
     if args.method in ["thpt", "all"]:
@@ -273,13 +277,14 @@ def main():
     if args.method in ["hoc_ba", "all"]:
         train_hoc_ba_branch(df_hb, df_up, df_um, save_path=hb_model_path)
 
-    if res_thpt and (args.promote or args.sync_forecast):
+    if res_thpt and args.sync_forecast:
         sync_calibrator_and_forecast(
             args.data_dir,
             res_thpt["q80"],
             val_size=res_thpt.get("val_size"),
             test_size=res_thpt.get("test_size"),
-            test_coverage=res_thpt.get("test_cov")
+            test_coverage=res_thpt.get("test_cov"),
+            regenerated_predictions=False
         )
 
     print("\nHoàn tất quá trình huấn luyện và đánh giá mô hình.")
