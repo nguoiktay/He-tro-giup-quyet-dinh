@@ -1,0 +1,15 @@
+﻿id,maToHop,tenToHop,mon1,mon2,mon3
+1,A00,"Toán, Lý, Hóa",diemToan,diemLy,diemHoa
+2,A01,"Toán, Lý, Anh",diemToan,diemLy,diemAnh
+3,A02,"Toán, Lý, Sinh",diemToan,diemLy,diemSinh
+4,B00,"Toán, Hóa, Sinh",diemToan,diemHoa,diemSinh
+5,B08,"Toán, Sinh, Anh",diemToan,diemSinh,diemAnh
+6,C00,"Văn, Sử, Địa",diemVan,diemSu,diemDia
+7,C01,"Văn, Toán, Lý",diemVan,diemToan,diemLy
+8,C02,"Văn, Toán, Hóa",diemVan,diemToan,diemHoa
+9,C19,"Văn, Sử, GDCD",diemVan,diemSu,diemGDCD
+10,D01,"Toán, Văn, Anh",diemToan,diemVan,diemAnh
+11,D07,"Toán, Hóa, Anh",diemToan,diemHoa,diemAnh
+12,D09,"Toán, Sử, Anh",diemToan,diemSu,diemAnh
+13,D10,"Toán, Địa, Anh",diemToan,diemDia,diemAnh
+14,D14,"Văn, Sử, Anh",diemVan,diemSu,diemAnh

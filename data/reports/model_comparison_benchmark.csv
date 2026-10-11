@@ -1,0 +1,8 @@
+Model / Method,Test MAE,Test RMSE,Test R2,Type,Branch
+Baseline 1: Điểm năm trước (Lag 1),1.056,1.5968,0.8633,Naïve Baseline,THPT (Time Series 2-Lag)
+Baseline 2: Trung bình 2 năm (Mean 2Y),1.1367,1.6649,0.8514,Naïve Baseline,THPT (Time Series 2-Lag)
+Baseline 3: Decision Tree đơn lẻ (Depth=8),1.2414,1.7719,0.8316,Single Tree Model,THPT (Time Series 2-Lag)
+Random Forest THPT,1.2378,1.7784,0.8304,Ensemble ML Model,THPT (Time Series 2-Lag)
+Baseline 1: Trung vị nhóm ngành (Train Median),3.6148,4.5785,-0.7705,Statistical Median Baseline,HOC_BA (Metadata-Only)
+Baseline 2: Decision Tree Metadata (Depth=8),3.4162,4.2247,-0.5075,Single Tree Model,HOC_BA (Metadata-Only)
+Random Forest Học bạ (Metadata RF),3.5129,4.3808,-0.621,Ensemble Metadata ML,HOC_BA (Metadata-Only)

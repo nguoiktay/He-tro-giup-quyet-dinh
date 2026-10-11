@@ -1,0 +1,12 @@
+{
+  "method": "Residual-based Split Conformal Prediction",
+  "calibration_set": "Validation 2025 (N=447)",
+  "test_set": "Test 2026 (N=766)",
+  "intervals": {
+    "confidence_80": {
+      "radius_points": 2.11,
+      "nominal_coverage": 0.8,
+      "empirical_test_coverage": 0.8381
+    }
+  }
+}

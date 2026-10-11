@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tuyển Sinh+ | Hệ thống hỗ trợ đề xuất nguyện vọng đại học</title>
+  <meta name="description" content="Tuyển Sinh+ - Hệ thống hỗ trợ đề xuất nguyện vọng đại học theo điểm thi THPT và điểm học bạ.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-container">
+      <a href="#home" class="brand-logo" id="brand-home-link">
+        <div class="brand-icon-box">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"/>
+          </svg>
+        </div>
+        <div class="brand-texts">
+          <span class="brand-title">Tuyển Sinh+</span>
+          <span class="brand-subtitle">Hệ thống gợi ý nguyện vọng đại học</span>
+        </div>
+      </a>
+
+      <nav class="main-nav">
+        <ul class="nav-links">
+          <li><button class="nav-item-btn active" id="nav-btn-home" data-target="view-home">Trang chủ</button></li>
+          <li><button class="nav-item-btn" id="nav-btn-explore" data-target="view-explore">Tra cứu</button></li>
+          <li><button class="nav-item-btn" id="nav-btn-profile" data-target="view-profile">Khuyến nghị</button></li>
+          <li><button class="nav-item-btn" id="nav-btn-wishlist" data-target="view-wishlist">Sắp xếp nguyện vọng</button></li>
+          <li><button class="nav-item-btn" id="nav-btn-about" data-target="view-about">Giới thiệu</button></li>
+        </ul>
+        <div id="auth-header-slot">
+          <button class="btn-auth-nav" id="btn-open-auth-modal">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            <span id="auth-btn-label">Đăng nhập</span>
+          </button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+
+    <section class="page-view active" id="view-home">
+      <div class="hero-grid">
+        <div class="hero-left">
+          <div class="hero-badge">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/>
+            </svg>
+            <span>Hệ thống hỗ trợ thí sinh xét tuyển đại học</span>
+          </div>
+          <h1 class="hero-title">
+            Tư vấn chọn nguyện vọng <br>
+            <span>đại học</span>
+          </h1>
+          <p class="hero-subtitle">
+            Ứng dụng công nghệ và dữ liệu tuyển sinh để giúp bạn lựa chọn nguyện vọng phù hợp, hỗ trợ so sánh các lựa chọn theo điểm và sở thích.
+          </p>
+
+          <div class="hero-methods-grid">
+            <div class="method-choice-card thpt" id="hero-btn-thpt">
+              <div class="method-card-left">
+                <div class="method-icon-circle">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                  </svg>
+                </div>
+                <div class="method-info">
+                  <h4>Điểm thi THPT</h4>
+                  <p>Tư vấn nguyện vọng dựa trên kết quả thi tốt nghiệp THPT</p>
+                </div>
+              </div>
+              <div class="method-arrow-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </div>
+            </div>
+
+            <div class="method-choice-card hocba" id="hero-btn-hocba">
+              <div class="method-card-left">
+                <div class="method-icon-circle">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                  </svg>
+                </div>
+                <div class="method-info">
+                  <h4>Điểm học bạ</h4>
+                  <p>Tư vấn nguyện vọng dựa trên điểm học bạ THPT</p>
+                </div>
+              </div>
+              <div class="method-arrow-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-right">
+          <div class="hero-visual-box">
+            <img src="hero_students.jpg" alt="Sinh viên đại học" class="hero-img">
+          </div>
+        </div>
+      </div>
+
+      <div class="features-section">
+        <div class="section-label">Tính năng nổi bật</div>
+        <h2 class="section-heading-center">Các chức năng hỗ trợ thí sinh</h2>
+
+        <div class="features-grid">
+          <div class="feature-card" id="card-feature-explore">
+            <div class="feature-icon-circle blue">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+            </div>
+            <div class="feature-text">
+              <h3>Tra cứu điểm chuẩn</h3>
+              <p>Dễ dàng tra cứu điểm chuẩn các năm trước của hàng trăm trường đại học, ngành học trên toàn quốc.</p>
+            </div>
+          </div>
+
+          <div class="feature-card" id="card-feature-predict">
+            <div class="feature-icon-circle emerald">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="20" x2="18" y2="10"></line>
+                <line x1="12" y1="20" x2="12" y2="4"></line>
+                <line x1="6" y1="20" x2="6" y2="14"></line>
+              </svg>
+            </div>
+            <div class="feature-text">
+              <h3>Dự báo mức độ phù hợp</h3>
+              <p>Tham khảo điểm chuẩn dự báo và mức chênh lệch điểm, gợi ý các ngành học phù hợp với năng lực của bạn.</p>
+            </div>
+          </div>
+
+          <div class="feature-card" id="card-feature-sort">
+            <div class="feature-icon-circle purple">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="8" y1="6" x2="21" y2="6"></line>
+                <line x1="8" y1="12" x2="21" y2="12"></line>
+                <line x1="8" y1="18" x2="21" y2="18"></line>
+                <circle cx="3.5" cy="6" r="1.5"></circle>
+                <circle cx="3.5" cy="12" r="1.5"></circle>
+                <circle cx="3.5" cy="18" r="1.5"></circle>
+              </svg>
+            </div>
+            <div class="feature-text">
+              <h3>Sắp xếp nguyện vọng</h3>
+              <p>Hỗ trợ sắp xếp thứ tự nguyện vọng theo mức độ phù hợp và độ an toàn.</p>
+            </div>
+          </div>
+        </div>
+
+        <p class="features-footer-quote">Hỗ trợ ra quyết định tuyển sinh trên cơ sở dữ liệu thực tế</p>
+      </div>
+    </section>
+
+    <section class="page-view" id="view-profile">
+      <div class="breadcrumb">
+        <a href="#home" class="btn-crumb-home">Trang chủ</a>
+        <span>&gt;</span>
+        <span class="active">Nhập thông tin xét tuyển</span>
+      </div>
+
+      <div class="page-title-header">
+        <h1>Nhập thông tin <span>xét tuyển</span></h1>
+        <p>Cung cấp thông tin của bạn để hệ thống phân tích và gợi ý những ngành học, trường đại học phù hợp nhất.</p>
+      </div>
+
+      <div class="form-grid-layout">
+        <div class="form-main-col">
+          <div class="form-card">
+            <div class="step-header">
+              <div class="step-num-badge">1</div>
+              <h3 class="step-title">Phương thức xét tuyển</h3>
+            </div>
+            <p class="step-desc">Chọn phương thức bạn muốn sử dụng để tìm kiếm khuyến nghị.</p>
+
+            <div class="radio-choices-row">
+              <div class="radio-card-option selected" id="radio-method-thpt" data-method="PT01">
+                <div class="radio-dot-indicator"></div>
+                <div class="radio-card-content">
+                  <h5>Chỉ sử dụng điểm thi THPT</h5>
+                  <p>Dựa trên kết quả thi tốt nghiệp THPT</p>
+                </div>
+              </div>
+
+              <div class="radio-card-option" id="radio-method-hocba" data-method="PT02">
+                <div class="radio-dot-indicator"></div>
+                <div class="radio-card-content">
+                  <h5>Chỉ sử dụng điểm học bạ</h5>
+                  <p>Dựa trên điểm trung bình học bạ THPT</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="step-header">
+              <div class="step-num-badge">2</div>
+              <h3 class="step-title" id="step2-title-label">Nhập thông tin điểm thi THPT</h3>
+            </div>
+            <p class="step-desc" id="step2-desc-label">Nhập điểm các môn trong tổ hợp xét tuyển của bạn.</p>
+
+            <div id="container-inputs-thpt">
+              <div class="scores-input-row">
+                <div class="form-field-group">
+                  <label class="form-label" id="label-mon1">Toán</label>
+                  <input type="number" step="0.1" min="0" max="10" class="form-input-text" id="input-score-m1" value="8.5">
+                </div>
+                <div class="form-field-group">
+                  <label class="form-label" id="label-mon2">Vật lý</label>
+                  <input type="number" step="0.1" min="0" max="10" class="form-input-text" id="input-score-m2" value="8.0">
+                </div>
+                <div class="form-field-group">
+                  <label class="form-label" id="label-mon3">Tiếng Anh</label>
+                  <input type="number" step="0.1" min="0" max="10" class="form-input-text" id="input-score-m3" value="8.0">
+                </div>
+              </div>
+
+              <div class="combination-select-wrap">
+                <div class="form-field-group">
+                  <label class="form-label">Tổ hợp xét tuyển</label>
+                  <select class="form-select" id="select-active-combination">
+                    <option value="A01" selected>A01 (Toán, Vật lý, Tiếng Anh)</option>
+                    <option value="A00">A00 (Toán, Vật lý, Hóa học)</option>
+                    <option value="D01">D01 (Toán, Ngữ văn, Tiếng Anh)</option>
+                    <option value="B00">B00 (Toán, Hóa học, Sinh học)</option>
+                    <option value="C00">C00 (Ngữ văn, Lịch sử, Địa lý)</option>
+                    <option value="D07">D07 (Toán, Hóa học, Tiếng Anh)</option>
+                  </select>
+                </div>
+              </div>
+              <p class="form-hint">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="16" x2="12" y2="12"></line>
+                  <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                Bạn có thể chọn tổ hợp khác nếu có mong muốn xét tuyển theo tổ hợp riêng.
+              </p>
+            </div>
+
+            <div id="container-inputs-hocba" style="display: none;">
+              <div class="scores-input-row" style="grid-template-columns: 1fr 1fr;">
+                <div class="form-field-group">
+                  <label class="form-label">Điểm trung bình học bạ lớp 12 (GPA)</label>
+                  <input type="number" step="0.05" min="0" max="10" class="form-input-text" id="input-score-gpa" value="8.6">
+                </div>
+                <div class="form-field-group">
+                  <label class="form-label">Tổ hợp môn xét học bạ</label>
+                  <select class="form-select" id="select-hb-combination">
+                    <option value="A00">A00 (Toán, Lý, Hóa)</option>
+                    <option value="A01" selected>A01 (Toán, Lý, Anh)</option>
+                    <option value="D01">D01 (Toán, Văn, Anh)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="priority-policy-group" style="margin-top: 1.25rem; margin-bottom: 1.25rem; padding: 1rem; background: var(--bg-subtle, #f8fafc); border-radius: var(--radius-md, 8px); border: 1px solid var(--border-light, #e2e8f0);">
+              <h5 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--text-heading, #1e293b);">Chính sách ưu tiên tuyển sinh (theo quy chế Bộ GD&ĐT)</h5>
+              <div class="scores-input-row" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-field-group">
+                  <label class="form-label">Khu vực ưu tiên</label>
+                  <select class="form-select" id="select-priority-region">
+                    <option value="KV3" selected>KV3 (Không cộng điểm)</option>
+                    <option value="KV1">KV1 (+0.75 điểm)</option>
+                    <option value="KV2-NT">KV2-NT (+0.50 điểm)</option>
+                    <option value="KV2">KV2 (+0.25 điểm)</option>
+                  </select>
+                </div>
+                <div class="form-field-group">
+                  <label class="form-label">Đối tượng ưu tiên</label>
+                  <select class="form-select" id="select-priority-target">
+                    <option value="NONE" selected>Không thuộc diện ưu tiên (0 điểm)</option>
+                    <option value="UT1">Nhóm UT1 (+2.00 điểm)</option>
+                    <option value="UT2">Nhóm UT2 (+1.00 điểm)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <button class="btn-submit-recommend" id="btn-submit-recommendation">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <span>Xem khuyến nghị</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </button>
+            <p class="submit-caption">Hệ thống sẽ phân tích dữ liệu và đưa ra danh sách ngành, trường phù hợp với bạn.</p>
+          </div>
+        </div>
+
+        <div class="form-sidebar-col">
+          <div class="filter-sidebar-card">
+            <div class="filter-header-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+              </svg>
+              <span>Bộ lọc nâng cao (tùy chọn)</span>
+            </div>
+            <p class="filter-header-desc">Thu hẹp kết quả theo sở thích và điều kiện của bạn.</p>
+
+            <div class="filter-fields-stack">
+              <div class="form-field-group">
+                <label class="form-label">Ngành yêu thích</label>
+                <div class="input-with-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                  </svg>
+                  <input type="text" class="form-input-text" id="filter-fav-major" placeholder="Tìm ngành bạn quan tâm...">
+                </div>
+              </div>
+
+              <div class="form-field-group">
+                <label class="form-label">Khu vực địa lý mong muốn học</label>
+                <div class="input-with-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                  </svg>
+                  <select class="form-select" id="filter-region">
+                    <option value="">Tất cả khu vực</option>
+                    <option value="Miền Bắc">Miền Bắc</option>
+                    <option value="Miền Nam">Miền Nam</option>
+                    <option value="Miền Trung">Miền Trung</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-field-group">
+                <label class="form-label">Mức học phí</label>
+                <div class="input-with-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="1" x2="12" y2="23"></line>
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                  </svg>
+                  <select class="form-select" id="filter-tuition">
+                    <option value="">Tất cả mức học phí</option>
+                    <option value="under_20m">Dưới 20 triệu/năm</option>
+                    <option value="20m_35m">20 - 35 triệu/năm</option>
+                    <option value="over_35m">Trên 35 triệu/năm</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-field-group">
+                <label class="form-label">Loại trường</label>
+                <div class="input-with-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3"></path>
+                  </svg>
+                  <select class="form-select" id="filter-uni-type">
+                    <option value="">Tất cả loại trường</option>
+                    <option value="Công lập">Trường công lập</option>
+                    <option value="Tư thục">Trường tư thục</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="info-tip-callout">
+              <div class="info-tip-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="16" x2="12" y2="12"></line>
+                  <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+              </div>
+              <div class="info-tip-text">
+                <h6>Không tìm thấy ngành mình yêu thích?</h6>
+                <p>Bạn vẫn có thể để trống các bộ lọc này. Hệ thống sẽ gợi ý danh sách phù hợp nhất dựa trên thông tin bạn cung cấp.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page-view" id="view-results">
+      <div class="breadcrumb">
+        <a href="#home" class="btn-crumb-home">Trang chủ</a>
+        <span>&gt;</span>
+        <span class="active">Kết quả khuyến nghị</span>
+      </div>
+
+      <div class="page-title-header">
+        <h1>Kết quả khuyến nghị</h1>
+        <p>Dựa trên thông tin và nguyện vọng của bạn, hệ thống đã phân tích và đưa ra những ngành học phù hợp nhất. Hãy tham khảo và lựa chọn nguyện vọng phù hợp nhé!</p>
+      </div>
+
+      <div class="results-layout">
+        <div class="results-sidebar-col">
+          <div class="student-info-sidebar">
+            <div class="student-info-top">
+              <div class="student-info-top-left">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <span>Thông tin thí sinh</span>
+              </div>
+              <button class="btn-edit-link" id="btn-edit-student-profile">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+                Chỉnh sửa
+              </button>
+            </div>
+
+            <h4 class="student-name-title" id="res-student-name">Phạm Minh Anh</h4>
+
+            <div class="student-data-row">
+              <span class="student-data-label">Phương thức xét tuyển</span>
+              <span class="badge-method-pill" id="res-method-name">Điểm thi THPT</span>
+            </div>
+
+            <div class="student-data-row" style="margin-top: 0.75rem; margin-bottom: 0.2rem;">
+              <span class="student-data-label">Tổng điểm 3 môn</span>
+            </div>
+            <div class="student-total-score-val" id="res-total-score-val">24.50</div>
+
+            <div class="student-data-row" style="margin-top: 0.5rem;">
+              <span class="student-data-label">Tổ hợp xét tuyển</span>
+              <span style="font-weight: 700; color: var(--text-main);" id="res-combination-code">A01 (Toán, Vật lý, Tiếng Anh)</span>
+            </div>
+          </div>
+
+          <div class="filter-sidebar-card">
+            <div class="filter-header-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+              </svg>
+              <span>Bộ lọc kết quả</span>
+            </div>
+            
+            <div class="filter-fields-stack" style="margin-top: 1rem;">
+              <div class="form-field-group">
+                <label class="form-label">Khu vực</label>
+                <select class="form-select" id="res-filter-region">
+                  <option value="">Tất cả khu vực</option>
+                  <option value="Miền Bắc">Miền Bắc</option>
+                  <option value="Miền Nam">Miền Nam</option>
+                  <option value="Miền Trung">Miền Trung</option>
+                </select>
+              </div>
+
+              <div class="form-field-group">
+                <label class="form-label">Loại trường</label>
+                <select class="form-select" id="res-filter-type">
+                  <option value="">Tất cả loại trường</option>
+                  <option value="Công lập">Trường công lập</option>
+                  <option value="Tư thục">Trường tư thục</option>
+                </select>
+              </div>
+
+              <div class="form-field-group">
+                <label class="form-label">Nhóm ngành</label>
+                <select class="form-select" id="res-filter-group">
+                  <option value="">Tất cả nhóm ngành</option>
+                  <option value="Kỹ thuật - Công nghệ">Kỹ thuật - Công nghệ</option>
+                  <option value="Kinh tế - Quản trị">Kinh tế - Quản trị</option>
+                  <option value="Y Dược">Y Dược</option>
+                  <option value="Khoa học Xã hội">Khoa học Xã hội</option>
+                </select>
+              </div>
+
+              <button class="btn-rec-save" id="btn-apply-results-filter" style="width: 100%; padding: 0.75rem; margin-top: 0.5rem;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                </svg>
+                Áp dụng bộ lọc
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="results-content-col">
+          <div class="results-content-header">
+            <div class="results-count-text">
+              Tìm thấy <span id="rec-count-badge">12 kết quả phù hợp</span>
+            </div>
+            <div class="sort-select-box">
+              <span>Sắp xếp theo</span>
+              <select class="form-select" id="select-sort-recs" style="width: auto; padding: 0.4rem 0.8rem; font-size: 0.88rem;">
+                <option value="portfolio" selected>Thứ tự khuyến nghị chiến lược (Mặc định)</option>
+                <option value="fit_desc">Độ phù hợp cao nhất</option>
+                <option value="score_asc">Điểm chuẩn tăng dần</option>
+                <option value="score_desc">Điểm chuẩn giảm dần</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="recommendations-list" id="recommendations-cards-slot">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page-view" id="view-wishlist">
+      <button class="top-back-btn" id="btn-back-to-results">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        Quay lại kết quả tư vấn
+      </button>
+
+      <div class="page-title-header">
+        <h1>So sánh và sắp xếp <span>nguyện vọng</span></h1>
+        <p>Đối chiếu thông tin các ngành học bạn quan tâm và sắp xếp thứ tự nguyện vọng phù hợp với mục tiêu của mình.</p>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.25rem;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" color="var(--primary)">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+        <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-main);">
+          So sánh chi tiết các chương trình đã chọn (<span id="compare-count-label">3</span> chương trình)
+        </h3>
+      </div>
+
+      <div class="compare-cards-container" id="compare-cards-slot">
+      </div>
+
+      <div class="wishlist-table-card">
+        <div class="wishlist-table-header">
+          <div>
+            <h3>Danh sách nguyện vọng của bạn (<span id="wishlist-count-badge">5</span> nguyện vọng)</h3>
+          </div>
+          <p>Kéo thả để thay đổi thứ tự nguyện vọng. Thứ tự này sẽ được sử dụng khi xuất danh sách.</p>
+        </div>
+
+        <div style="overflow-x: auto;">
+          <table class="wishlist-table">
+            <thead>
+              <tr>
+                <th style="width: 40px;"></th>
+                <th style="width: 60px;">STT</th>
+                <th>Trường đại học</th>
+                <th>Ngành học</th>
+                <th>Phương thức xét tuyển</th>
+                <th>Điểm chuẩn dự báo</th>
+                <th>Mức độ phù hợp</th>
+                <th style="width: 60px; text-align: center;">Xóa</th>
+              </tr>
+            </thead>
+            <tbody id="wishlist-table-tbody">
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="wishlist-bottom-actions">
+        <div>
+          <button class="btn-export-dropdown" id="btn-export-list">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Xuất danh sách nguyện vọng
+          </button>
+          <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.35rem;">
+            Xuất danh sách nguyện vọng tham khảo để lưu trữ và so sánh cá nhân.
+          </div>
+        </div>
+
+        <div>
+          <button class="btn-save-wishlist-order" id="btn-save-wishlist-final">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+              <polyline points="17 21 17 13 7 13 7 21"></polyline>
+              <polyline points="7 3 7 8 15 8"></polyline>
+            </svg>
+            Lưu thứ tự nguyện vọng
+          </button>
+          <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.35rem; text-align: right;">
+            Lưu lại danh sách và thứ tự để sử dụng sau
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page-view" id="view-explore">
+      <div class="breadcrumb">
+        <a href="#home" class="btn-crumb-home">Trang chủ</a>
+        <span>&gt;</span>
+        <span class="active">Tra cứu điểm chuẩn</span>
+      </div>
+
+      <div class="page-title-header">
+        <h1>Tra cứu điểm chuẩn <span>toàn quốc</span></h1>
+        <p>Tìm kiếm và so sánh điểm chuẩn các trường đại học, ngành học qua các năm.</p>
+      </div>
+
+      <div class="form-card" style="padding: 1.5rem; margin-bottom: 1.5rem;">
+        <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+          <div class="input-with-icon" style="flex: 1; min-width: 280px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" class="form-input-text" id="input-explore-search" placeholder="Nhập tên trường (Bách khoa, Ngoại thương...) hoặc tên ngành...">
+          </div>
+          <button class="btn-submit-recommend" id="btn-do-explore-search" style="margin-left: 0; padding: 0.75rem 1.75rem;">
+            Tìm kiếm
+          </button>
+        </div>
+      </div>
+
+      <div class="wishlist-table-card">
+        <div style="overflow-x: auto;">
+          <table class="wishlist-table">
+            <thead>
+              <tr>
+                <th>Mã trường</th>
+                <th>Trường đại học</th>
+                <th>Ngành đào tạo</th>
+                <th>Phương thức</th>
+                <th>Tổ hợp</th>
+                <th>Điểm chuẩn 2025</th>
+              </tr>
+            </thead>
+            <tbody id="explore-table-tbody">
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="page-view" id="view-about">
+      <div class="breadcrumb">
+        <a href="#home" class="btn-crumb-home">Trang chủ</a>
+        <span>&gt;</span>
+        <span class="active">Giới thiệu hệ thống</span>
+      </div>
+
+      <div class="page-title-header">
+        <h1>Giới thiệu hệ thống <span>Tuyển Sinh+</span></h1>
+        <p>Hệ thống trợ giúp quyết định tuyển sinh sử dụng dữ liệu lịch sử và mô hình Random Forest.</p>
+      </div>
+
+      <div class="form-card">
+        <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--text-main);">
+          Mục tiêu của hệ thống
+        </h3>
+        <p style="color: var(--text-muted); line-height: 1.7; margin-bottom: 1.5rem;">
+          Tuyển Sinh+ hỗ trợ học sinh THPT và phụ huynh tra cứu, định hướng và sắp xếp danh sách nguyện vọng xét tuyển đại học. Hệ thống dựa trên dữ liệu điểm chuẩn các năm và mô hình Random Forest để tính toán mức độ thuận lợi và xếp hạng thứ tự ưu tiên cho từng nguyện vọng.
+        </p>
+
+        <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--text-main);">
+          Phương pháp xử lý theo phương thức xét tuyển
+        </h3>
+        <p style="color: var(--text-muted); line-height: 1.7;">
+          Hệ thống hỗ trợ hai phương thức xét tuyển: Điểm thi tốt nghiệp THPT và Điểm học bạ THPT. Điểm xét tuyển được tính theo các quy tắc tuyển sinh mà hệ thống hỗ trợ (áp dụng cho kỳ tuyển sinh 2025–2026), bao gồm quy đổi điểm ưu tiên khu vực và đối tượng theo công thức suy giảm tuyến tính từ 22.5 điểm trở lên.
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <p>© 2026 Tuyển Sinh+ - Hệ thống hỗ trợ đề xuất nguyện vọng đại học</p>
+    <p style="margin-top: 0.35rem; font-size: 0.8rem; color: var(--text-light);">
+      Dữ liệu tuyển sinh chính thức • Mô hình Random Forest cho phương thức THPT
+    </p>
+  </footer>
+
+  <div class="modal-backdrop" id="modal-auth-dialog">
+    <div class="modal-window">
+      <button class="modal-close-icon" id="btn-close-auth-dialog">&times;</button>
+      <div style="display: flex; gap: 1rem; border-bottom: 1px solid var(--border-light); padding-bottom: 0.75rem; margin-bottom: 1.25rem;">
+        <button id="modal-tab-login" class="nav-item-btn active" style="font-weight: 700;">Đăng nhập</button>
+        <button id="modal-tab-register" class="nav-item-btn" style="font-weight: 700;">Đăng ký</button>
+      </div>
+
+      <div id="auth-panel-login">
+        <div class="form-field-group" style="margin-bottom: 1rem;">
+          <label class="form-label">Tên đăng nhập</label>
+          <input type="text" id="auth-username" class="form-input-text" value="hocsinh">
+        </div>
+        <div class="form-field-group" style="margin-bottom: 1.5rem;">
+          <label class="form-label">Mật khẩu</label>
+          <input type="password" id="auth-password" class="form-input-text" value="hocsinh123">
+        </div>
+        <button class="btn-submit-recommend" id="btn-auth-do-login" style="width: 100%; margin-left: 0;">
+          Đăng nhập
+        </button>
+      </div>
+
+      <div id="auth-panel-register" style="display: none;">
+        <div class="form-field-group" style="margin-bottom: 0.75rem;">
+          <label class="form-label">Tên đăng nhập mới</label>
+          <input type="text" id="reg-username" class="form-input-text" placeholder="nguyenvana">
+        </div>
+        <div class="form-field-group" style="margin-bottom: 0.75rem;">
+          <label class="form-label">Mật khẩu</label>
+          <input type="password" id="reg-password" class="form-input-text" placeholder="******">
+        </div>
+        <div class="form-field-group" style="margin-bottom: 0.75rem;">
+          <label class="form-label">Họ và tên thí sinh</label>
+          <input type="text" id="reg-fullname" class="form-input-text" placeholder="Nguyễn Văn A">
+        </div>
+        <div class="form-field-group" style="margin-bottom: 1.25rem;">
+          <label class="form-label">Email</label>
+          <input type="email" id="reg-email" class="form-input-text" placeholder="email@gmail.com">
+        </div>
+        <button class="btn-submit-recommend" id="btn-auth-do-register" style="width: 100%; margin-left: 0;">
+          Đăng ký tài khoản
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modal-detail-dialog">
+    <div class="modal-window" style="max-width: 600px;">
+      <button class="modal-close-icon" id="btn-close-detail-dialog">&times;</button>
+      <div id="detail-modal-body"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

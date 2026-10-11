@@ -1,0 +1,360 @@
+﻿university_id,university_code,university_name,university_alias,university_type,province,region,official_website,admission_website,status,active_from,active_to,institution_level
+UNI_QHI,QHI,Trường Đại học Công nghệ - ĐHQGHN,UET,Công lập,Hà Nội,Miền Bắc,https://uet.vnu.edu.vn,https://tuyensinh.uet.vnu.edu.vn,Đang tuyển sinh,2004,,Đại học / Học viện
+UNI_QHT,QHT,Trường Đại học Khoa học Tự nhiên - ĐHQGHN,HUS,Công lập,Hà Nội,Miền Bắc,https://hus.vnu.edu.vn,https://tuyensinh.hus.vnu.edu.vn,Đang tuyển sinh,1993,,Đại học / Học viện
+UNI_QHX,QHX,Trường Đại học Khoa học Xã hội và Nhân văn - ĐHQGHN,USSH-VNU,Công lập,Hà Nội,Miền Bắc,https://ussh.vnu.edu.vn,https://tuyensinh.ussh.vnu.edu.vn,Đang tuyển sinh,1995,,Đại học / Học viện
+UNI_QHE,QHE,Trường Đại học Kinh tế - ĐHQGHN,UEB,Công lập,Hà Nội,Miền Bắc,https://ueb.edu.vn,https://tuyensinh.ueb.edu.vn,Đang tuyển sinh,2007,,Đại học / Học viện
+UNI_QHF,QHF,Trường Đại học Ngoại ngữ - ĐHQGHN,ULIS,Công lập,Hà Nội,Miền Bắc,https://ulis.vnu.edu.vn,https://tuyensinh.ulis.vnu.edu.vn,Đang tuyển sinh,1955,,Đại học / Học viện
+UNI_QHD,QHD,Trường Đại học Giáo dục - ĐHQGHN,UEd,Công lập,Hà Nội,Miền Bắc,https://education.vnu.edu.vn,https://tuyensinh.education.vnu.edu.vn,Đang tuyển sinh,2009,,Đại học / Học viện
+UNI_QHY,QHY,Trường Đại học Y Dược - ĐHQGHN,UMP-VNU,Công lập,Hà Nội,Miền Bắc,https://ump.vnu.edu.vn,https://tuyensinh.ump.vnu.edu.vn,Đang tuyển sinh,2020,,Đại học / Học viện
+UNI_QHL,QHL,Trường Đại học Luật - ĐHQGHN,VNU-UL,Công lập,Hà Nội,Miền Bắc,https://law.vnu.edu.vn,https://tuyensinh.law.vnu.edu.vn,Đang tuyển sinh,2022,,Đại học / Học viện
+UNI_VJU,VJU,Trường Đại học Việt Nhật - ĐHQGHN,VJU,Công lập,Hà Nội,Miền Bắc,https://vju.vnu.edu.vn,https://tuyensinh.vju.vnu.edu.vn,Đang tuyển sinh,2014,,Đại học / Học viện
+UNI_SIS,SIS,Trường Khoa học liên ngành và Nghệ thuật - ĐHQGHN,SIS-VNU,Công lập,Hà Nội,Miền Bắc,https://sis.vnu.edu.vn,https://tuyensinh.sis.vnu.edu.vn,Đang tuyển sinh,2017,,Đại học / Học viện
+UNI_QSB,QSB,Trường Đại học Bách khoa - ĐHQG TP.HCM,HCMUT,Công lập,TP. Hồ Chí Minh,Miền Nam,https://hcmut.edu.vn,https://tuyensinh.hcmut.edu.vn,Đang tuyển sinh,1957,,Đại học / Học viện
+UNI_QSC,QSC,Trường Đại học Khoa học Tự nhiên - ĐHQG TP.HCM,HCMUS,Công lập,TP. Hồ Chí Minh,Miền Nam,https://hcmus.edu.vn,https://tuyensinh.hcmus.edu.vn,Đang tuyển sinh,1941,,Đại học / Học viện
+UNI_QSX,QSX,Trường Đại học Khoa học Xã hội và Nhân văn - ĐHQG TP.HCM,HCMUSSH,Công lập,TP. Hồ Chí Minh,Miền Nam,https://hcmussh.edu.vn,https://tuyensinh.hcmussh.edu.vn,Đang tuyển sinh,1957,,Đại học / Học viện
+UNI_QST,QST,Trường Đại học Công nghệ Thông tin - ĐHQG TP.HCM,UIT,Công lập,TP. Hồ Chí Minh,Miền Nam,https://uit.edu.vn,https://tuyensinh.uit.edu.vn,Đang tuyển sinh,2006,,Đại học / Học viện
+UNI_QSK,QSK,Trường Đại học Kinh tế - Luật - ĐHQG TP.HCM,UEL,Công lập,TP. Hồ Chí Minh,Miền Nam,https://uel.edu.vn,https://tuyensinh.uel.edu.vn,Đang tuyển sinh,2000,,Đại học / Học viện
+UNI_QSI,QSI,Trường Đại học Quốc tế - ĐHQG TP.HCM,HCMIU,Công lập,TP. Hồ Chí Minh,Miền Nam,https://hcmiu.edu.vn,https://tuyensinh.hcmiu.edu.vn,Đang tuyển sinh,2003,,Đại học / Học viện
+UNI_QSY,QSY,Trường Đại học Khoa học Sức khỏe - ĐHQG TP.HCM,UHS-VNUHCM,Công lập,TP. Hồ Chí Minh,Miền Nam,https://medvnu.edu.vn,https://tuyensinh.medvnu.edu.vn,Đang tuyển sinh,2009,,Đại học / Học viện
+UNI_AGU,DAn,Trường Đại học An Giang - ĐHQG TP.HCM,AGU,Công lập,An Giang,Miền Nam,https://agu.edu.vn,https://tuyensinh.agu.edu.vn,Đang tuyển sinh,1999,,Đại học / Học viện
+UNI_DDK,DDK,Trường Đại học Bách khoa - Đại học Đà Nẵng,DUT,Công lập,Đà Nẵng,Miền Trung,https://dut.udn.vn,https://ts.dut.udn.vn,Đang tuyển sinh,1975,,Đại học / Học viện
+UNI_DDE,DDQ,Trường Đại học Kinh tế - Đại học Đà Nẵng,DUE,Công lập,Đà Nẵng,Miền Trung,https://due.udn.vn,https://ts.due.udn.vn,Đang tuyển sinh,1975,,Đại học / Học viện
+UNI_DDS,DDS,Trường Đại học Sư phạm - Đại học Đà Nẵng,UED,Công lập,Đà Nẵng,Miền Trung,https://ued.udn.vn,https://ts.ued.udn.vn,Đang tuyển sinh,1975,,Đại học / Học viện
+UNI_DDL_UDN,DDF,Trường Đại học Ngoại ngữ - Đại học Đà Nẵng,UFL,Công lập,Đà Nẵng,Miền Trung,https://ufl.udn.vn,https://ts.ufl.udn.vn,Đang tuyển sinh,2002,,Đại học / Học viện
+UNI_DDC,DDC,Trường Đại học Sư phạm Kỹ thuật - Đại học Đà Nẵng,UTE-UDN,Công lập,Đà Nẵng,Miền Trung,https://ute.udn.vn,https://ts.ute.udn.vn,Đang tuyển sinh,2017,,Đại học / Học viện
+UNI_VKU,VKU,Trường Đại học Công nghệ Thông tin & Truyền thông Việt - Hàn,VKU,Công lập,Đà Nẵng,Miền Trung,https://vku.udn.vn,https://ts.vku.udn.vn,Đang tuyển sinh,2020,,Đại học / Học viện
+UNI_YDN,DDY,Khoa Y - Dược - Đại học Đà Nẵng,SMP-UDN,Công lập,Đà Nẵng,Miền Trung,https://smp.udn.vn,https://ts.smp.udn.vn,Đang tuyển sinh,2007,,Đại học / Học viện
+UNI_DHK,DHK,Trường Đại học Khoa học - Đại học Huế,HUSC,Công lập,Thừa Thiên Huế,Miền Trung,https://husc.hueuni.edu.vn,https://tuyensinh.husc.hueuni.edu.vn,Đang tuyển sinh,1957,,Đại học / Học viện
+UNI_DHS,DHS,Trường Đại học Sư phạm - Đại học Huế,HUE-ED,Công lập,Thừa Thiên Huế,Miền Trung,https://dhs.hueuni.edu.vn,https://tuyensinh.dhs.hueuni.edu.vn,Đang tuyển sinh,1957,,Đại học / Học viện
+UNI_DHY,DHY,Trường Đại học Y - Dược - Đại học Huế,HUE-UMP,Công lập,Thừa Thiên Huế,Miền Trung,https://huemed-univ.edu.vn,https://tuyensinh.huemed-univ.edu.vn,Đang tuyển sinh,1957,,Đại học / Học viện
+UNI_DHN,DHN,Trường Đại học Nông Lâm - Đại học Huế,HUAF,Công lập,Thừa Thiên Huế,Miền Trung,https://huaf.edu.vn,https://tuyensinh.huaf.edu.vn,Đang tuyển sinh,1967,,Đại học / Học viện
+UNI_DHA,DHA,Trường Đại học Nghệ thuật - Đại học Huế,HUE-ARTS,Công lập,Thừa Thiên Huế,Miền Trung,https://hucarts.edu.vn,https://tuyensinh.hucarts.edu.vn,Đang tuyển sinh,1957,,Đại học / Học viện
+UNI_DHE,DHE,Trường Đại học Kinh tế - Đại học Huế,HCE,Công lập,Thừa Thiên Huế,Miền Trung,https://hce.edu.vn,https://tuyensinh.hce.edu.vn,Đang tuyển sinh,2002,,Đại học / Học viện
+UNI_DHF,DHF,Trường Đại học Ngoại ngữ - Đại học Huế,HUCFL,Công lập,Thừa Thiên Huế,Miền Trung,https://hucfl.edu.vn,https://tuyensinh.hucfl.edu.vn,Đang tuyển sinh,2004,,Đại học / Học viện
+UNI_DHL,DHL,Trường Đại học Luật - Đại học Huế,HUL,Công lập,Thừa Thiên Huế,Miền Trung,https://hul.edu.vn,https://tuyensinh.hul.edu.vn,Đang tuyển sinh,2015,,Đại học / Học viện
+UNI_DTS,DTS,Trường Đại học Sư phạm - Đại học Thái Nguyên,TNUE,Công lập,Thái Nguyên,Miền Bắc,https://dhsptn.edu.vn,https://tuyensinh.dhsptn.edu.vn,Đang tuyển sinh,1966,,Đại học / Học viện
+UNI_DTY,DTY,Trường Đại học Y - Dược - Đại học Thái Nguyên,TUMP,Công lập,Thái Nguyên,Miền Bắc,https://tump.edu.vn,https://tuyensinh.tump.edu.vn,Đang tuyển sinh,1968,,Đại học / Học viện
+UNI_DTK,DTK,Trường Đại học Kỹ thuật Công nghiệp - Đại học Thái Nguyên,TNUT,Công lập,Thái Nguyên,Miền Bắc,https://tnut.edu.vn,https://tuyensinh.tnut.edu.vn,Đang tuyển sinh,1965,,Đại học / Học viện
+UNI_DTN,DTN,Trường Đại học Nông Lâm - Đại học Thái Nguyên,TUAF,Công lập,Thái Nguyên,Miền Bắc,https://tuaf.edu.vn,https://tuyensinh.tuaf.edu.vn,Đang tuyển sinh,1969,,Đại học / Học viện
+UNI_DTE,DTE,Trường Đại học Kinh tế và Quản trị kinh doanh - Đại học Thái Nguyên,TUEBA,Công lập,Thái Nguyên,Miền Bắc,https://tueba.edu.vn,https://tuyensinh.tueba.edu.vn,Đang tuyển sinh,2004,,Đại học / Học viện
+UNI_TNUS,DTZ,Trường Đại học Công nghệ Thông tin và Truyền thông - ĐH Thái Nguyên,ICTU,Công lập,Thái Nguyên,Miền Bắc,https://ictu.edu.vn,https://tuyensinh.ictu.edu.vn,Đang tuyển sinh,2001,,Đại học / Học viện
+UNI_DTD,DTD,Trường Đại học Khoa học - Đại học Thái Nguyên,TNUS,Công lập,Thái Nguyên,Miền Bắc,https://tnus.edu.vn,https://tuyensinh.tnus.edu.vn,Đang tuyển sinh,2002,,Đại học / Học viện
+UNI_DTF,DTF,Trường Đại học Ngoại ngữ - Đại học Thái Nguyên,SFL-TNU,Công lập,Thái Nguyên,Miền Bắc,https://sfl.tnu.edu.vn,https://tuyensinh.sfl.tnu.edu.vn,Đang tuyển sinh,2007,,Đại học / Học viện
+UNI_BKA,BKA,Đại học Bách khoa Hà Nội,HUST,Công lập,Hà Nội,Miền Bắc,https://hust.edu.vn,https://ts.hust.edu.vn,Đang tuyển sinh,1956,,Đại học / Học viện
+UNI_KTS,KSA,Đại học Kinh tế TP. Hồ Chí Minh,UEH,Công lập,TP. Hồ Chí Minh,Miền Nam,https://ueh.edu.vn,https://tuyensinh.ueh.edu.vn,Đang tuyển sinh,1976,,Đại học / Học viện
+UNI_CTU,TCT,Trường Đại học Cần Thơ,CTU,Công lập,Cần Thơ,Miền Nam,https://ctu.edu.vn,https://tuyensinh.ctu.edu.vn,Đang tuyển sinh,1966,,Đại học / Học viện
+UNI_KHA,KHA,Trường Đại học Kinh tế Quốc dân,NEU,Công lập,Hà Nội,Miền Bắc,https://neu.edu.vn,https://daotao.neu.edu.vn,Đang tuyển sinh,1956,,Đại học / Học viện
+UNI_NTH,NTH,Trường Đại học Ngoại thương (Cơ sở Hà Nội),FTU,Công lập,Hà Nội,Miền Bắc,https://ftu.edu.vn,https://tuyensinh.ftu.edu.vn,Đang tuyển sinh,1960,,Đại học / Học viện
+UNI_SPH,SPH,Trường Đại học Sư phạm Hà Nội,HNUE,Công lập,Hà Nội,Miền Bắc,https://hnue.edu.vn,https://tuyensinh.hnue.edu.vn,Đang tuyển sinh,1951,,Đại học / Học viện
+UNI_SP2,SP2,Trường Đại học Sư phạm Hà Nội 2,HPU2,Công lập,Vĩnh Phúc,Miền Bắc,https://hpu2.edu.vn,https://tuyensinh.hpu2.edu.vn,Đang tuyển sinh,1967,,Đại học / Học viện
+UNI_SPS,SPS,Trường Đại học Sư phạm TP. Hồ Chí Minh,HCMUE,Công lập,TP. Hồ Chí Minh,Miền Nam,https://hcmue.edu.vn,https://tuyensinh.hcmue.edu.vn,Đang tuyển sinh,1976,,Đại học / Học viện
+UNI_SPK,SPK,Trường Đại học Sư phạm Kỹ thuật TP. Hồ Chí Minh,HCMUTE,Công lập,TP. Hồ Chí Minh,Miền Nam,https://hcmute.edu.vn,https://tuyensinh.hcmute.edu.vn,Đang tuyển sinh,1962,,Đại học / Học viện
+UNI_SKH,SKH,Trường Đại học Sư phạm Kỹ thuật Hưng Yên,UTEHY,Công lập,Hưng Yên,Miền Bắc,https://utehy.edu.vn,https://tuyensinh.utehy.edu.vn,Đang tuyển sinh,1966,,Đại học / Học viện
+UNI_SKN,SKN,Trường Đại học Sư phạm Kỹ thuật Nam Định,NUTE,Công lập,Nam Định,Miền Bắc,https://nute.edu.vn,https://tuyensinh.nute.edu.vn,Đang tuyển sinh,1966,,Đại học / Học viện
+UNI_SKV,SKV,Trường Đại học Sư phạm Kỹ thuật Vinh,VUTED,Công lập,Nghệ An,Miền Trung,https://vuted.edu.vn,https://tuyensinh.vuted.edu.vn,Đang tuyển sinh,1960,,Đại học / Học viện
+UNI_HAN,NHF,Trường Đại học Hà Nội,HANU,Công lập,Hà Nội,Miền Bắc,https://hanu.edu.vn,https://tuyensinh.hanu.edu.vn,Đang tuyển sinh,1959,,Đại học / Học viện
+UNI_GHA,GHA,Trường Đại học Giao thông Vận tải,UTC,Công lập,Hà Nội,Miền Bắc,https://utc.edu.vn,https://tuyensinh.utc.edu.vn,Đang tuyển sinh,1945,,Đại học / Học viện
+UNI_XDA,XDA,Trường Đại học Xây dựng Hà Nội,HUCE,Công lập,Hà Nội,Miền Bắc,https://huce.edu.vn,https://tuyensinh.huce.edu.vn,Đang tuyển sinh,1966,,Đại học / Học viện
+UNI_MDA,MDA,Trường Đại học Mỏ - Địa chất,HUMG,Công lập,Hà Nội,Miền Bắc,https://humg.edu.vn,https://tuyensinh.humg.edu.vn,Đang tuyển sinh,1966,,Đại học / Học viện
+UNI_TMA,TMA,Trường Đại học Thương mại,TMU,Công lập,Hà Nội,Miền Bắc,https://tmu.edu.vn,https://tuyensinh.tmu.edu.vn,Đang tuyển sinh,1960,,Đại học / Học viện
+UNI_MHN,MHN,Trường Đại học Mở Hà Nội,HOU,Công lập,Hà Nội,Miền Bắc,https://hou.edu.vn,https://tuyensinh.hou.edu.vn,Đang tuyển sinh,1993,,Đại học / Học viện
+UNI_MBS,MBS,Trường Đại học Mở TP. Hồ Chí Minh,OU,Công lập,TP. Hồ Chí Minh,Miền Nam,https://ou.edu.vn,https://tuyensinh.ou.edu.vn,Đang tuyển sinh,1990,,Đại học / Học viện
+UNI_TDV,TDV,Trường Đại học Vinh,Vinh Uni,Công lập,Nghệ An,Miền Trung,https://vinhuni.edu.vn,https://tuyensinh.vinhuni.edu.vn,Đang tuyển sinh,1959,,Đại học / Học viện
+UNI_QNU,QNU,Trường Đại học Quy Nhơn,QNU,Công lập,Bình Định,Miền Trung,https://qnu.edu.vn,https://tuyensinh.qnu.edu.vn,Đang tuyển sinh,1977,,Đại học / Học viện
+UNI_NTU,TSN,Trường Đại học Nha Trang,NTU,Công lập,Khánh Hòa,Miền Trung,https://ntu.edu.vn,https://tuyensinh.ntu.edu.vn,Đang tuyển sinh,1959,,Đại học / Học viện
+UNI_TTN,TTN,Trường Đại học Tây Nguyên,TNU,Công lập,Đắk Lắk,Miền Trung,https://ttn.edu.vn,https://tuyensinh.ttn.edu.vn,Đang tuyển sinh,1977,,Đại học / Học viện
+UNI_DLT,TDL,Trường Đại học Đà Lạt,DLU,Công lập,Lâm Đồng,Miền Trung,https://dlu.edu.vn,https://tuyensinh.dlu.edu.vn,Đang tuyển sinh,1958,,Đại học / Học viện
+UNI_DLU,DLU,Trường Đại học Luật Hà Nội,HLU,Công lập,Hà Nội,Miền Bắc,https://hlu.edu.vn,https://tuyensinh.hlu.edu.vn,Đang tuyển sinh,1979,,Đại học / Học viện
+UNI_LPS,LPS,Trường Đại học Luật TP. Hồ Chí Minh,ULAW,Công lập,TP. Hồ Chí Minh,Miền Nam,https://hcmulaw.edu.vn,https://tuyensinh.hcmulaw.edu.vn,Đang tuyển sinh,1976,,Đại học / Học viện
+UNI_VHH,HVD,Học viện Quản lý giáo dục,NAEM,Công lập,Hà Nội,Miền Bắc,https://niem.edu.vn,https://tuyensinh.niem.edu.vn,Đang tuyển sinh,2006,,Đại học / Học viện
+UNI_YHB,YHB,Trường Đại học Y Hà Nội,HMU,Công lập,Hà Nội,Miền Bắc,https://hmu.edu.vn,https://tuyensinh.hmu.edu.vn,Đang tuyển sinh,1902,,Đại học / Học viện
+UNI_DKH,DKH,Trường Đại học Dược Hà Nội,HUP,Công lập,Hà Nội,Miền Bắc,https://hup.edu.vn,https://tuyensinh.hup.edu.vn,Đang tuyển sinh,1961,,Đại học / Học viện
+UNI_YDS,YDS,Trường Đại học Y Dược TP. Hồ Chí Minh,UMP,Công lập,TP. Hồ Chí Minh,Miền Nam,https://ump.edu.vn,https://tuyensinh.ump.edu.vn,Đang tuyển sinh,1947,,Đại học / Học viện
+UNI_TYS,TYS,Trường Đại học Y khoa Phạm Ngọc Thạch,PNTU,Công lập,TP. Hồ Chí Minh,Miền Nam,https://pnt.edu.vn,https://tuyensinh.pnt.edu.vn,Đang tuyển sinh,1989,,Đại học / Học viện
+UNI_YTB,YTB,Trường Đại học Y Dược Thái Bình,TBUMP,Công lập,Thái Bình,Miền Bắc,https://tbump.edu.vn,https://tuyensinh.tbump.edu.vn,Đang tuyển sinh,1968,,Đại học / Học viện
+UNI_YHP,YHP,Trường Đại học Y Dược Hải Phòng,HPMU,Công lập,Hải Phòng,Miền Bắc,https://hpmu.edu.vn,https://tuyensinh.hpmu.edu.vn,Đang tuyển sinh,1979,,Đại học / Học viện
+UNI_YCT,YCT,Trường Đại học Y Dược Cần Thơ,CTUMP,Công lập,Cần Thơ,Miền Nam,https://ctump.edu.vn,https://tuyensinh.ctump.edu.vn,Đang tuyển sinh,1979,,Đại học / Học viện
+UNI_YTC,YTC,Trường Đại học Y tế Công cộng,HUPH,Công lập,Hà Nội,Miền Bắc,https://huph.edu.vn,https://tuyensinh.huph.edu.vn,Đang tuyển sinh,2001,,Đại học / Học viện
+UNI_YDD,YDD,Trường Đại học Điều dưỡng Nam Định,NDUN,Công lập,Nam Định,Miền Bắc,https://ndun.edu.vn,https://tuyensinh.ndun.edu.vn,Đang tuyển sinh,2004,,Đại học / Học viện
+UNI_YHD,DKY,Trường Đại học Kỹ thuật Y tế Hải Dương,HMTU,Công lập,Hải Dương,Miền Bắc,https://hmtu.edu.vn,https://tuyensinh.hmtu.edu.vn,Đang tuyển sinh,2007,,Đại học / Học viện
+UNI_YMD,YDN,Trường Đại học Kỹ thuật Y - Dược Đà Nẵng,DUMTP,Công lập,Đà Nẵng,Miền Trung,https://dhtm.edu.vn,https://tuyensinh.dhtm.edu.vn,Đang tuyển sinh,2013,,Đại học / Học viện
+UNI_DCN,DCN,Trường Đại học Công nghiệp Hà Nội,HaUI,Công lập,Hà Nội,Miền Bắc,https://haui.edu.vn,https://tuyensinh.haui.edu.vn,Đang tuyển sinh,1898,,Đại học / Học viện
+UNI_DCP,IUH,Trường Đại học Công nghiệp TP. Hồ Chí Minh,IUH,Công lập,TP. Hồ Chí Minh,Miền Nam,https://iuh.edu.vn,https://tuyensinh.iuh.edu.vn,Đang tuyển sinh,1956,,Đại học / Học viện
+UNI_DCT,DCT,Trường Đại học Công Thương TP. Hồ Chí Minh,HUIT,Công lập,TP. Hồ Chí Minh,Miền Nam,https://huit.edu.vn,https://ts.huit.edu.vn,Đang tuyển sinh,1982,,Đại học / Học viện
+UNI_DDL,DDL,Trường Đại học Điện lực,EPU,Công lập,Hà Nội,Miền Bắc,https://epu.edu.vn,https://tuyensinh.epu.edu.vn,Đang tuyển sinh,1898,,Đại học / Học viện
+UNI_DKA,DKA,Trường Đại học Kinh tế - Kỹ thuật Công nghiệp,UNETI,Công lập,Hà Nội,Miền Bắc,https://uneti.edu.vn,https://tuyensinh.uneti.edu.vn,Đang tuyển sinh,1956,,Đại học / Học viện
+UNI_DSD,DSD,Trường Đại học Sao Đỏ,SDU,Công lập,Hải Dương,Miền Bắc,https://saodo.edu.vn,https://tuyensinh.saodo.edu.vn,Đang tuyển sinh,1969,,Đại học / Học viện
+UNI_DVT,DVT,Trường Đại học Công nghiệp Việt Trì,VUI,Công lập,Phú Thọ,Miền Bắc,https://vui.edu.vn,https://tuyensinh.vui.edu.vn,Đang tuyển sinh,1956,,Đại học / Học viện
+UNI_DQN,DQN,Trường Đại học Công nghiệp Quảng Ninh,QUI,Công lập,Quảng Ninh,Miền Bắc,https://qui.edu.vn,https://tuyensinh.qui.edu.vn,Đang tuyển sinh,1958,,Đại học / Học viện
+UNI_DVT2,VIU,Trường Đại học Công nghiệp Dệt may Hà Nội,HTU,Công lập,Hà Nội,Miền Bắc,https://hitu.edu.vn,https://tuyensinh.hitu.edu.vn,Đang tuyển sinh,1967,,Đại học / Học viện
+UNI_HTC,HTC,Học viện Tài chính,AOF,Công lập,Hà Nội,Miền Bắc,https://hvtc.edu.vn,https://tuyensinh.hvtc.edu.vn,Đang tuyển sinh,1963,,Đại học / Học viện
+UNI_NHH,NHH,Học viện Ngân hàng,BAV,Công lập,Hà Nội,Miền Bắc,https://hvnh.edu.vn,https://tuyensinh.hvnh.edu.vn,Đang tuyển sinh,1961,,Đại học / Học viện
+UNI_NHS,NHS,Trường Đại học Ngân hàng TP. Hồ Chí Minh,HUB,Công lập,TP. Hồ Chí Minh,Miền Nam,https://hub.edu.vn,https://tuyensinh.hub.edu.vn,Đang tuyển sinh,1976,,Đại học / Học viện
+UNI_DMS,DMS,Trường Đại học Tài chính - Marketing,UFM,Công lập,TP. Hồ Chí Minh,Miền Nam,https://ufm.edu.vn,https://tuyensinh.ufm.edu.vn,Đang tuyển sinh,1976,,Đại học / Học viện
+UNI_DFA,DFA,Trường Đại học Tài chính - Quản trị kinh doanh,UFBA,Công lập,Hưng Yên,Miền Bắc,https://ufba.edu.vn,https://tuyensinh.ufba.edu.vn,Đang tuyển sinh,1965,,Đại học / Học viện
+UNI_DKT,DKT,Trường Đại học Tài chính - Kế toán,UFA,Công lập,Quảng Ngãi,Miền Trung,https://cfa.edu.vn,https://tuyensinh.cfa.edu.vn,Đang tuyển sinh,1976,,Đại học / Học viện
+UNI_KTA,KTA,Trường Đại học Kiến trúc Hà Nội,HAU,Công lập,Hà Nội,Miền Bắc,https://hau.edu.vn,https://tuyensinh.hau.edu.vn,Đang tuyển sinh,1969,,Đại học / Học viện
+UNI_KTS2,KTS,Trường Đại học Kiến trúc TP. Hồ Chí Minh,UAH,Công lập,TP. Hồ Chí Minh,Miền Nam,https://uah.edu.vn,https://tuyensinh.uah.edu.vn,Đang tuyển sinh,1951,,Đại học / Học viện
+UNI_XDM,XDT,Trường Đại học Xây dựng Miền Trung,MUCE,Công lập,Phú Yên,Miền Trung,https://muce.edu.vn,https://tuyensinh.muce.edu.vn,Đang tuyển sinh,1976,,Đại học / Học viện
+UNI_XDW,MTU,Trường Đại học Xây dựng Miền Tây,MTU,Công lập,Vĩnh Long,Miền Nam,https://mtu.edu.vn,https://tuyensinh.mtu.edu.vn,Đang tuyển sinh,1977,,Đại học / Học viện
+UNI_HVN,HVN,Học viện Nông nghiệp Việt Nam,VNUA,Công lập,Hà Nội,Miền Bắc,https://vnua.edu.vn,https://tuyensinh.vnua.edu.vn,Đang tuyển sinh,1956,,Đại học / Học viện
+UNI_LNH,LNH,Trường Đại học Lâm nghiệp,VNUF,Công lập,Hà Nội,Miền Bắc,https://vnuf.edu.vn,https://tuyensinh.vnuf.edu.vn,Đang tuyển sinh,1964,,Đại học / Học viện
+UNI_TLA,TLA,Trường Đại học Thủy lợi,TLU,Công lập,Hà Nội,Miền Bắc,https://tlu.edu.vn,https://tuyensinh.tlu.edu.vn,Đang tuyển sinh,1959,,Đại học / Học viện
+UNI_NLS,NLS,Trường Đại học Nông Lâm TP. Hồ Chí Minh,NLU,Công lập,TP. Hồ Chí Minh,Miền Nam,https://hcmuaf.edu.vn,https://ts.hcmuaf.edu.vn,Đang tuyển sinh,1955,,Đại học / Học viện
+UNI_BVH,BVH,Học viện Công nghệ Bưu chính Viễn thông (Hà Nội),PTIT,Công lập,Hà Nội,Miền Bắc,https://ptit.edu.vn,https://tuyensinh.ptit.edu.vn,Đang tuyển sinh,1997,,Đại học / Học viện
+UNI_HHA,HHA,Trường Đại học Hàng hải Việt Nam,VMU,Công lập,Hải Phòng,Miền Bắc,https://vimaru.edu.vn,https://tuyensinh.vimaru.edu.vn,Đang tuyển sinh,1956,,Đại học / Học viện
+UNI_GTS,GTS,Trường Đại học Giao thông Vận tải TP. Hồ Chí Minh,UTH,Công lập,TP. Hồ Chí Minh,Miền Nam,https://uth.edu.vn,https://tuyensinh.uth.edu.vn,Đang tuyển sinh,1988,,Đại học / Học viện
+UNI_UST,UST,Trường Đại học Khoa học và Công nghệ Hà Nội,USTH,Công lập,Hà Nội,Miền Bắc,https://usth.edu.vn,https://tuyensinh.usth.edu.vn,Đang tuyển sinh,2009,,Đại học / Học viện
+UNI_VGU,VGU,Trường Đại học Việt Đức,VGU,Công lập,Bình Dương,Miền Nam,https://vgu.edu.vn,https://tuyensinh.vgu.edu.vn,Đang tuyển sinh,2008,,Đại học / Học viện
+UNI_HQT,HQT,Học viện Ngoại giao,DAV,Công lập,Hà Nội,Miền Bắc,https://dav.edu.vn,https://tuyensinh.dav.edu.vn,Đang tuyển sinh,1959,,Đại học / Học viện
+UNI_HBT,HBT,Học viện Báo chí và Tuyên truyền,AJC,Công lập,Hà Nội,Miền Bắc,https://ajc.hcma.vn,https://tuyensinh.ajc.edu.vn,Đang tuyển sinh,1962,,Đại học / Học viện
+UNI_HCH,HCH,Học viện Hành chính Quốc gia,NAPA,Công lập,Hà Nội,Miền Bắc,https://napa.vn,https://tuyensinh.napa.vn,Đang tuyển sinh,1959,,Đại học / Học viện
+UNI_APD,APD,Học viện Chính sách và Phát triển,APD,Công lập,Hà Nội,Miền Bắc,https://apd.edu.vn,https://tuyensinh.apd.edu.vn,Đang tuyển sinh,2008,,Đại học / Học viện
+UNI_BPH,HPN,Học viện Phụ nữ Việt Nam,VWA,Công lập,Hà Nội,Miền Bắc,https://hvpnvn.edu.vn,https://tuyensinh.hvpnvn.edu.vn,Đang tuyển sinh,2012,,Đại học / Học viện
+UNI_HTN,HTN,Học viện Thanh thiếu niên Việt Nam,VYA,Công lập,Hà Nội,Miền Bắc,https://vya.edu.vn,https://tuyensinh.vya.edu.vn,Đang tuyển sinh,1995,,Đại học / Học viện
+UNI_HVTA,HTA,Học viện Tòa án,VCA,Công lập,Hà Nội,Miền Bắc,https://hvta.toaan.gov.vn,https://tuyensinh.hvta.edu.vn,Đang tuyển sinh,2015,,Đại học / Học viện
+UNI_DKS,DKS,Trường Đại học Kiểm sát Hà Nội,HPU-LAW,Công lập,Hà Nội,Miền Bắc,https://tks.edu.vn,https://tuyensinh.tks.edu.vn,Đang tuyển sinh,1970,,Đại học / Học viện
+UNI_LDA,LDA,Trường Đại học Công đoàn,TU,Công lập,Hà Nội,Miền Bắc,https://dhcd.edu.vn,https://tuyensinh.dhcd.edu.vn,Đang tuyển sinh,1946,,Đại học / Học viện
+UNI_TDT,DTT,Trường Đại học Tôn Đức Thắng,TDTU,Công lập,TP. Hồ Chí Minh,Miền Nam,https://tdtu.edu.vn,https://tuyensinh.tdtu.edu.vn,Đang tuyển sinh,1997,,Đại học / Học viện
+UNI_DLX,DLX,Trường Đại học Lao động - Xã hội,ULSA,Công lập,Hà Nội,Miền Bắc,https://ulsa.edu.vn,https://tuyensinh.ulsa.edu.vn,Đang tuyển sinh,1961,,Đại học / Học viện
+UNI_DNT,DNT,Trường Đại học Nội vụ Hà Nội,HUHA,Công lập,Hà Nội,Miền Bắc,https://huha.edu.vn,https://tuyensinh.huha.edu.vn,Đang tuyển sinh,1971,,Đại học / Học viện
+UNI_HMT,MTH,Trường Đại học Mỹ thuật Việt Nam,VNUFA,Công lập,Hà Nội,Miền Bắc,https://mythuatvietnam.edu.vn,https://tuyensinh.mythuatvietnam.edu.vn,Đang tuyển sinh,1925,,Đại học / Học viện
+UNI_MTS,MTS,Trường Đại học Mỹ thuật TP. Hồ Chí Minh,HCMUFA,Công lập,TP. Hồ Chí Minh,Miền Nam,https://hcmufa.edu.vn,https://tuyensinh.hcmufa.edu.vn,Đang tuyển sinh,1913,,Đại học / Học viện
+UNI_SKD,SKD,Trường Đại học Sân khấu - Điện ảnh Hà Nội,SKDA,Công lập,Hà Nội,Miền Bắc,https://skda.edu.vn,https://tuyensinh.skda.edu.vn,Đang tuyển sinh,1980,,Đại học / Học viện
+UNI_SKS,SKD-HCM,Trường Đại học Sân khấu - Điện ảnh TP. Hồ Chí Minh,SKDA-HCM,Công lập,TP. Hồ Chí Minh,Miền Nam,https://skdahcm.edu.vn,https://tuyensinh.skdahcm.edu.vn,Đang tuyển sinh,1976,,Đại học / Học viện
+UNI_HVA,NVH,Học viện Âm nhạc Quốc gia Việt Nam,VNAM,Công lập,Hà Nội,Miền Bắc,https://vnam.edu.vn,https://tuyensinh.vnam.edu.vn,Đang tuyển sinh,1956,,Đại học / Học viện
+UNI_NVS,NVS,Nhạc viện TP. Hồ Chí Minh,HCMCONS,Công lập,TP. Hồ Chí Minh,Miền Nam,https://hcmcons.vn,https://tuyensinh.hcmcons.vn,Đang tuyển sinh,1956,,Đại học / Học viện
+UNI_HVM,HVM,Học viện Âm nhạc Huế,HAC,Công lập,Thừa Thiên Huế,Miền Trung,https://hocvienamnhachue.edu.vn,https://tuyensinh.hocvienamnhachue.edu.vn,Đang tuyển sinh,2007,,Đại học / Học viện
+UNI_HVDT,MUA,Học viện Múa Việt Nam,VNAD,Công lập,Hà Nội,Miền Bắc,https://vnad.edu.vn,https://tuyensinh.vnad.edu.vn,Đang tuyển sinh,1959,,Đại học / Học viện
+UNI_VHHN,VHH,Trường Đại học Văn hóa Hà Nội,HUC,Công lập,Hà Nội,Miền Bắc,https://huc.edu.vn,https://tuyensinh.huc.edu.vn,Đang tuyển sinh,1959,,Đại học / Học viện
+UNI_VHS,VHS,Trường Đại học Văn hóa TP. Hồ Chí Minh,HCMUC,Công lập,TP. Hồ Chí Minh,Miền Nam,https://hcmuc.edu.vn,https://tuyensinh.hcmuc.edu.vn,Đang tuyển sinh,1976,,Đại học / Học viện
+UNI_MTCN,MTC,Trường Đại học Mỹ thuật Công nghiệp,UAD,Công lập,Hà Nội,Miền Bắc,https://mythuatcongnghiep.edu.vn,https://tuyensinh.mythuatcongnghiep.edu.vn,Đang tuyển sinh,1949,,Đại học / Học viện
+UNI_TTBN,TTB,Trường Đại học Thể dục Thể thao Bắc Ninh,UPES1,Công lập,Bắc Ninh,Miền Bắc,https://upes1.edu.vn,https://tuyensinh.upes1.edu.vn,Đang tuyển sinh,1959,,Đại học / Học viện
+UNI_TTS,TTS,Trường Đại học Thể dục Thể thao TP. Hồ Chí Minh,USH,Công lập,TP. Hồ Chí Minh,Miền Nam,https://ush.edu.vn,https://tuyensinh.ush.edu.vn,Đang tuyển sinh,1976,,Đại học / Học viện
+UNI_TTD,TTD,Trường Đại học Thể dục Thể thao Đà Nẵng,UPES3,Công lập,Đà Nẵng,Miền Trung,https://upes3.edu.vn,https://tuyensinh.upes3.edu.vn,Đang tuyển sinh,1977,,Đại học / Học viện
+UNI_HNMU,HNM,Trường Đại học Thủ đô Hà Nội,HNMU,Công lập,Hà Nội,Miền Bắc,https://hnmu.edu.vn,https://tuyensinh.hnmu.edu.vn,Đang tuyển sinh,1959,,Đại học / Học viện
+UNI_DSG,SGD,Trường Đại học Sài Gòn,SGU,Công lập,TP. Hồ Chí Minh,Miền Nam,https://sgu.edu.vn,https://tuyensinh.sgu.edu.vn,Đang tuyển sinh,1972,,Đại học / Học viện
+UNI_THP,THP,Trường Đại học Hải Phòng,HPU,Công lập,Hải Phòng,Miền Bắc,https://dhhp.edu.vn,https://tuyensinh.dhhp.edu.vn,Đang tuyển sinh,1959,,Đại học / Học viện
+UNI_DHL2,UHL,Trường Đại học Hạ Long,HLU-QN,Công lập,Quảng Ninh,Miền Bắc,https://uhl.edu.vn,https://tuyensinh.uhl.edu.vn,Đang tuyển sinh,2014,,Đại học / Học viện
+UNI_HDT,HDT,Trường Đại học Hồng Đức,HDU,Công lập,Thanh Hóa,Miền Trung,https://hdu.edu.vn,https://tuyensinh.hdu.edu.vn,Đang tuyển sinh,1997,,Đại học / Học viện
+UNI_DVB,DVB,"Trường Đại học Văn hóa, Thể thao và Du lịch Thanh Hóa",DVH,Công lập,Thanh Hóa,Miền Trung,https://dvtdt.edu.vn,https://tuyensinh.dvtdt.edu.vn,Đang tuyển sinh,2011,,Đại học / Học viện
+UNI_DTH2,DNB,Trường Đại học Hoa Lư,HLUV,Công lập,Ninh Bình,Miền Bắc,https://hualu.edu.vn,https://tuyensinh.hualu.edu.vn,Đang tuyển sinh,2007,,Đại học / Học viện
+UNI_DTT2,TTr,Trường Đại học Tân Trào,TTrU,Công lập,Tuyên Quang,Miền Bắc,https://daihoctantrao.edu.vn,https://tuyensinh.daihoctantrao.edu.vn,Đang tuyển sinh,2013,,Đại học / Học viện
+UNI_DQN2,DQU,Trường Đại học Quảng Nam,QNU-QN,Công lập,Quảng Nam,Miền Trung,https://qnamuni.edu.vn,https://tuyensinh.qnamuni.edu.vn,Đang tuyển sinh,2007,,Đại học / Học viện
+UNI_DQB,DQB,Trường Đại học Quảng Bình,QBU,Công lập,Quảng Bình,Miền Trung,https://qbu.edu.vn,https://tuyensinh.qbu.edu.vn,Đang tuyển sinh,2006,,Đại học / Học viện
+UNI_DHA2,DHT,Trường Đại học Hà Tĩnh,HTU,Công lập,Hà Tĩnh,Miền Trung,https://htu.edu.vn,https://tuyensinh.htu.edu.vn,Đang tuyển sinh,2007,,Đại học / Học viện
+UNI_DPY,DPY,Trường Đại học Phú Yên,PYU,Công lập,Phú Yên,Miền Trung,https://pyu.edu.vn,https://tuyensinh.pyu.edu.vn,Đang tuyển sinh,2007,,Đại học / Học viện
+UNI_DKH2,UKH,Trường Đại học Khánh Hòa,UKH,Công lập,Khánh Hòa,Miền Trung,https://ukh.edu.vn,https://tuyensinh.ukh.edu.vn,Đang tuyển sinh,2015,,Đại học / Học viện
+UNI_DPH,DPH,Trường Đại học Phạm Văn Đồng,PDU,Công lập,Quảng Ngãi,Miền Trung,https://pdu.edu.vn,https://tuyensinh.pdu.edu.vn,Đang tuyển sinh,2007,,Đại học / Học viện
+UNI_TDM,TDM,Trường Đại học Thủ Dầu Một,TDMU,Công lập,Bình Dương,Miền Nam,https://tdmu.edu.vn,https://tuyensinh.tdmu.edu.vn,Đang tuyển sinh,2009,,Đại học / Học viện
+UNI_DDN,DND,Trường Đại học Đồng Nai,DNU,Công lập,Đồng Nai,Miền Nam,https://dnpu.edu.vn,https://tuyensinh.dnpu.edu.vn,Đang tuyển sinh,1976,,Đại học / Học viện
+UNI_TGU,TGU,Trường Đại học Tiền Giang,TGU,Công lập,Tiền Giang,Miền Nam,https://tgu.edu.vn,https://tuyensinh.tgu.edu.vn,Đang tuyển sinh,2005,,Đại học / Học viện
+UNI_DTV,DTV,Trường Đại học Trà Vinh,TVU,Công lập,Trà Vinh,Miền Nam,https://tvu.edu.vn,https://tuyensinh.tvu.edu.vn,Đang tuyển sinh,2006,,Đại học / Học viện
+UNI_SPD,SPD,Trường Đại học Đồng Tháp,DThU,Công lập,Đồng Tháp,Miền Nam,https://dthu.edu.vn,https://tuyensinh.dthu.edu.vn,Đang tuyển sinh,2003,,Đại học / Học viện
+UNI_DBL,DBL,Trường Đại học Bạc Liêu,BLU,Công lập,Bạc Liêu,Miền Nam,https://blu.edu.vn,https://tuyensinh.blu.edu.vn,Đang tuyển sinh,2006,,Đại học / Học viện
+UNI_DKG,DKG,Trường Đại học Kiên Giang,KGU,Công lập,Kiên Giang,Miền Nam,https://vnkgu.edu.vn,https://tuyensinh.vnkgu.edu.vn,Đang tuyển sinh,2014,,Đại học / Học viện
+UNI_FPT,FPT,Trường Đại học FPT,FPT Uni,Tư thục,Hà Nội,Miền Bắc,https://fpt.edu.vn,https://daihoc.fpt.edu.vn,Đang tuyển sinh,2006,,Đại học / Học viện
+UNI_TLU,DTh,Trường Đại học Thăng Long,TLU,Tư thục,Hà Nội,Miền Bắc,https://thanglong.edu.vn,https://tuyensinh.thanglong.edu.vn,Đang tuyển sinh,1988,,Đại học / Học viện
+UNI_PKH,PKA,Trường Đại học Phenikaa,PHENIKAA,Tư thục,Hà Nội,Miền Bắc,https://phenikaa-uni.edu.vn,https://tuyensinh.phenikaa-uni.edu.vn,Đang tuyển sinh,2007,,Đại học / Học viện
+UNI_DDA,DDA,Trường Đại học Đại Nam,DNU,Tư thục,Hà Nội,Miền Bắc,https://dainam.edu.vn,https://tuyensinh.dainam.edu.vn,Đang tuyển sinh,2007,,Đại học / Học viện
+UNI_DPD,DPD,Trường Đại học Phương Đông,PDU-HN,Tư thục,Hà Nội,Miền Bắc,https://phuongdong.edu.vn,https://tuyensinh.phuongdong.edu.vn,Đang tuyển sinh,1994,,Đại học / Học viện
+UNI_DKD,DCL,Trường Đại học Kinh doanh và Công nghệ Hà Nội,HUBT,Tư thục,Hà Nội,Miền Bắc,https://hubt.edu.vn,https://tuyensinh.hubt.edu.vn,Đang tuyển sinh,1996,,Đại học / Học viện
+UNI_DNT2,NTU,Trường Đại học Nguyễn Trãi,NTU-HN,Tư thục,Hà Nội,Miền Bắc,https://nguyentrai.edu.vn,https://tuyensinh.nguyentrai.edu.vn,Đang tuyển sinh,2008,,Đại học / Học viện
+UNI_DDB,DDD,Trường Đại học Đông Đô,HDIU,Tư thục,Hà Nội,Miền Bắc,https://hdiu.edu.vn,https://tuyensinh.hdiu.edu.vn,Đang tuyển sinh,1994,,Đại học / Học viện
+UNI_DHB,DHB,Trường Đại học Hòa Bình,HBU,Tư thục,Hà Nội,Miền Bắc,https://daihochoabinh.edu.vn,https://tuyensinh.daihochoabinh.edu.vn,Đang tuyển sinh,2008,,Đại học / Học viện
+UNI_TDO,TDO,Trường Đại học Thành Đô,TDU,Tư thục,Hà Nội,Miền Bắc,https://thanhdo.edu.vn,https://tuyensinh.thanhdo.edu.vn,Đang tuyển sinh,2004,,Đại học / Học viện
+UNI_CMC,CMC,Trường Đại học CMC,CMCU,Tư thục,Hà Nội,Miền Bắc,https://cmc-u.edu.vn,https://tuyensinh.cmc-u.edu.vn,Đang tuyển sinh,2014,,Đại học / Học viện
+UNI_UTM,UTM,Trường Đại học Công nghệ và Quản lý Hữu Nghị,UTM,Tư thục,Hà Nội,Miền Bắc,https://utm.edu.vn,https://tuyensinh.utm.edu.vn,Đang tuyển sinh,2007,,Đại học / Học viện
+UNI_DKT2,UKB,Trường Đại học Kinh Bắc,UKB,Tư thục,Bắc Ninh,Miền Bắc,https://ukb.edu.vn,https://tuyensinh.ukb.edu.vn,Đang tuyển sinh,2012,,Đại học / Học viện
+UNI_QTQ,QTQ,Trường Đại học Quốc tế Bắc Hà,BHIU,Tư thục,Bắc Ninh,Miền Bắc,https://biu.edu.vn,https://tuyensinh.biu.edu.vn,Đang tuyển sinh,2007,,Đại học / Học viện
+UNI_CVA,CVA,Trường Đại học Chu Văn An,ECU,Tư thục,Hưng Yên,Miền Bắc,https://cva.edu.vn,https://tuyensinh.cva.edu.vn,Đang tuyển sinh,2006,,Đại học / Học viện
+UNI_LTV,LTV,Trường Đại học Lương Thế Vinh,LTVU,Tư thục,Nam Định,Miền Bắc,https://ltvu.edu.vn,https://tuyensinh.ltvu.edu.vn,Đang tuyển sinh,2003,,Đại học / Học viện
+UNI_DTH3,CTD,Trường Đại học Thành Đông,TDU-HD,Tư thục,Hải Dương,Miền Bắc,https://thanhdong.edu.vn,https://tuyensinh.thanhdong.edu.vn,Đang tuyển sinh,2009,,Đại học / Học viện
+UNI_HPU,HPU,Trường Đại học Quản lý và Công nghệ Hải Phòng,HPU,Tư thục,Hải Phòng,Miền Bắc,https://hpu.edu.vn,https://tuyensinh.hpu.edu.vn,Đang tuyển sinh,1997,,Đại học / Học viện
+UNI_DTT3,DDT,Trường Đại học Duy Tân,DTU,Tư thục,Đà Nẵng,Miền Trung,https://duytan.edu.vn,https://tuyensinh.duytan.edu.vn,Đang tuyển sinh,1994,,Đại học / Học viện
+UNI_DDA2,DAD,Trường Đại học Đông Á,UDA,Tư thục,Đà Nẵng,Miền Trung,https://donga.edu.vn,https://tuyensinh.donga.edu.vn,Đang tuyển sinh,2009,,Đại học / Học viện
+UNI_KTD,KTD,Trường Đại học Kiến trúc Đà Nẵng,DAU,Tư thục,Đà Nẵng,Miền Trung,https://dau.edu.vn,https://tuyensinh.dau.edu.vn,Đang tuyển sinh,2006,,Đại học / Học viện
+UNI_DPX,DPX,Trường Đại học Phú Xuân,PXU,Tư thục,Thừa Thiên Huế,Miền Trung,https://phuxuan.edu.vn,https://tuyensinh.phuxuan.edu.vn,Đang tuyển sinh,2003,,Đại học / Học viện
+UNI_DQT,DQT,Trường Đại học Quang Trung,QTU,Tư thục,Bình Định,Miền Trung,https://qtu.edu.vn,https://tuyensinh.qtu.edu.vn,Đang tuyển sinh,2006,,Đại học / Học viện
+UNI_TBD,TBD,Trường Đại học Thái Bình Dương,TBD,Tư thục,Khánh Hòa,Miền Trung,https://tbd.edu.vn,https://tuyensinh.tbd.edu.vn,Đang tuyển sinh,2008,,Đại học / Học viện
+UNI_DYD,DYD,Trường Đại học Yersin Đà Lạt,YERSIN,Tư thục,Lâm Đồng,Miền Trung,https://yersin.edu.vn,https://tuyensinh.yersin.edu.vn,Đang tuyển sinh,2004,,Đại học / Học viện
+UNI_DPT,DPT,Trường Đại học Phan Thiết,UPT,Tư thục,Bình Thuận,Miền Trung,https://upt.edu.vn,https://tuyensinh.upt.edu.vn,Đang tuyển sinh,2009,,Đại học / Học viện
+UNI_DVL,DVL,Trường Đại học Văn Lang,VLU,Tư thục,TP. Hồ Chí Minh,Miền Nam,https://vlu.edu.vn,https://tuyensinh.vlu.edu.vn,Đang tuyển sinh,1995,,Đại học / Học viện
+UNI_HUTECH,DKC,Trường Đại học Công nghệ TP. Hồ Chí Minh,HUTECH,Tư thục,TP. Hồ Chí Minh,Miền Nam,https://hutech.edu.vn,https://tuyensinh.hutech.edu.vn,Đang tuyển sinh,1995,,Đại học / Học viện
+UNI_UEF,UEF,Trường Đại học Kinh tế - Tài chính TP. Hồ Chí Minh,UEF,Tư thục,TP. Hồ Chí Minh,Miền Nam,https://uef.edu.vn,https://tuyensinh.uef.edu.vn,Đang tuyển sinh,2007,,Đại học / Học viện
+UNI_DHD,HSU,Trường Đại học Hoa Sen,HSU,Tư thục,TP. Hồ Chí Minh,Miền Nam,https://hoasen.edu.vn,https://tuyensinh.hoasen.edu.vn,Đang tuyển sinh,1991,,Đại học / Học viện
+UNI_HIU,HIU,Trường Đại học Quốc tế Hồng Bàng,HIU,Tư thục,TP. Hồ Chí Minh,Miền Nam,https://hiu.vn,https://tuyensinh.hiu.vn,Đang tuyển sinh,1997,,Đại học / Học viện
+UNI_NTT,NTT,Trường Đại học Nguyễn Tất Thành,NTTU,Tư thục,TP. Hồ Chí Minh,Miền Nam,https://ntt.edu.vn,https://tuyensinh.ntt.edu.vn,Đang tuyển sinh,1999,,Đại học / Học viện
+UNI_DSI,SIU,Trường Đại học Quốc tế Sài Gòn,SIU,Tư thục,TP. Hồ Chí Minh,Miền Nam,https://siu.edu.vn,https://tuyensinh.siu.edu.vn,Đang tuyển sinh,2007,,Đại học / Học viện
+UNI_DGD,GDU,Trường Đại học Gia Định,GDU,Tư thục,TP. Hồ Chí Minh,Miền Nam,https://giadinh.edu.vn,https://tuyensinh.giadinh.edu.vn,Đang tuyển sinh,2007,,Đại học / Học viện
+UNI_DTH4,FLI,Trường Đại học Ngoại ngữ - Tin học TP. Hồ Chí Minh,HUFLIT,Tư thục,TP. Hồ Chí Minh,Miền Nam,https://huflit.edu.vn,https://tuyensinh.huflit.edu.vn,Đang tuyển sinh,1994,,Đại học / Học viện
+UNI_DVH2,DVH,Trường Đại học Văn Hiến,VHU,Tư thục,TP. Hồ Chí Minh,Miền Nam,https://vhu.edu.vn,https://tuyensinh.vhu.edu.vn,Đang tuyển sinh,1997,,Đại học / Học viện
+UNI_DCD,DSG,Trường Đại học Công nghệ Sài Gòn,STU,Tư thục,TP. Hồ Chí Minh,Miền Nam,https://stu.edu.vn,https://tuyensinh.stu.edu.vn,Đang tuyển sinh,1997,,Đại học / Học viện
+UNI_UMT,UMT,Trường Đại học Quản lý và Công nghệ TP. Hồ Chí Minh,UMT,Tư thục,TP. Hồ Chí Minh,Miền Nam,https://umt.edu.vn,https://tuyensinh.umt.edu.vn,Đang tuyển sinh,2021,,Đại học / Học viện
+UNI_DBR,BVU,Trường Đại học Bà Rịa - Vũng Tàu,BVU,Tư thục,Bà Rịa - Vũng Tàu,Miền Nam,https://bvu.edu.vn,https://tuyensinh.bvu.edu.vn,Đang tuyển sinh,2006,,Đại học / Học viện
+UNI_DBD,DBD,Trường Đại học Bình Dương,BDU,Tư thục,Bình Dương,Miền Nam,https://bdu.edu.vn,https://tuyensinh.bdu.edu.vn,Đang tuyển sinh,1997,,Đại học / Học viện
+UNI_DKB,DKB,Trường Đại học Kinh tế - Kỹ thuật Bình Dương,BETU,Tư thục,Bình Dương,Miền Nam,https://ktkt.edu.vn,https://tuyensinh.ktkt.edu.vn,Đang tuyển sinh,2010,,Đại học / Học viện
+UNI_DQI,EIU,Trường Đại học Quốc tế Miền Đông,EIU,Tư thục,Bình Dương,Miền Nam,https://eiu.edu.vn,https://tuyensinh.eiu.edu.vn,Đang tuyển sinh,2010,,Đại học / Học viện
+UNI_DLA,DLA,Trường Đại học Lạc Hồng,LHU,Tư thục,Đồng Nai,Miền Nam,https://lhu.edu.vn,https://tuyensinh.lhu.edu.vn,Đang tuyển sinh,1997,,Đại học / Học viện
+UNI_DCN2,DNTU,Trường Đại học Công nghệ Đồng Nai,DNTU,Tư thục,Đồng Nai,Miền Nam,https://dntu.edu.vn,https://tuyensinh.dntu.edu.vn,Đang tuyển sinh,2011,,Đại học / Học viện
+UNI_DKE,DKE,Trường Đại học Kinh tế Công nghiệp Long An,DLA-LA,Tư thục,Long An,Miền Nam,https://daihoclongan.edu.vn,https://tuyensinh.daihoclongan.edu.vn,Đang tuyển sinh,2007,,Đại học / Học viện
+UNI_TTU2,TTU,Trường Đại học Tân Tạo,TTU,Tư thục,Long An,Miền Nam,https://ttu.edu.vn,https://tuyensinh.ttu.edu.vn,Đang tuyển sinh,2010,,Đại học / Học viện
+UNI_DCV,DCV,Trường Đại học Cửu Long,MKU,Tư thục,Vĩnh Long,Miền Nam,https://mku.edu.vn,https://tuyensinh.mku.edu.vn,Đang tuyển sinh,2000,,Đại học / Học viện
+UNI_DNC,DNC,Trường Đại học Nam Cần Thơ,DNC,Tư thục,Cần Thơ,Miền Nam,https://nctu.edu.vn,https://tuyensinh.nctu.edu.vn,Đang tuyển sinh,2013,,Đại học / Học viện
+UNI_DTD2,TDU,Trường Đại học Tây Đô,TDU-CT,Tư thục,Cần Thơ,Miền Nam,https://tdu.edu.vn,https://tuyensinh.tdu.edu.vn,Đang tuyển sinh,2006,,Đại học / Học viện
+UNI_DVT3,VTT,Trường Đại học Võ Trường Toản,VTTU,Tư thục,Hậu Giang,Miền Nam,https://vttu.edu.vn,https://tuyensinh.vttu.edu.vn,Đang tuyển sinh,2008,,Đại học / Học viện
+UNI_MTA,MTA,Học viện Kỹ thuật Quân sự,MTA,Công lập,Hà Nội,Miền Bắc,https://mta.edu.vn,https://tuyensinh.mta.edu.vn,Đang tuyển sinh,1966,,Đại học / Học viện
+UNI_YQH,YQH,Học viện Quân y,VMMU,Công lập,Hà Nội,Miền Bắc,https://vmmu.edu.vn,https://tuyensinh.vmmu.edu.vn,Đang tuyển sinh,1949,,Đại học / Học viện
+UNI_DCH,DCH,Học viện Hậu cần,HAL,Công lập,Hà Nội,Miền Bắc,https://hocvienhaucan.edu.vn,https://tuyensinh.hocvienhaucan.edu.vn,Đang tuyển sinh,1951,,Đại học / Học viện
+UNI_PKH2,PKH,Học viện Phòng không - Không quân,ADAF,Công lập,Hà Nội,Miền Bắc,https://hocvienpkkq.edu.vn,https://tuyensinh.hocvienpkkq.edu.vn,Đang tuyển sinh,1964,,Đại học / Học viện
+UNI_HQH,HQH,Học viện Hải quân,VNA,Công lập,Khánh Hòa,Miền Trung,https://hocvienhaiquan.edu.vn,https://tuyensinh.hocvienhaiquan.edu.vn,Đang tuyển sinh,1955,,Đại học / Học viện
+UNI_BPH2,BPH,Học viện Biên phòng,BPA,Công lập,Hà Nội,Miền Bắc,https://hvbp.edu.vn,https://tuyensinh.hvbp.edu.vn,Đang tuyển sinh,1963,,Đại học / Học viện
+UNI_KVA,KVA,Học viện Khoa học Quân sự,MSA,Công lập,Hà Nội,Miền Bắc,https://hvkhqs.edu.vn,https://tuyensinh.hvkhqs.edu.vn,Đang tuyển sinh,1957,,Đại học / Học viện
+UNI_LQN,LQN,Trường Sĩ quan Lục quân 1,SQLQ1,Công lập,Hà Nội,Miền Bắc,https://sqlq1.edu.vn,https://tuyensinh.sqlq1.edu.vn,Đang tuyển sinh,1945,,Đại học / Học viện
+UNI_LQS,LQS,Trường Sĩ quan Lục quân 2,SQLQ2,Công lập,Đồng Nai,Miền Nam,https://sqlq2.edu.vn,https://tuyensinh.sqlq2.edu.vn,Đang tuyển sinh,1961,,Đại học / Học viện
+UNI_TTH,TTH,Trường Sĩ quan Thông tin,TTC,Công lập,Khánh Hòa,Miền Trung,https://tcu.edu.vn,https://tuyensinh.tcu.edu.vn,Đang tuyển sinh,1951,,Đại học / Học viện
+UNI_KQH,KQH,Trường Sĩ quan Không quân,AFAC,Công lập,Khánh Hòa,Miền Trung,https://sqkq.edu.vn,https://tuyensinh.sqkq.edu.vn,Đang tuyển sinh,1959,,Đại học / Học viện
+UNI_CNH,CNH,Trường Sĩ quan Công binh,EOC,Công lập,Bình Dương,Miền Nam,https://sqcb.edu.vn,https://tuyensinh.sqcb.edu.vn,Đang tuyển sinh,1955,,Đại học / Học viện
+UNI_PHH,PHH,Trường Sĩ quan Pháo binh,PAC,Công lập,Hà Nội,Miền Bắc,https://sqpb.edu.vn,https://tuyensinh.sqpb.edu.vn,Đang tuyển sinh,1957,,Đại học / Học viện
+UNI_TCH,TCH,Trường Sĩ quan Tăng thiết giáp,TAC,Công lập,Vĩnh Phúc,Miền Bắc,https://sqttg.edu.vn,https://tuyensinh.sqttg.edu.vn,Đang tuyển sinh,1965,,Đại học / Học viện
+UNI_KTH,KTH,Trường Sĩ quan Kỹ thuật Quân sự,MEC,Công lập,TP. Hồ Chí Minh,Miền Nam,https://sqkt.edu.vn,https://tuyensinh.sqkt.edu.vn,Đang tuyển sinh,1975,,Đại học / Học viện
+UNI_ANH,ANH,Học viện An ninh Nhân dân,PSA,Công lập,Hà Nội,Miền Bắc,https://hvannd.edu.vn,https://tuyensinh.hvannd.edu.vn,Đang tuyển sinh,1946,,Đại học / Học viện
+UNI_CSH,CSH,Học viện Cảnh sát Nhân dân,PPA,Công lập,Hà Nội,Miền Bắc,https://ppa.edu.vn,https://tuyensinh.ppa.edu.vn,Đang tuyển sinh,1968,,Đại học / Học viện
+UNI_ANS,ANS,Trường Đại học An ninh Nhân dân,PSU,Công lập,TP. Hồ Chí Minh,Miền Nam,https://dhannd.edu.vn,https://tuyensinh.dhannd.edu.vn,Đang tuyển sinh,1963,,Đại học / Học viện
+UNI_CSS,CSS,Trường Đại học Cảnh sát Nhân dân,PPU,Công lập,TP. Hồ Chí Minh,Miền Nam,https://dhcsnd.edu.vn,https://tuyensinh.dhcsnd.edu.vn,Đang tuyển sinh,1976,,Đại học / Học viện
+UNI_PCH,PCH,Trường Đại học Phòng cháy Chữa cháy,FSCA,Công lập,Hà Nội,Miền Bắc,https://daihocpccc.edu.vn,https://tuyensinh.daihocpccc.edu.vn,Đang tuyển sinh,1976,,Đại học / Học viện
+UNI_T08,T08,Trường Đại học Kỹ thuật - Hậu cần CAND,TLPU,Công lập,Bắc Ninh,Miền Bắc,https://dhkthc.bocongan.gov.vn,https://tuyensinh.dhkthc.edu.vn,Đang tuyển sinh,2010,,Đại học / Học viện
+UNI_RMIT,RMIT,Trường Đại học RMIT Việt Nam,RMIT Vietnam,Quốc tế,TP. Hồ Chí Minh,Miền Nam,https://rmit.edu.vn,https://tuyensinh.rmit.edu.vn,Đang tuyển sinh,2000,,Đại học / Học viện
+CD_CM1,CM1,Trường Cao đẳng Sư phạm Trung ương,NCE,Công lập,Hà Nội,Miền Bắc,https://cdsptw.edu.vn,https://tuyensinh.cdsptw.edu.vn,Đang tuyển sinh,1988,,Cao đẳng Sư phạm
+CD_CM2,CM2,Trường Cao đẳng Sư phạm Trung ương TP. Hồ Chí Minh,NCE-HCM,Công lập,TP. Hồ Chí Minh,Miền Nam,https://cdsptwhcm.edu.vn,https://tuyensinh.cdsptwhcm.edu.vn,Đang tuyển sinh,1976,,Cao đẳng Sư phạm
+CD_CM3,CM3,Trường Cao đẳng Sư phạm Trung ương Nha Trang,NCE-NT,Công lập,Khánh Hòa,Miền Trung,https://sptwnt.edu.vn,https://tuyensinh.sptwnt.edu.vn,Đang tuyển sinh,1987,,Cao đẳng Sư phạm
+CD_C19,C19,Trường Cao đẳng Sư phạm Bắc Ninh,BNCE,Công lập,Bắc Ninh,Miền Bắc,https://cdspbacninh.edu.vn,https://tuyensinh.cdspbacninh.edu.vn,Đang tuyển sinh,1978,,Cao đẳng Sư phạm
+CD_C18,C18,Trường Cao đẳng Bắc Giang,BGC,Công lập,Bắc Giang,Miền Bắc,https://cdbg.edu.vn,https://tuyensinh.cdbg.edu.vn,Đang tuyển sinh,1999,,Cao đẳng Sư phạm
+CD_C11,C11,Trường Cao đẳng Cao Bằng,CBC,Công lập,Cao Bằng,Miền Bắc,https://cdcaobang.edu.vn,https://tuyensinh.cdcaobang.edu.vn,Đang tuyển sinh,2002,,Cao đẳng Sư phạm
+CD_C62,C62,Trường Cao đẳng Sư phạm Điện Biên,DBCE,Công lập,Điện Biên,Miền Bắc,https://cdspdienbien.edu.vn,https://tuyensinh.cdspdienbien.edu.vn,Đang tuyển sinh,1963,,Cao đẳng Sư phạm
+CD_C26,C26,Trường Cao đẳng Sư phạm Thái Bình,TBCE,Công lập,Thái Bình,Miền Bắc,https://cdspthaibinh.edu.vn,https://tuyensinh.cdspthaibinh.edu.vn,Đang tuyển sinh,1959,,Cao đẳng Sư phạm
+CD_C22,C22,Trường Cao đẳng Cộng đồng Hưng Yên,HYCC,Công lập,Hưng Yên,Miền Bắc,https://hycc.edu.vn,https://tuyensinh.hycc.edu.vn,Đang tuyển sinh,2008,,Cao đẳng Sư phạm
+CD_C63,C63,Trường Cao đẳng Lai Châu,LCC,Công lập,Lai Châu,Miền Bắc,https://cdlaichau.edu.vn,https://tuyensinh.cdlaichau.edu.vn,Đang tuyển sinh,2004,,Cao đẳng Sư phạm
+CD_C10,C10,Trường Cao đẳng Sư phạm Lạng Sơn,LSCE,Công lập,Lạng Sơn,Miền Bắc,https://cdsplangson.edu.vn,https://tuyensinh.cdsplangson.edu.vn,Đang tuyển sinh,1961,,Cao đẳng Sư phạm
+CD_C25,C25,Trường Cao đẳng Sư phạm Nam Định,NDCE,Công lập,Nam Định,Miền Bắc,https://cdspnamdinh.edu.vn,https://tuyensinh.cdspnamdinh.edu.vn,Đang tuyển sinh,1978,,Cao đẳng Sư phạm
+CD_C23,C23,Trường Cao đẳng Sư phạm Hòa Bình,HBCE,Công lập,Hòa Bình,Miền Bắc,https://cdsphoabinh.edu.vn,https://tuyensinh.cdsphoabinh.edu.vn,Đang tuyển sinh,1976,,Cao đẳng Sư phạm
+CD_C16,C16,Trường Cao đẳng Vĩnh Phúc,VPC,Công lập,Vĩnh Phúc,Miền Bắc,https://cdvinhphuc.edu.vn,https://tuyensinh.cdvinhphuc.edu.vn,Đang tuyển sinh,1997,,Cao đẳng Sư phạm
+CD_C14,C14,Trường Cao đẳng Sơn La,SLC,Công lập,Sơn La,Miền Bắc,https://cdsonla.edu.vn,https://tuyensinh.cdsonla.edu.vn,Đang tuyển sinh,1963,,Cao đẳng Sư phạm
+CD_C12,C12,Trường Cao đẳng Thái Nguyên,TNC,Công lập,Thái Nguyên,Miền Bắc,https://cdthainguyen.edu.vn,https://tuyensinh.cdthainguyen.edu.vn,Đang tuyển sinh,2000,,Cao đẳng Sư phạm
+CD_C33,C33,Trường Cao đẳng Huế,HC,Công lập,Thừa Thiên Huế,Miền Trung,https://cdhue.edu.vn,https://tuyensinh.cdhue.edu.vn,Đang tuyển sinh,2020,,Cao đẳng Sư phạm
+CD_C32,C32,Trường Cao đẳng Sư phạm Quảng Trị,QTCE,Công lập,Quảng Trị,Miền Trung,https://cdspquangtri.edu.vn,https://tuyensinh.cdspquangtri.edu.vn,Đang tuyển sinh,1993,,Cao đẳng Sư phạm
+CD_C38,C38,Trường Cao đẳng Kon Tum,KTC,Công lập,Kon Tum,Miền Trung,https://cdkt.edu.vn,https://tuyensinh.cdkt.edu.vn,Đang tuyển sinh,2004,,Cao đẳng Sư phạm
+CD_C40,C40,Trường Cao đẳng Sư phạm Đắk Lắk,DLC,Công lập,Đắk Lắk,Miền Trung,https://cdspdaklak.edu.vn,https://tuyensinh.cdspdaklak.edu.vn,Đang tuyển sinh,1976,,Cao đẳng Sư phạm
+CD_C42,C42,Trường Cao đẳng Đà Lạt,DLC-LD,Công lập,Lâm Đồng,Miền Trung,https://cddalat.edu.vn,https://tuyensinh.cddalat.edu.vn,Đang tuyển sinh,1976,,Cao đẳng Sư phạm
+CD_C47,C47,Trường Cao đẳng Bình Thuận,BTC,Công lập,Bình Thuận,Miền Trung,https://cdbinhthuan.edu.vn,https://tuyensinh.cdbinhthuan.edu.vn,Đang tuyển sinh,2000,,Cao đẳng Sư phạm
+CD_C34,C34,Trường Cao đẳng Sư phạm Bà Rịa – Vũng Tàu,BRVTC,Công lập,Bà Rịa - Vũng Tàu,Miền Nam,https://cdspbrvt.edu.vn,https://tuyensinh.cdspbrvt.edu.vn,Đang tuyển sinh,1975,,Cao đẳng Sư phạm
+CD_C43,C43,Trường Cao đẳng Bình Phước,BPC,Công lập,Bình Phước,Miền Nam,https://cdbinhphuoc.edu.vn,https://tuyensinh.cdbinhphuoc.edu.vn,Đang tuyển sinh,2007,,Cao đẳng Sư phạm
+CD_C46,C46,Trường Cao đẳng Sư phạm Tây Ninh,TNC-TN,Công lập,Tây Ninh,Miền Nam,https://cdsptayninh.edu.vn,https://tuyensinh.cdsptayninh.edu.vn,Đang tuyển sinh,1976,,Cao đẳng Sư phạm
+CD_C55,C55,Trường Cao đẳng Cần Thơ,CTC,Công lập,Cần Thơ,Miền Nam,https://cdcantho.edu.vn,https://tuyensinh.cdcantho.edu.vn,Đang tuyển sinh,1976,,Cao đẳng Sư phạm
+CD_C53,C53,Trường Cao đẳng Bến Tre,BTC-BT,Công lập,Bến Tre,Miền Nam,https://cdbentre.edu.vn,https://tuyensinh.cdbentre.edu.vn,Đang tuyển sinh,2004,,Cao đẳng Sư phạm
+CD_C56,C56,Trường Cao đẳng Vĩnh Long,VLC,Công lập,Vĩnh Long,Miền Nam,https://cdvinhlong.edu.vn,https://tuyensinh.cdvinhlong.edu.vn,Đang tuyển sinh,2000,,Cao đẳng Sư phạm
+CD_C54,C54,Trường Cao đẳng Sư phạm Kiên Giang,KGC,Công lập,Kiên Giang,Miền Nam,https://cdspkiengiang.edu.vn,https://tuyensinh.cdspkiengiang.edu.vn,Đang tuyển sinh,1977,,Cao đẳng Sư phạm
+CD_C64,C64,Trường Cao đẳng Cộng đồng Hậu Giang,HGCC,Công lập,Hậu Giang,Miền Nam,https://hgcc.edu.vn,https://tuyensinh.hgcc.edu.vn,Đang tuyển sinh,2005,,Cao đẳng Sư phạm
+CD_C60,C60,Trường Cao đẳng Cộng đồng Sóc Trăng,STCC,Công lập,Sóc Trăng,Miền Nam,https://stcc.edu.vn,https://tuyensinh.stcc.edu.vn,Đang tuyển sinh,2006,,Cao đẳng Sư phạm
+CD_C61,C61,Trường Cao đẳng Cộng đồng Cà Mau,CMCC,Công lập,Cà Mau,Miền Nam,https://cmcc.edu.vn,https://tuyensinh.cmcc.edu.vn,Đang tuyển sinh,2008,,Cao đẳng Sư phạm
+UNI_QHQ,QHQ,Trường Quốc tế - Đại học Quốc gia Hà Nội,QHQ,Công lập,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_QHS,QHS,Trường Đại học Giáo dục - Đại học Quốc gia Hà Nội,QHS,Công lập,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_BMU,BMU,Trường Đại học Y Dược Buôn Ma Thuột,BMU,Công lập,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_CCM,CCM,Trường Đại học Công nghiệp và Thương mại Hà Nội,CCM,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_CEA,CEA,Trường Đại học Nghệ An,CEA,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_DBG,DBG,Trường Đại học Nông Lâm Bắc Giang,DBG,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_DCA,DCA,Trường Đại học Intracom,DCA,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_DCQ,DCQ,Trường Đại Học Công Nghệ và Quản Lý Hữu Nghị,DCQ,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_DDM,DDM,Trường Đại Học Công Nghiệp Quảng Ninh,DDM,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_DDP,DDP,Phân Hiệu Đại Học Đà Nẵng tại Kon Tum,DDP,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_DDU,DDU,Trường Đại Học Đông Đô,DDU,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_DDV,DDV,Viện nghiên cứu và đào tạo Việt Anh - Đại học Đà Nẵng,DDV,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_DHI,DHI,Khoa Quốc tế - Đại học Huế,DHI,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_DHQ,DHQ,Phân Hiệu Đại Học Huế tại Quảng Trị,DHQ,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_DHV,DHV,Trường Đại học Hùng Vương TPHCM,DHV,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_DKK,DKK,Trường Đại Học Kinh Tế Kỹ Thuật Công Nghiệp,DKK,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_DLH,DLH,Trường Đại Học Lạc Hồng,DLH,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_DLS,DLS,Trường Đại Học Lao Động – Xã Hội (Cơ sở II),DLS,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_DMT,DMT,Trường Đại học Tài Nguyên và Môi Trường Hà Nội,DMT,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_DNV,DNV,Trường Đại học Nội vụ Hà Nội,DNV,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_DPC,DPC,Trường Đại Học Phan Châu Trinh,DPC,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_DPQ,DPQ,Trường Đại Học Phạm Văn Đồng,DPQ,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_DQK,DQK,Trường Đại Học Kinh Doanh và Công Nghệ Hà Nội,DQK,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_DTB,DTB,Trường Đại Học Thái Bình,DTB,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_DTC,DTC,Trường Đại học Công Nghệ Thông Tin và Truyền Thông Thái Nguyên,DTC,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_DTG,DTG,Phân hiệu Đại học Thái Nguyên tại Hà Giang,DTG,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_DTM,DTM,Trường Đại học Tài Nguyên và Môi Trường TPHCM,DTM,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_DTP,DTP,Phân Hiệu Đại Học Thái Nguyên Tại Lào Cai,DTP,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_DTQ,DTQ,Khoa Quốc Tế - Đại Học Thái Nguyên,DTQ,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_DVD,DVD,"Trường Đại Học Văn Hóa, Thể Thao Và Du Lịch Thanh Hóa",DVD,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_DVP,DVP,Trường Đại Học Trưng Vương,DVP,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_DVX,DVX,Trường Đại Học Công Nghệ Vạn Xuân,DVX,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_ETU,ETU,Trường Đại Học Hòa Bình,ETU,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_FBU,FBU,Trường Đại Học Tài Chính Ngân Hàng Hà Nội,FBU,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_GNT,GNT,Trường Đại Học Sư Phạm Nghệ Thuật Trung Ương,GNT,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_GTA,GTA,Trường Đại học Công nghệ Giao thông vận tải,GTA,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_HCP,HCP,Học Viện Chính Sách và Phát Triển,HCP,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_HCS,HCS,Học Viện Hành Chính Và Quản Trị Công (phía Nam),HCS,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_HHK,HHK,Học Viện Hàng không Việt Nam,HHK,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_HHT,HHT,Trường Đại Học Hà Tĩnh,HHT,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_HTY,HTY,Học viện Tài chính - Phân hiệu Hưng Yên,HTY,Công lập,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_HVC,HVC,Học viện cán bộ TPHCM,HVC,Công lập,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_HVQ,HVQ,Học Viện Quản Lý Giáo Dục,HVQ,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_KCC,KCC,Trường Đại học Kỹ Thuật Công Nghệ Cần Thơ,KCC,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_LNA,LNA,Phân hiệu Đại học Lâm nghiệp tỉnh Gia Lai,LNA,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_LNS,LNS,Phân hiệu Đại Học Lâm nghiệp tại Đồng Nai,LNS,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_MIT,MIT,Trường Đại học Công nghệ Miền Đông,MIT,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_NHB,NHB,Học Viện Ngân Hàng (Phân Viện Bắc Ninh),NHB,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_NHP,NHP,Học Viện Ngân Hàng (Phân Viện Phú Yên),NHP,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_NLG,NLG,Phân hiệu Đại học Nông Lâm TPHCM tại Gia Lai,NLG,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_NLN,NLN,Phân hiệu Đại học Nông Lâm TPHCM tại Ninh Thuận,NLN,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_NTS,NTS,Trường Đại học Ngoại thương (Cơ sở II),NTS,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_PVU,PVU,Trường Đại Học Dầu Khí Việt Nam,PVU,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_SNH,SNH,Trường Sĩ Quan Công Binh - Hệ Quân sự - Đại học Ngô Quyền,SNH,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_TDD,TDD,Trường Đại học Thành Đô,TDD,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_TDH,TDH,Trường Đại Học Sư Phạm Thể Dục Thể Thao Hà Nội,TDH,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_THU,THU,Trường Đại học Y khoa Tokyo Việt Nam,THU,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_THV,THV,Trường Đại Học Hùng Vương,THV,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_TKG,TKG,Trường Đại học Kiên Giang,TKG,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_TLS,TLS,Trường Đại Học Thủy Lợi (Cơ sở 2),TLS,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_TQU,TQU,Trường Đại học Tân Trào,TQU,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_TTG,TTG,Trường Đại Học Tiền Giang,TTG,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_VHD,VHD,Trường Đại Học Công Nghiệp Việt - Hung,VHD,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_XDN,XDN,Phân hiệu Đại học Xây dựng miền Trung tại Đà Nẵng,XDN,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_YKV,YKV,Trường Đại Học Y Khoa Vinh,YKV,Tư thục,Chưa xác định,Chưa xác định,,,ACTIVE,2020,,Đại học / Học viện / Phân hiệu
+UNI_KMA,KMA,Học viện Kỹ thuật Mật mã,KMA,Công lập,Hà Nội,Miền Bắc,https://actvn.edu.vn,https://tuyensinh.actvn.edu.vn,ACTIVE,2020,,Đại học / Học viện
+UNI_DHH,DHH,Đại học Huế (Cơ quan chung),DHH,Công lập,Thừa Thiên Huế,Miền Trung,,,ACTIVE,2020,,Đại học Quốc gia / Vùng
+UNI_TNU,TNU,Đại học Thái Nguyên (Cơ quan chung),TNU,Công lập,Thái Nguyên,Miền Bắc,,,ACTIVE,2020,,Đại học Quốc gia / Vùng
+UNI_QSQ,QSQ,Trường Đại học Quốc tế - ĐHQG TP.HCM,"QSI,HCMIU",Công lập,TP. Hồ Chí Minh,Miền Nam,,,ACTIVE,2020,,Trường thành viên
+UNI_QSA,QSA,Trường Đại học Khoa học Xã hội và Nhân văn - ĐHQG TP.HCM,"QSX,USSH",Công lập,TP. Hồ Chí Minh,Miền Nam,,,ACTIVE,2020,,Trường thành viên
+UNI_QSH,QSH,Trường Đại học Khoa học Tự nhiên - ĐHQG TP.HCM,"QST,HCMUS",Công lập,TP. Hồ Chí Minh,Miền Nam,,,ACTIVE,2020,,Trường thành viên
+UNI_QSP,QSP,Khoa Y - ĐHQG TP.HCM (Trường ĐH Khoa học Sức khỏe),"QSY,UHS",Công lập,TP. Hồ Chí Minh,Miền Nam,,,ACTIVE,2020,,Trường thành viên
+UNI_QHK,QHK,Trường Quốc tế - Đại học Quốc gia Hà Nội,"QHQ,VNU-IS",Công lập,Hà Nội,Miền Bắc,,,ACTIVE,2020,,Trường thành viên
+UNI_QHJ,QHJ,Trường Đại học Luật - Đại học Quốc gia Hà Nội,"QHL,VNU-UL",Công lập,Hà Nội,Miền Bắc,,,ACTIVE,2020,,Trường thành viên
+UNI_KTC,KTC,Trường Đại học Kinh tế - Đại học Đà Nẵng,"DDK,DUE",Công lập,Đà Nẵng,Miền Trung,,,ACTIVE,2020,,Trường thành viên
+UNI_GSA,GSA,Trường Đại học Giao thông Vận tải (Phân hiệu TP.HCM),GHA,Công lập,TP. Hồ Chí Minh,Miền Nam,,,ACTIVE,2020,,Phân hiệu
+UNI_BVS,BVS,Học viện Công nghệ Bưu chính Viễn thông (Cơ sở phía Nam),BVH,Công lập,TP. Hồ Chí Minh,Miền Nam,,,ACTIVE,2020,,Phân hiệu
+UNI_HGM,HGM,Phân hiệu Học viện Hành chính Quốc gia tại Quảng Nam,HCS,Công lập,Quảng Nam,Miền Trung,,,ACTIVE,2020,,Phân hiệu
+UNI_HCV,HCV,Học viện Hành chính Quốc gia (phía Nam),HCS,Công lập,TP. Hồ Chí Minh,Miền Nam,,,ACTIVE,2020,,Phân hiệu
+UNI_HGH,HGH,Phân hiệu Đại học Thái Nguyên tại Hà Giang,DTG,Công lập,Hà Giang,Miền Bắc,,,ACTIVE,2020,,Phân hiệu
+UNI_UFA,UFA,Trường Đại học Tài chính - Marketing (Phân hiệu Quảng Ngãi),DKT,Công lập,Quảng Ngãi,Miền Trung,,,ACTIVE,2020,,Phân hiệu
+UNI_DHC,DHC,Khoa Giáo dục Thể chất - Đại học Huế,DHH,Công lập,Thừa Thiên Huế,Miền Trung,,,ACTIVE,2020,,Khoa trực thuộc
+UNI_YHT,YHT,Khoa Y Dược - Trường Đại học Hà Tĩnh,HHT,Công lập,Hà Tĩnh,Miền Trung,,,ACTIVE,2020,,Khoa trực thuộc
+UNI_DDG,DDG,Trường Đại học Công nghệ Thông tin & Truyền thông Việt - Hàn,VKU,Công lập,Đà Nẵng,Miền Trung,,,ACTIVE,2020,,Trường thành viên
+UNI_HEH,HEH,Trường Đại học Kỹ thuật Y - Dược Đà Nẵng,YDN,Công lập,Đà Nẵng,Miền Trung,,,ACTIVE,2020,,Đại học / Học viện
+UNI_HYD,HYD,Trường Đại học Y Dược Buôn Ma Thuột,"BMU,DYD",Tư thục,Đắk Lắk,Tây Nguyên,,,ACTIVE,2020,,Đại học / Học viện
+UNI_SDU,SDU,Trường Đại học Sao Đỏ,DSD,Công lập,Hải Dương,Miền Bắc,,,ACTIVE,2020,,Đại học / Học viện
+UNI_VUI,VUI,Trường Đại học Công nghiệp Việt Trì,DVT,Công lập,Phú Thọ,Miền Bắc,,,ACTIVE,2020,,Đại học / Học viện
+UNI_DBH,DBH,Trường Đại học Quốc tế Bắc Hà,"QTQ,BHIU",Tư thục,Bắc Ninh,Miền Bắc,,,ACTIVE,2020,,Đại học / Học viện
+UNI_TTQ,TTQ,Trường Sĩ quan Thông tin (ĐH Thông tin Liên lạc),"TTC,TTH",Quân đội,Khánh Hòa,Miền Trung,,,ACTIVE,2020,,Trường Sĩ quan
+UNI_LBH,LBH,Trường Sĩ quan Lục quân 1 (ĐH Trần Quốc Tuấn),"LBN,LQN",Quân đội,Hà Nội,Miền Bắc,,,ACTIVE,2020,,Trường Sĩ quan
+UNI_LCH,LCH,Trường Sĩ quan Lục quân 2 (ĐH Nguyễn Huệ),"LCS,LQS",Quân đội,Đồng Nai,Miền Nam,,,ACTIVE,2020,,Trường Sĩ quan
+UNI_LAH,LAH,Trường Sĩ quan Không quân,"KSA,KQH",Quân đội,Khánh Hòa,Miền Trung,,,ACTIVE,2020,,Trường Sĩ quan
+UNI_PBH,PBH,Trường Sĩ quan Pháo binh,"PBC,PHH",Quân đội,Hà Nội,Miền Bắc,,,ACTIVE,2020,,Trường Sĩ quan
+UNI_ZNH,ZNH,Trường Sĩ quan Tăng - Thiết giáp,"TTC,TCH",Quân đội,Vĩnh Phúc,Miền Bắc,,,ACTIVE,2020,,Trường Sĩ quan
+UNI_HCN,HCN,Trường Sĩ quan Phòng hóa,HPH,Quân đội,Hà Nội,Miền Bắc,,,ACTIVE,2020,,Trường Sĩ quan
+UNI_STS,STS,Trường Sĩ quan Kỹ thuật Quân sự (Vin-Hem Pich),SKQ,Quân đội,TP. Hồ Chí Minh,Miền Nam,,,ACTIVE,2020,,Trường Sĩ quan
+UNI_NQH,NQH,Trường Đại học Ngô Quyền (Sĩ quan Công binh),SNH,Quân đội,Bình Dương,Miền Nam,,,ACTIVE,2020,,Trường Sĩ quan
+UNI_PCS,PCS,Trường Sĩ quan Chính trị,SCT,Quân đội,Bắc Ninh,Miền Bắc,,,ACTIVE,2020,,Trường Sĩ quan
+UNI_LBS,LBS,Trường Sĩ quan Lục quân 1 (Cơ sở Sơn Tây),LBN,Quân đội,Hà Nội,Miền Bắc,,,ACTIVE,2020,,Trường Sĩ quan
+UNI_VPH,VPH,Học viện Hậu cần (Hệ Dân sự),HEH,Quân đội,Hà Nội,Miền Bắc,,,ACTIVE,2020,,Đại học / Học viện

@@ -1,0 +1,8 @@
+﻿id,maPhuongThuc,tenPhuongThuc,moTa
+1,PT01,Xét theo điểm thi tốt nghiệp THPT,Xét tuyển dựa trên tổng điểm thi 3 môn trong kỳ thi tốt nghiệp THPT theo tổ hợp
+2,PT02,Xét theo học bạ THPT (3 năm hoặc 5-6 học kỳ),Xét tuyển kết quả học tập bậc THPT theo từng tổ hợp hoặc điểm trung bình chung GPA
+3,PT03,Xét theo điểm thi Đánh giá năng lực (ĐHQG Hà Nội / ĐHQG TP.HCM),Xét tuyển điểm kỳ thi HSA (ĐHQG Hà Nội) hoặc APT (ĐHQG TP.HCM) quy đổi
+4,PT04,Xét theo điểm thi Đánh giá tư duy (Đại học Bách Khoa Hà Nội),Xét tuyển dựa trên kết quả kỳ thi Đánh giá tư duy TSA thang điểm 100
+5,PT05,Xét tuyển thẳng / ưu tiên xét tuyển theo quy chế Bộ GD&ĐT,"Dành cho học sinh đạt giải quốc gia, quốc tế, học sinh trường chuyên"
+6,PT06,"Xét tuyển kết hợp chứng chỉ quốc tế (IELTS, SAT, ACT...) với học bạ hoặc điểm thi",Quy đổi chứng chỉ ngoại ngữ kết hợp điểm học bạ hoặc môn thi THPT
+7,PT07,Xét tuyển theo phương thức riêng của trường,"Bài thi năng khiếu, phỏng vấn, hồ sơ năng lực theo đề án riêng từng trường"

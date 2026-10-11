@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.env
+.venv/
+venv/
+env/
+.jwt_secret
+data/.jwt_secret
+.vscode/
+.idea/
+*.log
+.tempmediaStorage/

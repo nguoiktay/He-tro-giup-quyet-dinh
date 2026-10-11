@@ -1,0 +1,360 @@
+﻿id,maTruong,tenTruong,diaChi,khuVuc,loaiTruong,trangWeb
+1,QHI,Trường Đại học Công nghệ - ĐHQGHN,Hà Nội,Miền Bắc,Công lập,https://uet.vnu.edu.vn
+2,QHT,Trường Đại học Khoa học Tự nhiên - ĐHQGHN,Hà Nội,Miền Bắc,Công lập,https://hus.vnu.edu.vn
+3,QHX,Trường Đại học Khoa học Xã hội và Nhân văn - ĐHQGHN,Hà Nội,Miền Bắc,Công lập,https://ussh.vnu.edu.vn
+4,QHE,Trường Đại học Kinh tế - ĐHQGHN,Hà Nội,Miền Bắc,Công lập,https://ueb.edu.vn
+5,QHF,Trường Đại học Ngoại ngữ - ĐHQGHN,Hà Nội,Miền Bắc,Công lập,https://ulis.vnu.edu.vn
+6,QHD,Trường Đại học Giáo dục - ĐHQGHN,Hà Nội,Miền Bắc,Công lập,https://education.vnu.edu.vn
+7,QHY,Trường Đại học Y Dược - ĐHQGHN,Hà Nội,Miền Bắc,Công lập,https://ump.vnu.edu.vn
+8,QHL,Trường Đại học Luật - ĐHQGHN,Hà Nội,Miền Bắc,Công lập,https://law.vnu.edu.vn
+9,VJU,Trường Đại học Việt Nhật - ĐHQGHN,Hà Nội,Miền Bắc,Công lập,https://vju.vnu.edu.vn
+10,SIS,Trường Khoa học liên ngành và Nghệ thuật - ĐHQGHN,Hà Nội,Miền Bắc,Công lập,https://sis.vnu.edu.vn
+11,QSB,Trường Đại học Bách khoa - ĐHQG TP.HCM,TP. Hồ Chí Minh,Miền Nam,Công lập,https://hcmut.edu.vn
+12,QSC,Trường Đại học Khoa học Tự nhiên - ĐHQG TP.HCM,TP. Hồ Chí Minh,Miền Nam,Công lập,https://hcmus.edu.vn
+13,QSX,Trường Đại học Khoa học Xã hội và Nhân văn - ĐHQG TP.HCM,TP. Hồ Chí Minh,Miền Nam,Công lập,https://hcmussh.edu.vn
+14,QST,Trường Đại học Công nghệ Thông tin - ĐHQG TP.HCM,TP. Hồ Chí Minh,Miền Nam,Công lập,https://uit.edu.vn
+15,QSK,Trường Đại học Kinh tế - Luật - ĐHQG TP.HCM,TP. Hồ Chí Minh,Miền Nam,Công lập,https://uel.edu.vn
+16,QSI,Trường Đại học Quốc tế - ĐHQG TP.HCM,TP. Hồ Chí Minh,Miền Nam,Công lập,https://hcmiu.edu.vn
+17,QSY,Trường Đại học Khoa học Sức khỏe - ĐHQG TP.HCM,TP. Hồ Chí Minh,Miền Nam,Công lập,https://medvnu.edu.vn
+18,DAn,Trường Đại học An Giang - ĐHQG TP.HCM,An Giang,Miền Nam,Công lập,https://agu.edu.vn
+19,DDK,Trường Đại học Bách khoa - Đại học Đà Nẵng,Đà Nẵng,Miền Trung,Công lập,https://dut.udn.vn
+20,DDQ,Trường Đại học Kinh tế - Đại học Đà Nẵng,Đà Nẵng,Miền Trung,Công lập,https://due.udn.vn
+21,DDS,Trường Đại học Sư phạm - Đại học Đà Nẵng,Đà Nẵng,Miền Trung,Công lập,https://ued.udn.vn
+22,DDF,Trường Đại học Ngoại ngữ - Đại học Đà Nẵng,Đà Nẵng,Miền Trung,Công lập,https://ufl.udn.vn
+23,DDC,Trường Đại học Sư phạm Kỹ thuật - Đại học Đà Nẵng,Đà Nẵng,Miền Trung,Công lập,https://ute.udn.vn
+24,VKU,Trường Đại học Công nghệ Thông tin & Truyền thông Việt - Hàn,Đà Nẵng,Miền Trung,Công lập,https://vku.udn.vn
+25,DDY,Khoa Y - Dược - Đại học Đà Nẵng,Đà Nẵng,Miền Trung,Công lập,https://smp.udn.vn
+26,DHK,Trường Đại học Khoa học - Đại học Huế,Thừa Thiên Huế,Miền Trung,Công lập,https://husc.hueuni.edu.vn
+27,DHS,Trường Đại học Sư phạm - Đại học Huế,Thừa Thiên Huế,Miền Trung,Công lập,https://dhs.hueuni.edu.vn
+28,DHY,Trường Đại học Y - Dược - Đại học Huế,Thừa Thiên Huế,Miền Trung,Công lập,https://huemed-univ.edu.vn
+29,DHN,Trường Đại học Nông Lâm - Đại học Huế,Thừa Thiên Huế,Miền Trung,Công lập,https://huaf.edu.vn
+30,DHA,Trường Đại học Nghệ thuật - Đại học Huế,Thừa Thiên Huế,Miền Trung,Công lập,https://hucarts.edu.vn
+31,DHE,Trường Đại học Kinh tế - Đại học Huế,Thừa Thiên Huế,Miền Trung,Công lập,https://hce.edu.vn
+32,DHF,Trường Đại học Ngoại ngữ - Đại học Huế,Thừa Thiên Huế,Miền Trung,Công lập,https://hucfl.edu.vn
+33,DHL,Trường Đại học Luật - Đại học Huế,Thừa Thiên Huế,Miền Trung,Công lập,https://hul.edu.vn
+34,DTS,Trường Đại học Sư phạm - Đại học Thái Nguyên,Thái Nguyên,Miền Bắc,Công lập,https://dhsptn.edu.vn
+35,DTY,Trường Đại học Y - Dược - Đại học Thái Nguyên,Thái Nguyên,Miền Bắc,Công lập,https://tump.edu.vn
+36,DTK,Trường Đại học Kỹ thuật Công nghiệp - Đại học Thái Nguyên,Thái Nguyên,Miền Bắc,Công lập,https://tnut.edu.vn
+37,DTN,Trường Đại học Nông Lâm - Đại học Thái Nguyên,Thái Nguyên,Miền Bắc,Công lập,https://tuaf.edu.vn
+38,DTE,Trường Đại học Kinh tế và Quản trị kinh doanh - Đại học Thái Nguyên,Thái Nguyên,Miền Bắc,Công lập,https://tueba.edu.vn
+39,DTZ,Trường Đại học Công nghệ Thông tin và Truyền thông - ĐH Thái Nguyên,Thái Nguyên,Miền Bắc,Công lập,https://ictu.edu.vn
+40,DTD,Trường Đại học Khoa học - Đại học Thái Nguyên,Thái Nguyên,Miền Bắc,Công lập,https://tnus.edu.vn
+41,DTF,Trường Đại học Ngoại ngữ - Đại học Thái Nguyên,Thái Nguyên,Miền Bắc,Công lập,https://sfl.tnu.edu.vn
+42,BKA,Đại học Bách khoa Hà Nội,Hà Nội,Miền Bắc,Công lập,https://hust.edu.vn
+43,KSA,Đại học Kinh tế TP. Hồ Chí Minh,TP. Hồ Chí Minh,Miền Nam,Công lập,https://ueh.edu.vn
+44,TCT,Trường Đại học Cần Thơ,Cần Thơ,Miền Nam,Công lập,https://ctu.edu.vn
+45,KHA,Trường Đại học Kinh tế Quốc dân,Hà Nội,Miền Bắc,Công lập,https://neu.edu.vn
+46,NTH,Trường Đại học Ngoại thương (Cơ sở Hà Nội),Hà Nội,Miền Bắc,Công lập,https://ftu.edu.vn
+47,SPH,Trường Đại học Sư phạm Hà Nội,Hà Nội,Miền Bắc,Công lập,https://hnue.edu.vn
+48,SP2,Trường Đại học Sư phạm Hà Nội 2,Vĩnh Phúc,Miền Bắc,Công lập,https://hpu2.edu.vn
+49,SPS,Trường Đại học Sư phạm TP. Hồ Chí Minh,TP. Hồ Chí Minh,Miền Nam,Công lập,https://hcmue.edu.vn
+50,SPK,Trường Đại học Sư phạm Kỹ thuật TP. Hồ Chí Minh,TP. Hồ Chí Minh,Miền Nam,Công lập,https://hcmute.edu.vn
+51,SKH,Trường Đại học Sư phạm Kỹ thuật Hưng Yên,Hưng Yên,Miền Bắc,Công lập,https://utehy.edu.vn
+52,SKN,Trường Đại học Sư phạm Kỹ thuật Nam Định,Nam Định,Miền Bắc,Công lập,https://nute.edu.vn
+53,SKV,Trường Đại học Sư phạm Kỹ thuật Vinh,Nghệ An,Miền Trung,Công lập,https://vuted.edu.vn
+54,NHF,Trường Đại học Hà Nội,Hà Nội,Miền Bắc,Công lập,https://hanu.edu.vn
+55,GHA,Trường Đại học Giao thông Vận tải,Hà Nội,Miền Bắc,Công lập,https://utc.edu.vn
+56,XDA,Trường Đại học Xây dựng Hà Nội,Hà Nội,Miền Bắc,Công lập,https://huce.edu.vn
+57,MDA,Trường Đại học Mỏ - Địa chất,Hà Nội,Miền Bắc,Công lập,https://humg.edu.vn
+58,TMA,Trường Đại học Thương mại,Hà Nội,Miền Bắc,Công lập,https://tmu.edu.vn
+59,MHN,Trường Đại học Mở Hà Nội,Hà Nội,Miền Bắc,Công lập,https://hou.edu.vn
+60,MBS,Trường Đại học Mở TP. Hồ Chí Minh,TP. Hồ Chí Minh,Miền Nam,Công lập,https://ou.edu.vn
+61,TDV,Trường Đại học Vinh,Nghệ An,Miền Trung,Công lập,https://vinhuni.edu.vn
+62,QNU,Trường Đại học Quy Nhơn,Bình Định,Miền Trung,Công lập,https://qnu.edu.vn
+63,TSN,Trường Đại học Nha Trang,Khánh Hòa,Miền Trung,Công lập,https://ntu.edu.vn
+64,TTN,Trường Đại học Tây Nguyên,Đắk Lắk,Miền Trung,Công lập,https://ttn.edu.vn
+65,TDL,Trường Đại học Đà Lạt,Lâm Đồng,Miền Trung,Công lập,https://dlu.edu.vn
+66,DLU,Trường Đại học Luật Hà Nội,Hà Nội,Miền Bắc,Công lập,https://hlu.edu.vn
+67,LPS,Trường Đại học Luật TP. Hồ Chí Minh,TP. Hồ Chí Minh,Miền Nam,Công lập,https://hcmulaw.edu.vn
+68,HVD,Học viện Quản lý giáo dục,Hà Nội,Miền Bắc,Công lập,https://niem.edu.vn
+69,YHB,Trường Đại học Y Hà Nội,Hà Nội,Miền Bắc,Công lập,https://hmu.edu.vn
+70,DKH,Trường Đại học Dược Hà Nội,Hà Nội,Miền Bắc,Công lập,https://hup.edu.vn
+71,YDS,Trường Đại học Y Dược TP. Hồ Chí Minh,TP. Hồ Chí Minh,Miền Nam,Công lập,https://ump.edu.vn
+72,TYS,Trường Đại học Y khoa Phạm Ngọc Thạch,TP. Hồ Chí Minh,Miền Nam,Công lập,https://pnt.edu.vn
+73,YTB,Trường Đại học Y Dược Thái Bình,Thái Bình,Miền Bắc,Công lập,https://tbump.edu.vn
+74,YHP,Trường Đại học Y Dược Hải Phòng,Hải Phòng,Miền Bắc,Công lập,https://hpmu.edu.vn
+75,YCT,Trường Đại học Y Dược Cần Thơ,Cần Thơ,Miền Nam,Công lập,https://ctump.edu.vn
+76,YTC,Trường Đại học Y tế Công cộng,Hà Nội,Miền Bắc,Công lập,https://huph.edu.vn
+77,YDD,Trường Đại học Điều dưỡng Nam Định,Nam Định,Miền Bắc,Công lập,https://ndun.edu.vn
+78,DKY,Trường Đại học Kỹ thuật Y tế Hải Dương,Hải Dương,Miền Bắc,Công lập,https://hmtu.edu.vn
+79,YDN,Trường Đại học Kỹ thuật Y - Dược Đà Nẵng,Đà Nẵng,Miền Trung,Công lập,https://dhtm.edu.vn
+80,DCN,Trường Đại học Công nghiệp Hà Nội,Hà Nội,Miền Bắc,Công lập,https://haui.edu.vn
+81,IUH,Trường Đại học Công nghiệp TP. Hồ Chí Minh,TP. Hồ Chí Minh,Miền Nam,Công lập,https://iuh.edu.vn
+82,DCT,Trường Đại học Công Thương TP. Hồ Chí Minh,TP. Hồ Chí Minh,Miền Nam,Công lập,https://huit.edu.vn
+83,DDL,Trường Đại học Điện lực,Hà Nội,Miền Bắc,Công lập,https://epu.edu.vn
+84,DKA,Trường Đại học Kinh tế - Kỹ thuật Công nghiệp,Hà Nội,Miền Bắc,Công lập,https://uneti.edu.vn
+85,DSD,Trường Đại học Sao Đỏ,Hải Dương,Miền Bắc,Công lập,https://saodo.edu.vn
+86,DVT,Trường Đại học Công nghiệp Việt Trì,Phú Thọ,Miền Bắc,Công lập,https://vui.edu.vn
+87,DQN,Trường Đại học Công nghiệp Quảng Ninh,Quảng Ninh,Miền Bắc,Công lập,https://qui.edu.vn
+88,VIU,Trường Đại học Công nghiệp Dệt may Hà Nội,Hà Nội,Miền Bắc,Công lập,https://hitu.edu.vn
+89,HTC,Học viện Tài chính,Hà Nội,Miền Bắc,Công lập,https://hvtc.edu.vn
+90,NHH,Học viện Ngân hàng,Hà Nội,Miền Bắc,Công lập,https://hvnh.edu.vn
+91,NHS,Trường Đại học Ngân hàng TP. Hồ Chí Minh,TP. Hồ Chí Minh,Miền Nam,Công lập,https://hub.edu.vn
+92,DMS,Trường Đại học Tài chính - Marketing,TP. Hồ Chí Minh,Miền Nam,Công lập,https://ufm.edu.vn
+93,DFA,Trường Đại học Tài chính - Quản trị kinh doanh,Hưng Yên,Miền Bắc,Công lập,https://ufba.edu.vn
+94,DKT,Trường Đại học Tài chính - Kế toán,Quảng Ngãi,Miền Trung,Công lập,https://cfa.edu.vn
+95,KTA,Trường Đại học Kiến trúc Hà Nội,Hà Nội,Miền Bắc,Công lập,https://hau.edu.vn
+96,KTS,Trường Đại học Kiến trúc TP. Hồ Chí Minh,TP. Hồ Chí Minh,Miền Nam,Công lập,https://uah.edu.vn
+97,XDT,Trường Đại học Xây dựng Miền Trung,Phú Yên,Miền Trung,Công lập,https://muce.edu.vn
+98,MTU,Trường Đại học Xây dựng Miền Tây,Vĩnh Long,Miền Nam,Công lập,https://mtu.edu.vn
+99,HVN,Học viện Nông nghiệp Việt Nam,Hà Nội,Miền Bắc,Công lập,https://vnua.edu.vn
+100,LNH,Trường Đại học Lâm nghiệp,Hà Nội,Miền Bắc,Công lập,https://vnuf.edu.vn
+101,TLA,Trường Đại học Thủy lợi,Hà Nội,Miền Bắc,Công lập,https://tlu.edu.vn
+102,NLS,Trường Đại học Nông Lâm TP. Hồ Chí Minh,TP. Hồ Chí Minh,Miền Nam,Công lập,https://hcmuaf.edu.vn
+103,BVH,Học viện Công nghệ Bưu chính Viễn thông (Hà Nội),Hà Nội,Miền Bắc,Công lập,https://ptit.edu.vn
+104,HHA,Trường Đại học Hàng hải Việt Nam,Hải Phòng,Miền Bắc,Công lập,https://vimaru.edu.vn
+105,GTS,Trường Đại học Giao thông Vận tải TP. Hồ Chí Minh,TP. Hồ Chí Minh,Miền Nam,Công lập,https://uth.edu.vn
+106,UST,Trường Đại học Khoa học và Công nghệ Hà Nội,Hà Nội,Miền Bắc,Công lập,https://usth.edu.vn
+107,VGU,Trường Đại học Việt Đức,Bình Dương,Miền Nam,Công lập,https://vgu.edu.vn
+108,HQT,Học viện Ngoại giao,Hà Nội,Miền Bắc,Công lập,https://dav.edu.vn
+109,HBT,Học viện Báo chí và Tuyên truyền,Hà Nội,Miền Bắc,Công lập,https://ajc.hcma.vn
+110,HCH,Học viện Hành chính Quốc gia,Hà Nội,Miền Bắc,Công lập,https://napa.vn
+111,APD,Học viện Chính sách và Phát triển,Hà Nội,Miền Bắc,Công lập,https://apd.edu.vn
+112,HPN,Học viện Phụ nữ Việt Nam,Hà Nội,Miền Bắc,Công lập,https://hvpnvn.edu.vn
+113,HTN,Học viện Thanh thiếu niên Việt Nam,Hà Nội,Miền Bắc,Công lập,https://vya.edu.vn
+114,HTA,Học viện Tòa án,Hà Nội,Miền Bắc,Công lập,https://hvta.toaan.gov.vn
+115,DKS,Trường Đại học Kiểm sát Hà Nội,Hà Nội,Miền Bắc,Công lập,https://tks.edu.vn
+116,LDA,Trường Đại học Công đoàn,Hà Nội,Miền Bắc,Công lập,https://dhcd.edu.vn
+117,DTT,Trường Đại học Tôn Đức Thắng,TP. Hồ Chí Minh,Miền Nam,Công lập,https://tdtu.edu.vn
+118,DLX,Trường Đại học Lao động - Xã hội,Hà Nội,Miền Bắc,Công lập,https://ulsa.edu.vn
+119,DNT,Trường Đại học Nội vụ Hà Nội,Hà Nội,Miền Bắc,Công lập,https://huha.edu.vn
+120,MTH,Trường Đại học Mỹ thuật Việt Nam,Hà Nội,Miền Bắc,Công lập,https://mythuatvietnam.edu.vn
+121,MTS,Trường Đại học Mỹ thuật TP. Hồ Chí Minh,TP. Hồ Chí Minh,Miền Nam,Công lập,https://hcmufa.edu.vn
+122,SKD,Trường Đại học Sân khấu - Điện ảnh Hà Nội,Hà Nội,Miền Bắc,Công lập,https://skda.edu.vn
+123,SKD-HCM,Trường Đại học Sân khấu - Điện ảnh TP. Hồ Chí Minh,TP. Hồ Chí Minh,Miền Nam,Công lập,https://skdahcm.edu.vn
+124,NVH,Học viện Âm nhạc Quốc gia Việt Nam,Hà Nội,Miền Bắc,Công lập,https://vnam.edu.vn
+125,NVS,Nhạc viện TP. Hồ Chí Minh,TP. Hồ Chí Minh,Miền Nam,Công lập,https://hcmcons.vn
+126,HVM,Học viện Âm nhạc Huế,Thừa Thiên Huế,Miền Trung,Công lập,https://hocvienamnhachue.edu.vn
+127,MUA,Học viện Múa Việt Nam,Hà Nội,Miền Bắc,Công lập,https://vnad.edu.vn
+128,VHH,Trường Đại học Văn hóa Hà Nội,Hà Nội,Miền Bắc,Công lập,https://huc.edu.vn
+129,VHS,Trường Đại học Văn hóa TP. Hồ Chí Minh,TP. Hồ Chí Minh,Miền Nam,Công lập,https://hcmuc.edu.vn
+130,MTC,Trường Đại học Mỹ thuật Công nghiệp,Hà Nội,Miền Bắc,Công lập,https://mythuatcongnghiep.edu.vn
+131,TTB,Trường Đại học Thể dục Thể thao Bắc Ninh,Bắc Ninh,Miền Bắc,Công lập,https://upes1.edu.vn
+132,TTS,Trường Đại học Thể dục Thể thao TP. Hồ Chí Minh,TP. Hồ Chí Minh,Miền Nam,Công lập,https://ush.edu.vn
+133,TTD,Trường Đại học Thể dục Thể thao Đà Nẵng,Đà Nẵng,Miền Trung,Công lập,https://upes3.edu.vn
+134,HNM,Trường Đại học Thủ đô Hà Nội,Hà Nội,Miền Bắc,Công lập,https://hnmu.edu.vn
+135,SGD,Trường Đại học Sài Gòn,TP. Hồ Chí Minh,Miền Nam,Công lập,https://sgu.edu.vn
+136,THP,Trường Đại học Hải Phòng,Hải Phòng,Miền Bắc,Công lập,https://dhhp.edu.vn
+137,UHL,Trường Đại học Hạ Long,Quảng Ninh,Miền Bắc,Công lập,https://uhl.edu.vn
+138,HDT,Trường Đại học Hồng Đức,Thanh Hóa,Miền Trung,Công lập,https://hdu.edu.vn
+139,DVB,"Trường Đại học Văn hóa, Thể thao và Du lịch Thanh Hóa",Thanh Hóa,Miền Trung,Công lập,https://dvtdt.edu.vn
+140,DNB,Trường Đại học Hoa Lư,Ninh Bình,Miền Bắc,Công lập,https://hualu.edu.vn
+141,TTr,Trường Đại học Tân Trào,Tuyên Quang,Miền Bắc,Công lập,https://daihoctantrao.edu.vn
+142,DQU,Trường Đại học Quảng Nam,Quảng Nam,Miền Trung,Công lập,https://qnamuni.edu.vn
+143,DQB,Trường Đại học Quảng Bình,Quảng Bình,Miền Trung,Công lập,https://qbu.edu.vn
+144,DHT,Trường Đại học Hà Tĩnh,Hà Tĩnh,Miền Trung,Công lập,https://htu.edu.vn
+145,DPY,Trường Đại học Phú Yên,Phú Yên,Miền Trung,Công lập,https://pyu.edu.vn
+146,UKH,Trường Đại học Khánh Hòa,Khánh Hòa,Miền Trung,Công lập,https://ukh.edu.vn
+147,DPH,Trường Đại học Phạm Văn Đồng,Quảng Ngãi,Miền Trung,Công lập,https://pdu.edu.vn
+148,TDM,Trường Đại học Thủ Dầu Một,Bình Dương,Miền Nam,Công lập,https://tdmu.edu.vn
+149,DND,Trường Đại học Đồng Nai,Đồng Nai,Miền Nam,Công lập,https://dnpu.edu.vn
+150,TGU,Trường Đại học Tiền Giang,Tiền Giang,Miền Nam,Công lập,https://tgu.edu.vn
+151,DTV,Trường Đại học Trà Vinh,Trà Vinh,Miền Nam,Công lập,https://tvu.edu.vn
+152,SPD,Trường Đại học Đồng Tháp,Đồng Tháp,Miền Nam,Công lập,https://dthu.edu.vn
+153,DBL,Trường Đại học Bạc Liêu,Bạc Liêu,Miền Nam,Công lập,https://blu.edu.vn
+154,DKG,Trường Đại học Kiên Giang,Kiên Giang,Miền Nam,Công lập,https://vnkgu.edu.vn
+155,FPT,Trường Đại học FPT,Hà Nội,Miền Bắc,Tư thục,https://fpt.edu.vn
+156,DTh,Trường Đại học Thăng Long,Hà Nội,Miền Bắc,Tư thục,https://thanglong.edu.vn
+157,PKA,Trường Đại học Phenikaa,Hà Nội,Miền Bắc,Tư thục,https://phenikaa-uni.edu.vn
+158,DDA,Trường Đại học Đại Nam,Hà Nội,Miền Bắc,Tư thục,https://dainam.edu.vn
+159,DPD,Trường Đại học Phương Đông,Hà Nội,Miền Bắc,Tư thục,https://phuongdong.edu.vn
+160,DCL,Trường Đại học Kinh doanh và Công nghệ Hà Nội,Hà Nội,Miền Bắc,Tư thục,https://hubt.edu.vn
+161,NTU,Trường Đại học Nguyễn Trãi,Hà Nội,Miền Bắc,Tư thục,https://nguyentrai.edu.vn
+162,DDD,Trường Đại học Đông Đô,Hà Nội,Miền Bắc,Tư thục,https://hdiu.edu.vn
+163,DHB,Trường Đại học Hòa Bình,Hà Nội,Miền Bắc,Tư thục,https://daihochoabinh.edu.vn
+164,TDO,Trường Đại học Thành Đô,Hà Nội,Miền Bắc,Tư thục,https://thanhdo.edu.vn
+165,CMC,Trường Đại học CMC,Hà Nội,Miền Bắc,Tư thục,https://cmc-u.edu.vn
+166,UTM,Trường Đại học Công nghệ và Quản lý Hữu Nghị,Hà Nội,Miền Bắc,Tư thục,https://utm.edu.vn
+167,UKB,Trường Đại học Kinh Bắc,Bắc Ninh,Miền Bắc,Tư thục,https://ukb.edu.vn
+168,QTQ,Trường Đại học Quốc tế Bắc Hà,Bắc Ninh,Miền Bắc,Tư thục,https://biu.edu.vn
+169,CVA,Trường Đại học Chu Văn An,Hưng Yên,Miền Bắc,Tư thục,https://cva.edu.vn
+170,LTV,Trường Đại học Lương Thế Vinh,Nam Định,Miền Bắc,Tư thục,https://ltvu.edu.vn
+171,CTD,Trường Đại học Thành Đông,Hải Dương,Miền Bắc,Tư thục,https://thanhdong.edu.vn
+172,HPU,Trường Đại học Quản lý và Công nghệ Hải Phòng,Hải Phòng,Miền Bắc,Tư thục,https://hpu.edu.vn
+173,DDT,Trường Đại học Duy Tân,Đà Nẵng,Miền Trung,Tư thục,https://duytan.edu.vn
+174,DAD,Trường Đại học Đông Á,Đà Nẵng,Miền Trung,Tư thục,https://donga.edu.vn
+175,KTD,Trường Đại học Kiến trúc Đà Nẵng,Đà Nẵng,Miền Trung,Tư thục,https://dau.edu.vn
+176,DPX,Trường Đại học Phú Xuân,Thừa Thiên Huế,Miền Trung,Tư thục,https://phuxuan.edu.vn
+177,DQT,Trường Đại học Quang Trung,Bình Định,Miền Trung,Tư thục,https://qtu.edu.vn
+178,TBD,Trường Đại học Thái Bình Dương,Khánh Hòa,Miền Trung,Tư thục,https://tbd.edu.vn
+179,DYD,Trường Đại học Yersin Đà Lạt,Lâm Đồng,Miền Trung,Tư thục,https://yersin.edu.vn
+180,DPT,Trường Đại học Phan Thiết,Bình Thuận,Miền Trung,Tư thục,https://upt.edu.vn
+181,DVL,Trường Đại học Văn Lang,TP. Hồ Chí Minh,Miền Nam,Tư thục,https://vlu.edu.vn
+182,DKC,Trường Đại học Công nghệ TP. Hồ Chí Minh,TP. Hồ Chí Minh,Miền Nam,Tư thục,https://hutech.edu.vn
+183,UEF,Trường Đại học Kinh tế - Tài chính TP. Hồ Chí Minh,TP. Hồ Chí Minh,Miền Nam,Tư thục,https://uef.edu.vn
+184,HSU,Trường Đại học Hoa Sen,TP. Hồ Chí Minh,Miền Nam,Tư thục,https://hoasen.edu.vn
+185,HIU,Trường Đại học Quốc tế Hồng Bàng,TP. Hồ Chí Minh,Miền Nam,Tư thục,https://hiu.vn
+186,NTT,Trường Đại học Nguyễn Tất Thành,TP. Hồ Chí Minh,Miền Nam,Tư thục,https://ntt.edu.vn
+187,SIU,Trường Đại học Quốc tế Sài Gòn,TP. Hồ Chí Minh,Miền Nam,Tư thục,https://siu.edu.vn
+188,GDU,Trường Đại học Gia Định,TP. Hồ Chí Minh,Miền Nam,Tư thục,https://giadinh.edu.vn
+189,FLI,Trường Đại học Ngoại ngữ - Tin học TP. Hồ Chí Minh,TP. Hồ Chí Minh,Miền Nam,Tư thục,https://huflit.edu.vn
+190,DVH,Trường Đại học Văn Hiến,TP. Hồ Chí Minh,Miền Nam,Tư thục,https://vhu.edu.vn
+191,DSG,Trường Đại học Công nghệ Sài Gòn,TP. Hồ Chí Minh,Miền Nam,Tư thục,https://stu.edu.vn
+192,UMT,Trường Đại học Quản lý và Công nghệ TP. Hồ Chí Minh,TP. Hồ Chí Minh,Miền Nam,Tư thục,https://umt.edu.vn
+193,BVU,Trường Đại học Bà Rịa - Vũng Tàu,Bà Rịa - Vũng Tàu,Miền Nam,Tư thục,https://bvu.edu.vn
+194,DBD,Trường Đại học Bình Dương,Bình Dương,Miền Nam,Tư thục,https://bdu.edu.vn
+195,DKB,Trường Đại học Kinh tế - Kỹ thuật Bình Dương,Bình Dương,Miền Nam,Tư thục,https://ktkt.edu.vn
+196,EIU,Trường Đại học Quốc tế Miền Đông,Bình Dương,Miền Nam,Tư thục,https://eiu.edu.vn
+197,DLA,Trường Đại học Lạc Hồng,Đồng Nai,Miền Nam,Tư thục,https://lhu.edu.vn
+198,DNTU,Trường Đại học Công nghệ Đồng Nai,Đồng Nai,Miền Nam,Tư thục,https://dntu.edu.vn
+199,DKE,Trường Đại học Kinh tế Công nghiệp Long An,Long An,Miền Nam,Tư thục,https://daihoclongan.edu.vn
+200,TTU,Trường Đại học Tân Tạo,Long An,Miền Nam,Tư thục,https://ttu.edu.vn
+201,DCV,Trường Đại học Cửu Long,Vĩnh Long,Miền Nam,Tư thục,https://mku.edu.vn
+202,DNC,Trường Đại học Nam Cần Thơ,Cần Thơ,Miền Nam,Tư thục,https://nctu.edu.vn
+203,TDU,Trường Đại học Tây Đô,Cần Thơ,Miền Nam,Tư thục,https://tdu.edu.vn
+204,VTT,Trường Đại học Võ Trường Toản,Hậu Giang,Miền Nam,Tư thục,https://vttu.edu.vn
+205,MTA,Học viện Kỹ thuật Quân sự,Hà Nội,Miền Bắc,Công lập,https://mta.edu.vn
+206,YQH,Học viện Quân y,Hà Nội,Miền Bắc,Công lập,https://vmmu.edu.vn
+207,DCH,Học viện Hậu cần,Hà Nội,Miền Bắc,Công lập,https://hocvienhaucan.edu.vn
+208,PKH,Học viện Phòng không - Không quân,Hà Nội,Miền Bắc,Công lập,https://hocvienpkkq.edu.vn
+209,HQH,Học viện Hải quân,Khánh Hòa,Miền Trung,Công lập,https://hocvienhaiquan.edu.vn
+210,BPH,Học viện Biên phòng,Hà Nội,Miền Bắc,Công lập,https://hvbp.edu.vn
+211,KVA,Học viện Khoa học Quân sự,Hà Nội,Miền Bắc,Công lập,https://hvkhqs.edu.vn
+212,LQN,Trường Sĩ quan Lục quân 1,Hà Nội,Miền Bắc,Công lập,https://sqlq1.edu.vn
+213,LQS,Trường Sĩ quan Lục quân 2,Đồng Nai,Miền Nam,Công lập,https://sqlq2.edu.vn
+214,TTH,Trường Sĩ quan Thông tin,Khánh Hòa,Miền Trung,Công lập,https://tcu.edu.vn
+215,KQH,Trường Sĩ quan Không quân,Khánh Hòa,Miền Trung,Công lập,https://sqkq.edu.vn
+216,CNH,Trường Sĩ quan Công binh,Bình Dương,Miền Nam,Công lập,https://sqcb.edu.vn
+217,PHH,Trường Sĩ quan Pháo binh,Hà Nội,Miền Bắc,Công lập,https://sqpb.edu.vn
+218,TCH,Trường Sĩ quan Tăng thiết giáp,Vĩnh Phúc,Miền Bắc,Công lập,https://sqttg.edu.vn
+219,KTH,Trường Sĩ quan Kỹ thuật Quân sự,TP. Hồ Chí Minh,Miền Nam,Công lập,https://sqkt.edu.vn
+220,ANH,Học viện An ninh Nhân dân,Hà Nội,Miền Bắc,Công lập,https://hvannd.edu.vn
+221,CSH,Học viện Cảnh sát Nhân dân,Hà Nội,Miền Bắc,Công lập,https://ppa.edu.vn
+222,ANS,Trường Đại học An ninh Nhân dân,TP. Hồ Chí Minh,Miền Nam,Công lập,https://dhannd.edu.vn
+223,CSS,Trường Đại học Cảnh sát Nhân dân,TP. Hồ Chí Minh,Miền Nam,Công lập,https://dhcsnd.edu.vn
+224,PCH,Trường Đại học Phòng cháy Chữa cháy,Hà Nội,Miền Bắc,Công lập,https://daihocpccc.edu.vn
+225,T08,Trường Đại học Kỹ thuật - Hậu cần CAND,Bắc Ninh,Miền Bắc,Công lập,https://dhkthc.bocongan.gov.vn
+226,RMIT,Trường Đại học RMIT Việt Nam,TP. Hồ Chí Minh,Miền Nam,Quốc tế,https://rmit.edu.vn
+227,CM1,Trường Cao đẳng Sư phạm Trung ương,Hà Nội,Miền Bắc,Công lập,https://cdsptw.edu.vn
+228,CM2,Trường Cao đẳng Sư phạm Trung ương TP. Hồ Chí Minh,TP. Hồ Chí Minh,Miền Nam,Công lập,https://cdsptwhcm.edu.vn
+229,CM3,Trường Cao đẳng Sư phạm Trung ương Nha Trang,Khánh Hòa,Miền Trung,Công lập,https://sptwnt.edu.vn
+230,C19,Trường Cao đẳng Sư phạm Bắc Ninh,Bắc Ninh,Miền Bắc,Công lập,https://cdspbacninh.edu.vn
+231,C18,Trường Cao đẳng Bắc Giang,Bắc Giang,Miền Bắc,Công lập,https://cdbg.edu.vn
+232,C11,Trường Cao đẳng Cao Bằng,Cao Bằng,Miền Bắc,Công lập,https://cdcaobang.edu.vn
+233,C62,Trường Cao đẳng Sư phạm Điện Biên,Điện Biên,Miền Bắc,Công lập,https://cdspdienbien.edu.vn
+234,C26,Trường Cao đẳng Sư phạm Thái Bình,Thái Bình,Miền Bắc,Công lập,https://cdspthaibinh.edu.vn
+235,C22,Trường Cao đẳng Cộng đồng Hưng Yên,Hưng Yên,Miền Bắc,Công lập,https://hycc.edu.vn
+236,C63,Trường Cao đẳng Lai Châu,Lai Châu,Miền Bắc,Công lập,https://cdlaichau.edu.vn
+237,C10,Trường Cao đẳng Sư phạm Lạng Sơn,Lạng Sơn,Miền Bắc,Công lập,https://cdsplangson.edu.vn
+238,C25,Trường Cao đẳng Sư phạm Nam Định,Nam Định,Miền Bắc,Công lập,https://cdspnamdinh.edu.vn
+239,C23,Trường Cao đẳng Sư phạm Hòa Bình,Hòa Bình,Miền Bắc,Công lập,https://cdsphoabinh.edu.vn
+240,C16,Trường Cao đẳng Vĩnh Phúc,Vĩnh Phúc,Miền Bắc,Công lập,https://cdvinhphuc.edu.vn
+241,C14,Trường Cao đẳng Sơn La,Sơn La,Miền Bắc,Công lập,https://cdsonla.edu.vn
+242,C12,Trường Cao đẳng Thái Nguyên,Thái Nguyên,Miền Bắc,Công lập,https://cdthainguyen.edu.vn
+243,C33,Trường Cao đẳng Huế,Thừa Thiên Huế,Miền Trung,Công lập,https://cdhue.edu.vn
+244,C32,Trường Cao đẳng Sư phạm Quảng Trị,Quảng Trị,Miền Trung,Công lập,https://cdspquangtri.edu.vn
+245,C38,Trường Cao đẳng Kon Tum,Kon Tum,Miền Trung,Công lập,https://cdkt.edu.vn
+246,C40,Trường Cao đẳng Sư phạm Đắk Lắk,Đắk Lắk,Miền Trung,Công lập,https://cdspdaklak.edu.vn
+247,C42,Trường Cao đẳng Đà Lạt,Lâm Đồng,Miền Trung,Công lập,https://cddalat.edu.vn
+248,C47,Trường Cao đẳng Bình Thuận,Bình Thuận,Miền Trung,Công lập,https://cdbinhthuan.edu.vn
+249,C34,Trường Cao đẳng Sư phạm Bà Rịa – Vũng Tàu,Bà Rịa - Vũng Tàu,Miền Nam,Công lập,https://cdspbrvt.edu.vn
+250,C43,Trường Cao đẳng Bình Phước,Bình Phước,Miền Nam,Công lập,https://cdbinhphuoc.edu.vn
+251,C46,Trường Cao đẳng Sư phạm Tây Ninh,Tây Ninh,Miền Nam,Công lập,https://cdsptayninh.edu.vn
+252,C55,Trường Cao đẳng Cần Thơ,Cần Thơ,Miền Nam,Công lập,https://cdcantho.edu.vn
+253,C53,Trường Cao đẳng Bến Tre,Bến Tre,Miền Nam,Công lập,https://cdbentre.edu.vn
+254,C56,Trường Cao đẳng Vĩnh Long,Vĩnh Long,Miền Nam,Công lập,https://cdvinhlong.edu.vn
+255,C54,Trường Cao đẳng Sư phạm Kiên Giang,Kiên Giang,Miền Nam,Công lập,https://cdspkiengiang.edu.vn
+256,C64,Trường Cao đẳng Cộng đồng Hậu Giang,Hậu Giang,Miền Nam,Công lập,https://hgcc.edu.vn
+257,C60,Trường Cao đẳng Cộng đồng Sóc Trăng,Sóc Trăng,Miền Nam,Công lập,https://stcc.edu.vn
+258,C61,Trường Cao đẳng Cộng đồng Cà Mau,Cà Mau,Miền Nam,Công lập,https://cmcc.edu.vn
+259,QHQ,Trường Quốc tế - Đại học Quốc gia Hà Nội,Chưa xác định,Chưa xác định,Công lập,
+260,QHS,Trường Đại học Giáo dục - Đại học Quốc gia Hà Nội,Chưa xác định,Chưa xác định,Công lập,
+261,BMU,Trường Đại học Y Dược Buôn Ma Thuột,Chưa xác định,Chưa xác định,Công lập,
+262,CCM,Trường Đại học Công nghiệp và Thương mại Hà Nội,Chưa xác định,Chưa xác định,Tư thục,
+263,CEA,Trường Đại học Nghệ An,Chưa xác định,Chưa xác định,Tư thục,
+264,DBG,Trường Đại học Nông Lâm Bắc Giang,Chưa xác định,Chưa xác định,Tư thục,
+265,DCA,Trường Đại học Intracom,Chưa xác định,Chưa xác định,Tư thục,
+266,DCQ,Trường Đại Học Công Nghệ và Quản Lý Hữu Nghị,Chưa xác định,Chưa xác định,Tư thục,
+267,DDM,Trường Đại Học Công Nghiệp Quảng Ninh,Chưa xác định,Chưa xác định,Tư thục,
+268,DDP,Phân Hiệu Đại Học Đà Nẵng tại Kon Tum,Chưa xác định,Chưa xác định,Tư thục,
+269,DDU,Trường Đại Học Đông Đô,Chưa xác định,Chưa xác định,Tư thục,
+270,DDV,Viện nghiên cứu và đào tạo Việt Anh - Đại học Đà Nẵng,Chưa xác định,Chưa xác định,Tư thục,
+271,DHI,Khoa Quốc tế - Đại học Huế,Chưa xác định,Chưa xác định,Tư thục,
+272,DHQ,Phân Hiệu Đại Học Huế tại Quảng Trị,Chưa xác định,Chưa xác định,Tư thục,
+273,DHV,Trường Đại học Hùng Vương TPHCM,Chưa xác định,Chưa xác định,Tư thục,
+274,DKK,Trường Đại Học Kinh Tế Kỹ Thuật Công Nghiệp,Chưa xác định,Chưa xác định,Tư thục,
+275,DLH,Trường Đại Học Lạc Hồng,Chưa xác định,Chưa xác định,Tư thục,
+276,DLS,Trường Đại Học Lao Động – Xã Hội (Cơ sở II),Chưa xác định,Chưa xác định,Tư thục,
+277,DMT,Trường Đại học Tài Nguyên và Môi Trường Hà Nội,Chưa xác định,Chưa xác định,Tư thục,
+278,DNV,Trường Đại học Nội vụ Hà Nội,Chưa xác định,Chưa xác định,Tư thục,
+279,DPC,Trường Đại Học Phan Châu Trinh,Chưa xác định,Chưa xác định,Tư thục,
+280,DPQ,Trường Đại Học Phạm Văn Đồng,Chưa xác định,Chưa xác định,Tư thục,
+281,DQK,Trường Đại Học Kinh Doanh và Công Nghệ Hà Nội,Chưa xác định,Chưa xác định,Tư thục,
+282,DTB,Trường Đại Học Thái Bình,Chưa xác định,Chưa xác định,Tư thục,
+283,DTC,Trường Đại học Công Nghệ Thông Tin và Truyền Thông Thái Nguyên,Chưa xác định,Chưa xác định,Tư thục,
+284,DTG,Phân hiệu Đại học Thái Nguyên tại Hà Giang,Chưa xác định,Chưa xác định,Tư thục,
+285,DTM,Trường Đại học Tài Nguyên và Môi Trường TPHCM,Chưa xác định,Chưa xác định,Tư thục,
+286,DTP,Phân Hiệu Đại Học Thái Nguyên Tại Lào Cai,Chưa xác định,Chưa xác định,Tư thục,
+287,DTQ,Khoa Quốc Tế - Đại Học Thái Nguyên,Chưa xác định,Chưa xác định,Tư thục,
+288,DVD,"Trường Đại Học Văn Hóa, Thể Thao Và Du Lịch Thanh Hóa",Chưa xác định,Chưa xác định,Tư thục,
+289,DVP,Trường Đại Học Trưng Vương,Chưa xác định,Chưa xác định,Tư thục,
+290,DVX,Trường Đại Học Công Nghệ Vạn Xuân,Chưa xác định,Chưa xác định,Tư thục,
+291,ETU,Trường Đại Học Hòa Bình,Chưa xác định,Chưa xác định,Tư thục,
+292,FBU,Trường Đại Học Tài Chính Ngân Hàng Hà Nội,Chưa xác định,Chưa xác định,Tư thục,
+293,GNT,Trường Đại Học Sư Phạm Nghệ Thuật Trung Ương,Chưa xác định,Chưa xác định,Tư thục,
+294,GTA,Trường Đại học Công nghệ Giao thông vận tải,Chưa xác định,Chưa xác định,Tư thục,
+295,HCP,Học Viện Chính Sách và Phát Triển,Chưa xác định,Chưa xác định,Tư thục,
+296,HCS,Học Viện Hành Chính Và Quản Trị Công (phía Nam),Chưa xác định,Chưa xác định,Tư thục,
+297,HHK,Học Viện Hàng không Việt Nam,Chưa xác định,Chưa xác định,Tư thục,
+298,HHT,Trường Đại Học Hà Tĩnh,Chưa xác định,Chưa xác định,Tư thục,
+299,HTY,Học viện Tài chính - Phân hiệu Hưng Yên,Chưa xác định,Chưa xác định,Công lập,
+300,HVC,Học viện cán bộ TPHCM,Chưa xác định,Chưa xác định,Công lập,
+301,HVQ,Học Viện Quản Lý Giáo Dục,Chưa xác định,Chưa xác định,Tư thục,
+302,KCC,Trường Đại học Kỹ Thuật Công Nghệ Cần Thơ,Chưa xác định,Chưa xác định,Tư thục,
+303,LNA,Phân hiệu Đại học Lâm nghiệp tỉnh Gia Lai,Chưa xác định,Chưa xác định,Tư thục,
+304,LNS,Phân hiệu Đại Học Lâm nghiệp tại Đồng Nai,Chưa xác định,Chưa xác định,Tư thục,
+305,MIT,Trường Đại học Công nghệ Miền Đông,Chưa xác định,Chưa xác định,Tư thục,
+306,NHB,Học Viện Ngân Hàng (Phân Viện Bắc Ninh),Chưa xác định,Chưa xác định,Tư thục,
+307,NHP,Học Viện Ngân Hàng (Phân Viện Phú Yên),Chưa xác định,Chưa xác định,Tư thục,
+308,NLG,Phân hiệu Đại học Nông Lâm TPHCM tại Gia Lai,Chưa xác định,Chưa xác định,Tư thục,
+309,NLN,Phân hiệu Đại học Nông Lâm TPHCM tại Ninh Thuận,Chưa xác định,Chưa xác định,Tư thục,
+310,NTS,Trường Đại học Ngoại thương (Cơ sở II),Chưa xác định,Chưa xác định,Tư thục,
+311,PVU,Trường Đại Học Dầu Khí Việt Nam,Chưa xác định,Chưa xác định,Tư thục,
+312,SNH,Trường Sĩ Quan Công Binh - Hệ Quân sự - Đại học Ngô Quyền,Chưa xác định,Chưa xác định,Tư thục,
+313,TDD,Trường Đại học Thành Đô,Chưa xác định,Chưa xác định,Tư thục,
+314,TDH,Trường Đại Học Sư Phạm Thể Dục Thể Thao Hà Nội,Chưa xác định,Chưa xác định,Tư thục,
+315,THU,Trường Đại học Y khoa Tokyo Việt Nam,Chưa xác định,Chưa xác định,Tư thục,
+316,THV,Trường Đại Học Hùng Vương,Chưa xác định,Chưa xác định,Tư thục,
+317,TKG,Trường Đại học Kiên Giang,Chưa xác định,Chưa xác định,Tư thục,
+318,TLS,Trường Đại Học Thủy Lợi (Cơ sở 2),Chưa xác định,Chưa xác định,Tư thục,
+319,TQU,Trường Đại học Tân Trào,Chưa xác định,Chưa xác định,Tư thục,
+320,TTG,Trường Đại Học Tiền Giang,Chưa xác định,Chưa xác định,Tư thục,
+321,VHD,Trường Đại Học Công Nghiệp Việt - Hung,Chưa xác định,Chưa xác định,Tư thục,
+322,XDN,Phân hiệu Đại học Xây dựng miền Trung tại Đà Nẵng,Chưa xác định,Chưa xác định,Tư thục,
+323,YKV,Trường Đại Học Y Khoa Vinh,Chưa xác định,Chưa xác định,Tư thục,
+324,KMA,Học viện Kỹ thuật Mật mã,Hà Nội,Miền Bắc,Công lập,https://actvn.edu.vn
+325,DHH,Đại học Huế (Cơ quan chung),Thừa Thiên Huế,Miền Trung,Công lập,
+326,TNU,Đại học Thái Nguyên (Cơ quan chung),Thái Nguyên,Miền Bắc,Công lập,
+327,QSQ,Trường Đại học Quốc tế - ĐHQG TP.HCM,TP. Hồ Chí Minh,Miền Nam,Công lập,
+328,QSA,Trường Đại học Khoa học Xã hội và Nhân văn - ĐHQG TP.HCM,TP. Hồ Chí Minh,Miền Nam,Công lập,
+329,QSH,Trường Đại học Khoa học Tự nhiên - ĐHQG TP.HCM,TP. Hồ Chí Minh,Miền Nam,Công lập,
+330,QSP,Khoa Y - ĐHQG TP.HCM (Trường ĐH Khoa học Sức khỏe),TP. Hồ Chí Minh,Miền Nam,Công lập,
+331,QHK,Trường Quốc tế - Đại học Quốc gia Hà Nội,Hà Nội,Miền Bắc,Công lập,
+332,QHJ,Trường Đại học Luật - Đại học Quốc gia Hà Nội,Hà Nội,Miền Bắc,Công lập,
+333,KTC,Trường Đại học Kinh tế - Đại học Đà Nẵng,Đà Nẵng,Miền Trung,Công lập,
+334,GSA,Trường Đại học Giao thông Vận tải (Phân hiệu TP.HCM),TP. Hồ Chí Minh,Miền Nam,Công lập,
+335,BVS,Học viện Công nghệ Bưu chính Viễn thông (Cơ sở phía Nam),TP. Hồ Chí Minh,Miền Nam,Công lập,
+336,HGM,Phân hiệu Học viện Hành chính Quốc gia tại Quảng Nam,Quảng Nam,Miền Trung,Công lập,
+337,HCV,Học viện Hành chính Quốc gia (phía Nam),TP. Hồ Chí Minh,Miền Nam,Công lập,
+338,HGH,Phân hiệu Đại học Thái Nguyên tại Hà Giang,Hà Giang,Miền Bắc,Công lập,
+339,UFA,Trường Đại học Tài chính - Marketing (Phân hiệu Quảng Ngãi),Quảng Ngãi,Miền Trung,Công lập,
+340,DHC,Khoa Giáo dục Thể chất - Đại học Huế,Thừa Thiên Huế,Miền Trung,Công lập,
+341,YHT,Khoa Y Dược - Trường Đại học Hà Tĩnh,Hà Tĩnh,Miền Trung,Công lập,
+342,DDG,Trường Đại học Công nghệ Thông tin & Truyền thông Việt - Hàn,Đà Nẵng,Miền Trung,Công lập,
+343,HEH,Trường Đại học Kỹ thuật Y - Dược Đà Nẵng,Đà Nẵng,Miền Trung,Công lập,
+344,HYD,Trường Đại học Y Dược Buôn Ma Thuột,Đắk Lắk,Tây Nguyên,Tư thục,
+345,SDU,Trường Đại học Sao Đỏ,Hải Dương,Miền Bắc,Công lập,
+346,VUI,Trường Đại học Công nghiệp Việt Trì,Phú Thọ,Miền Bắc,Công lập,
+347,DBH,Trường Đại học Quốc tế Bắc Hà,Bắc Ninh,Miền Bắc,Tư thục,
+348,TTQ,Trường Sĩ quan Thông tin (ĐH Thông tin Liên lạc),Khánh Hòa,Miền Trung,Quân đội,
+349,LBH,Trường Sĩ quan Lục quân 1 (ĐH Trần Quốc Tuấn),Hà Nội,Miền Bắc,Quân đội,
+350,LCH,Trường Sĩ quan Lục quân 2 (ĐH Nguyễn Huệ),Đồng Nai,Miền Nam,Quân đội,
+351,LAH,Trường Sĩ quan Không quân,Khánh Hòa,Miền Trung,Quân đội,
+352,PBH,Trường Sĩ quan Pháo binh,Hà Nội,Miền Bắc,Quân đội,
+353,ZNH,Trường Sĩ quan Tăng - Thiết giáp,Vĩnh Phúc,Miền Bắc,Quân đội,
+354,HCN,Trường Sĩ quan Phòng hóa,Hà Nội,Miền Bắc,Quân đội,
+355,STS,Trường Sĩ quan Kỹ thuật Quân sự (Vin-Hem Pich),TP. Hồ Chí Minh,Miền Nam,Quân đội,
+356,NQH,Trường Đại học Ngô Quyền (Sĩ quan Công binh),Bình Dương,Miền Nam,Quân đội,
+357,PCS,Trường Sĩ quan Chính trị,Bắc Ninh,Miền Bắc,Quân đội,
+358,LBS,Trường Sĩ quan Lục quân 1 (Cơ sở Sơn Tây),Hà Nội,Miền Bắc,Quân đội,
+359,VPH,Học viện Hậu cần (Hệ Dân sự),Hà Nội,Miền Bắc,Quân đội,

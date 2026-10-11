@@ -1,0 +1,12 @@
+﻿method_code,model_tier,sample_count,status,notes
+THPT,TIER_1_RF_2LAG_TIME_SERIES,12395,READY_FOR_RF,"Mẫu đủ 2 lag liên tục, 100% điểm thật, truy vết lag chính xác"
+THPT,TIER_2_BASELINE_1LAG,11848,BASELINE_READY,Dùng quy tắc baseline lag-1 hoặc fallback (thiếu lag-2)
+THPT,TIER_3_CROSS_SECTIONAL_ONLY,42021,CROSS_SECTIONAL_ONLY,"Thiếu lag-1 (17,875 gián đoạn chuỗi; 13,217 ngành mới; 10,929 mốc 2020)"
+HOC_BA,TIER_3_CROSS_SECTIONAL_ONLY,4430,CROSS_SECTIONAL_ONLY,Thang 30 chuẩn; thiếu chuỗi lag 2 năm liên tiếp (giữ NaN)
+HOC_BA,SPECIAL_TDTU_SCALE100_MODEL,334,ISOLATED_SPECIAL_MODEL,"ĐH Tôn Đức Thắng (thang điểm 100 theo đề án riêng, đã cách ly)"
+HOC_BA,SPECIAL_GPA10_MODEL,113,SEPARATE_MODEL_NEEDED,"HIU, DAD, VGU, VTT (GPA 10.0)"
+HOC_BA,SPECIAL_GPA4_MODEL,40,SEPARATE_MODEL_NEEDED,HIU (GPA 4.0)
+HOC_BA,CONVERTIBLE_SCALE40_MODEL,10,CONVERSION_RULE_NEEDED,"NTH, CMC (thang 40)"
+HOC_BA,QUALITATIVE_NON_REGRESSION,5,RULE_BASED_FILTER,Y Dược tiêu chuẩn định tính (0.0)
+HOC_BA,LOCAL_QUOTA_BELOW_15,3,CROSS_SECTIONAL_ONLY,Điểm chuẩn dưới 15.0 điểm (chính sách địa phương)
+HOC_BA,SPECIAL_DGNL_1200_MODEL,1,ISOLATED_ANOMALOUS_DATA,"ĐH Phú Yên điểm 544.0 (lẫn từ bảng ĐGNL V-ACT, đã cách ly)"

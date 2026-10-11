@@ -1,0 +1,12 @@
+﻿method_code,year,total_records,unique_universities,unique_programs,missing_score_count,missing_source_count,unknown_score_scale_count,unknown_calculation_rule_count,duplicate_candidate_count,conflicting_score_count
+THPT,2020,10929,214,458,0,0,0,0,0,0
+THPT,2021,11578,208,467,0,0,0,0,0,0
+THPT,2022,12073,193,453,0,0,0,0,0,0
+THPT,2023,10186,149,478,0,0,0,0,0,0
+THPT,2024,19037,288,1131,0,0,0,0,0,0
+THPT,2025,1280,47,502,0,0,0,0,0,0
+THPT,2026,1181,44,472,0,0,0,0,0,0
+HOC_BA,2022,51,2,22,0,0,0,0,0,0
+HOC_BA,2024,77,7,47,0,0,0,0,0,0
+HOC_BA,2025,2017,61,573,0,0,0,0,0,0
+HOC_BA,2026,2791,115,1197,0,0,0,0,0,0

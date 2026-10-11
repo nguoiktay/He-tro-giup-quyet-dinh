@@ -1,0 +1,45 @@
+﻿id,maNganh,tenNganh,nhomNganh,moTa
+1,7480201,Công nghệ thông tin,Máy tính và công nghệ thông tin,Đại học chính quy
+2,7480101,Khoa học máy tính,Máy tính và công nghệ thông tin,Đại học chính quy
+3,7480102,Mạng máy tính và truyền thông dữ liệu,Máy tính và công nghệ thông tin,Đại học chính quy
+4,7480103,Kỹ thuật phần mềm,Máy tính và công nghệ thông tin,Đại học chính quy
+5,7480104,Hệ thống thông tin,Máy tính và công nghệ thông tin,Đại học chính quy
+6,7480107,Trí tuệ nhân tạo,Máy tính và công nghệ thông tin,Đại học chính quy
+7,7480202,An toàn thông tin,Máy tính và công nghệ thông tin,Đại học chính quy
+8,7480108,Khoa học dữ liệu,Máy tính và công nghệ thông tin,Đại học chính quy
+9,7340101,Quản trị kinh doanh,Kinh doanh và quản lý,Đại học chính quy
+10,7340115,Marketing,Kinh doanh và quản lý,Đại học chính quy
+11,7340201,Tài chính - Ngân hàng,Kinh doanh và quản lý,Đại học chính quy
+12,7340301,Kế toán,Kinh doanh và quản lý,Đại học chính quy
+13,7340302,Kiểm toán,Kinh doanh và quản lý,Đại học chính quy
+14,7340120,Kinh doanh quốc tế,Kinh doanh và quản lý,Đại học chính quy
+15,7340121,Thương mại điện tử,Kinh doanh và quản lý,Đại học chính quy
+16,7340122,Logistics và Quản lý chuỗi cung ứng,Kinh doanh và quản lý,Đại học chính quy
+17,7520114,Kỹ thuật cơ điện tử,Kỹ thuật,Đại học chính quy
+18,7520207,Kỹ thuật điện tử - viễn thông,Kỹ thuật,Đại học chính quy
+19,7520216,Kỹ thuật điều khiển và tự động hóa,Kỹ thuật,Đại học chính quy
+20,7520130,Kỹ thuật ô tô,Kỹ thuật,Đại học chính quy
+21,7520301,Kỹ thuật hóa học,Kỹ thuật,Đại học chính quy
+22,7580201,Kỹ thuật xây dựng,Kiến trúc và xây dựng,Đại học chính quy
+23,7580101,Kiến trúc,Kiến trúc và xây dựng,Đại học chính quy
+24,7720101,Y khoa,Sức khỏe,Đại học chính quy
+25,7720201,Dược học,Sức khỏe,Đại học chính quy
+26,7720501,Răng - Hàm - Mặt,Sức khỏe,Đại học chính quy
+27,7720301,Điều dưỡng,Sức khỏe,Đại học chính quy
+28,7140209,Sư phạm Toán học,Khoa học giáo dục và đào tạo giáo viên,Đại học chính quy
+29,7140217,Sư phạm Tiếng Anh,Khoa học giáo dục và đào tạo giáo viên,Đại học chính quy
+30,7140211,Sư phạm Ngữ văn,Khoa học giáo dục và đào tạo giáo viên,Đại học chính quy
+31,7140212,Sư phạm Vật lý,Khoa học giáo dục và đào tạo giáo viên,Đại học chính quy
+32,7380101,Luật,Pháp luật,Đại học chính quy
+33,7380107,Luật kinh tế,Pháp luật,Đại học chính quy
+34,7310101,Kinh tế,Khoa học xã hội và hành vi,Đại học chính quy
+35,7310106,Kinh tế quốc tế,Khoa học xã hội và hành vi,Đại học chính quy
+36,7220201,Ngôn ngữ Anh,Nhân văn,Đại học chính quy
+37,7220202,Ngôn ngữ Trung Quốc,Nhân văn,Đại học chính quy
+38,7220204,Ngôn ngữ Trung Quốc,Nhân văn,Đại học chính quy
+39,7220205,Ngôn ngữ Hàn Quốc,Nhân văn,Đại học chính quy
+40,7320101,Báo chí,Báo chí và thông tin,Đại học chính quy
+41,7320104,Truyền thông đa phương tiện,Báo chí và thông tin,Đại học chính quy
+42,51140201,Giáo dục Mầm non,Khoa học giáo dục và đào tạo giáo viên,Cao đẳng sư phạm
+43,7220206,Ngôn ngữ Nhật,Nhân văn,Đại học chính quy
+44,UNKNOWN,Ngành đào tạo liên ngành / Chưa phân loại,Liên ngành,Chương trình đào tạo liên ngành hoặc đặc thù
