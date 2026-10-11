@@ -833,4 +833,15 @@ def test_user_registration_email_and_phone_validation():
     assert resBadEmail.status_code == 422 or (resBadEmail.status_code == 400 and not resBadEmail.json().get("thanhCong"))
 
 
+def test_data_architecture_tuition_relational_integrity():
+    diemChuanRecords = CsvDatabase.readAll("diemChuan")
+    hocPhiRecords = CsvDatabase.readAll("hocPhi")
+    assert len(hocPhiRecords) == 10979
+    hpProgramIds = {r["programId"] for r in hocPhiRecords if r.get("programId")}
+    assert len(hpProgramIds) == 10979
+    dcProgramIds = {r["programId"] for r in diemChuanRecords if r.get("programId")}
+    assert len(dcProgramIds) > 0
+    assert dcProgramIds.issubset(hpProgramIds)
+
+
 

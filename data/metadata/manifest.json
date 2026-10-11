@@ -279,8 +279,8 @@
       "description": "Danh mục 10,979 chương trình kèm phân loại trạng thái xét tuyển 2026 minh bạch",
       "row_count": 10979,
       "column_count": 27,
-      "file_size_bytes": 5422558,
-      "sha256": "450354bc3b4774fae745ebd9ac0a02b03121988b1ebcce3dc14b963893d6dbac",
+      "file_size_bytes": 5534946,
+      "sha256": "1c6a356cc4d19cefdbb332a2ac8bd3fcdc75fcc5f026288e4a791c2e8871e8ca",
       "columns": [
         "catalog_id",
         "university_id",
@@ -509,6 +509,33 @@
         "history_status",
         "ml_eligibility",
         "verified"
+      ]
+    },
+    "csv/hocPhi.csv": {
+      "relative_path": "data/csv/hocPhi.csv",
+      "description": "Biểu phí và chính sách tài chính tuyển sinh 10,979 chương trình đào tạo của 359 trường toàn quốc",
+      "row_count": 10979,
+      "column_count": 17,
+      "file_size_bytes": 4577565,
+      "sha256": "eceda13cb23bb0f7259e1326cd92e8532ebb2aa2e5d60767af72d45647105751",
+      "columns": [
+        "id",
+        "programId",
+        "truongDaiHocId",
+        "maTruong",
+        "tenTruong",
+        "tenChuongTrinh",
+        "namApDung",
+        "khoaApDung",
+        "hocPhiToiThieu",
+        "hocPhiToiDa",
+        "donViTinh",
+        "loaiHocPhi",
+        "trangThaiHocPhi",
+        "hocPhiDisplay",
+        "nguonMinhChung",
+        "urlNguon",
+        "ghiChu"
       ]
     }
   }
