@@ -732,7 +732,7 @@ function renderRecommendationCards(items) {
               <span>${escapeHtml(tuitionBadge.shortText)}</span>
               ${(() => {
                 if (item.trangThaiHocPhi === 'VERIFIED') {
-                  return `<span style="font-size:0.7rem; font-weight:700; background:#dcfce7; color:#15803d; padding:1px 6px; border-radius:4px; flex-shrink: 0;">Đã xác minh</span>`;
+                  return '';
                 } else if (item.trangThaiHocPhi === 'PROJECTED') {
                   return `<span style="font-size:0.7rem; font-weight:700; background:#e0f2fe; color:#0369a1; padding:1px 6px; border-radius:4px; flex-shrink: 0;">Dự kiến</span>`;
                 } else if (item.trangThaiHocPhi === 'PER_CREDIT') {
@@ -956,7 +956,7 @@ window.openProgramDetails = async function(idx) {
         <span style="color:var(--text-muted);">Trạng thái biểu phí:</span>
         <span style="font-weight:700;">
           ${(() => {
-            if (item.trangThaiHocPhi === 'VERIFIED') return '<span style="color:#15803d;">Đã xác minh chính thức</span>';
+            if (item.trangThaiHocPhi === 'VERIFIED') return '<span style="color:#15803d;">Chính thức</span>';
             if (item.trangThaiHocPhi === 'PROJECTED') return '<span style="color:#0369a1;">Dự kiến (Theo đề án tham khảo)</span>';
             if (item.trangThaiHocPhi === 'PER_CREDIT') return '<span style="color:#b45309;">Đơn giá tín chỉ</span>';
             return '<span style="color:#6b7280;">Chưa xác minh</span>';
@@ -1329,15 +1329,17 @@ async function loadExploreData() {
           <td>${scoreDisplay}</td>
           <td style="font-size:0.85rem; font-weight:600; color:var(--text-main);">
             <div title="${escapeHtml(formatTuitionBadge(r).fullText)}">${escapeHtml(formatTuitionBadge(r).shortText)}</div>
-            <div style="margin-top:2px; display:flex; align-items:center; gap:4px; flex-wrap:wrap;">
-              ${(() => {
-                if (r.trangThaiHocPhi === 'VERIFIED') return `<span style="font-size:0.7rem; background:#dcfce7; color:#15803d; padding:1px 5px; border-radius:3px; font-weight:700;">Đã xác minh</span>`;
+            ${(() => {
+              const badge = (() => {
+                if (r.trangThaiHocPhi === 'VERIFIED') return '';
                 if (r.trangThaiHocPhi === 'PROJECTED') return `<span style="font-size:0.7rem; background:#e0f2fe; color:#0369a1; padding:1px 5px; border-radius:3px; font-weight:700;">Dự kiến</span>`;
                 if (r.trangThaiHocPhi === 'PER_CREDIT') return `<span style="font-size:0.7rem; background:#fef3c7; color:#b45309; padding:1px 5px; border-radius:3px; font-weight:700;">Tín chỉ</span>`;
                 return `<span style="font-size:0.7rem; background:#f3f4f6; color:#4b5563; padding:1px 5px; border-radius:3px; font-weight:700;">Chưa xác minh</span>`;
-              })()}
-              ${r.urlNguon ? `<a href="${escapeHtml(r.urlNguon)}" target="_blank" rel="noopener" style="font-size:0.72rem; color:var(--primary); text-decoration:underline;">Nguồn</a>` : ''}
-            </div>
+              })();
+              const link = r.urlNguon ? `<a href="${escapeHtml(r.urlNguon)}" target="_blank" rel="noopener" style="font-size:0.72rem; color:var(--primary); text-decoration:underline;">Nguồn</a>` : '';
+              if (!badge && !link) return '';
+              return `<div style="margin-top:2px; display:flex; align-items:center; gap:4px; flex-wrap:wrap;">${badge}${link}</div>`;
+            })()}
           </td>
         </tr>
       `;
