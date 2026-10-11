@@ -27,6 +27,59 @@ function escapeHtml(str) {
     .replace(/'/g, '&#39;');
 }
 
+function formatTuitionBadge(item) {
+  if (!item) return { shortText: 'Học phí: Theo quy định', fullText: '' };
+
+  const rawText = String(item.hocPhiUocTinh || item.hocPhi || '').trim();
+  const lower = rawText.toLowerCase();
+
+  const isFree = (
+    item.phanLoai === 'free_subsidized' ||
+    item.hocPhiNam === 0 ||
+    item.hocPhiKy === 0 ||
+    lower.includes('miễn') ||
+    lower.includes('hỗ trợ 100%') ||
+    lower.includes('bao cấp')
+  );
+
+  if (isFree) {
+    return {
+      shortText: 'Miễn phí',
+      fullText: rawText || 'Miễn 100% học phí theo chính sách nhà nước'
+    };
+  }
+
+  if (item.trangThaiHocPhi === 'UNVERIFIED' || (!item.hocPhiUocTinh && item.hocPhiNam === null && item.hocPhiNam === undefined)) {
+    return {
+      shortText: 'Học phí: Chưa rõ',
+      fullText: rawText || 'Chưa có thông tin học phí đã xác minh'
+    };
+  }
+
+  let cleanAmount = rawText
+    .replace(/\s*\(Dự kiến.*?\)/i, '')
+    .replace(/\s*\(Tham khảo.*?\)/i, '')
+    .trim();
+
+  if (cleanAmount && cleanAmount !== 'Theo quy định' && cleanAmount !== 'Chưa có thông tin học phí đã xác minh') {
+    if (cleanAmount.toLowerCase().startsWith('học phí')) {
+      return { shortText: cleanAmount, fullText: rawText };
+    }
+    return { shortText: `Học phí: ${cleanAmount}`, fullText: rawText };
+  }
+
+  if (item.hocPhiNam !== null && item.hocPhiNam !== undefined && !isNaN(Number(item.hocPhiNam))) {
+    const val = Number(item.hocPhiNam);
+    if (val === 0) {
+      return { shortText: 'Miễn phí', fullText: rawText };
+    }
+    const trieu = (val / 1000000.0).toFixed(1);
+    return { shortText: `Học phí: ~${trieu} triệu/năm`, fullText: rawText };
+  }
+
+  return { shortText: 'Học phí: Theo quy định', fullText: rawText };
+}
+
 const COMBINATION_LABELS = {
   'A00': ['Toán', 'Vật lý', 'Hóa học'],
   'A01': ['Toán', 'Vật lý', 'Tiếng Anh'],
@@ -642,7 +695,8 @@ function renderRecommendationCards(items) {
       return w.truongDaiHocId === item.truongDaiHocId && w.nganhHocId === item.nganhHocId && (w.maToHop === item.maToHop || w.toHopMonId === item.toHopMonId);
     });
 
-    return `
+            const tuitionBadge = formatTuitionBadge(item);
+            return `
       <div class="rec-item-card">
         <div class="uni-logo-avatar" style="background-color: ${avatarInfo.color};">
           ${avatarInfo.text}
@@ -670,21 +724,21 @@ function renderRecommendationCards(items) {
               </svg>
               ${escapeHtml(item.loaiTruong || 'Trường công lập')}
             </span>
-            <span style="font-weight: 600; color: var(--text-main); display: inline-flex; align-items: center; gap: 0.35rem; flex-wrap: wrap;">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <span style="font-weight: 600; color: var(--text-main); display: inline-flex; align-items: center; gap: 0.35rem; white-space: nowrap;" title="${escapeHtml(tuitionBadge.fullText)}">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink: 0;">
                 <line x1="12" y1="1" x2="12" y2="23"></line>
                 <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
               </svg>
-              <span>${escapeHtml(item.hocPhiUocTinh || 'Học phí theo quy định')}</span>
+              <span>${escapeHtml(tuitionBadge.shortText)}</span>
               ${(() => {
                 if (item.trangThaiHocPhi === 'VERIFIED') {
-                  return `<span style="font-size:0.7rem; font-weight:700; background:#dcfce7; color:#15803d; padding:1px 6px; border-radius:4px;">Đã xác minh</span>`;
+                  return `<span style="font-size:0.7rem; font-weight:700; background:#dcfce7; color:#15803d; padding:1px 6px; border-radius:4px; flex-shrink: 0;">Đã xác minh</span>`;
                 } else if (item.trangThaiHocPhi === 'PROJECTED') {
-                  return `<span style="font-size:0.7rem; font-weight:700; background:#e0f2fe; color:#0369a1; padding:1px 6px; border-radius:4px;">Dự kiến</span>`;
+                  return `<span style="font-size:0.7rem; font-weight:700; background:#e0f2fe; color:#0369a1; padding:1px 6px; border-radius:4px; flex-shrink: 0;">Dự kiến</span>`;
                 } else if (item.trangThaiHocPhi === 'PER_CREDIT') {
-                  return `<span style="font-size:0.7rem; font-weight:700; background:#fef3c7; color:#b45309; padding:1px 6px; border-radius:4px;">Theo tín chỉ</span>`;
+                  return `<span style="font-size:0.7rem; font-weight:700; background:#fef3c7; color:#b45309; padding:1px 6px; border-radius:4px; flex-shrink: 0;">Theo tín chỉ</span>`;
                 } else {
-                  return `<span style="font-size:0.7rem; font-weight:700; background:#f3f4f6; color:#4b5563; padding:1px 6px; border-radius:4px;">Chưa xác minh</span>`;
+                  return `<span style="font-size:0.7rem; font-weight:700; background:#f3f4f6; color:#4b5563; padding:1px 6px; border-radius:4px; flex-shrink: 0;">Chưa xác minh</span>`;
                 }
               })()}
             </span>
@@ -865,6 +919,8 @@ window.openProgramDetails = async function(idx) {
     ? `${Number(item.doPhuHopSoThich).toFixed(0)}/100`
     : 'Chưa đánh giá';
 
+  const tuitionBadge = formatTuitionBadge(item);
+
   body.innerHTML = `
     <h3 style="font-size: 1.3rem; font-weight: 800; color: var(--primary); margin-bottom: 0.35rem;">
       ${escapeHtml(item.tenChuongTrinh || item.tenNganh || 'Chương trình đào tạo')}
@@ -889,8 +945,13 @@ window.openProgramDetails = async function(idx) {
       </div>
       <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem; font-size:0.9rem;">
         <span style="color:var(--text-muted);">Mức học phí:</span>
-        <span style="font-weight:700; color:var(--text-main);">${escapeHtml(item.hocPhiUocTinh || 'Theo quy định')}</span>
+        <span style="font-weight:700; color:var(--text-main);">${escapeHtml(tuitionBadge.shortText)}</span>
       </div>
+      ${tuitionBadge.fullText && tuitionBadge.fullText !== tuitionBadge.shortText ? `
+      <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem; font-size:0.85rem;">
+        <span style="color:var(--text-muted);">Chi tiết chính sách:</span>
+        <span style="font-weight:600; text-align:right; max-width:65%; color:var(--text-main);">${escapeHtml(tuitionBadge.fullText)}</span>
+      </div>` : ''}
       <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem; font-size:0.9rem;">
         <span style="color:var(--text-muted);">Trạng thái biểu phí:</span>
         <span style="font-weight:700;">
@@ -1005,7 +1066,7 @@ function renderWishlistView() {
   if (compareSlot) {
     compareSlot.innerHTML = top3.map((item, i) => {
       const avatarInfo = UNI_AVATARS[item.maTruong] || UNI_AVATARS['DEFAULT'];
-      const tuition = item.hocPhiUocTinh || item.hocPhi || 'Theo quy định';
+      const tuitionBadge = formatTuitionBadge(item);
       const rangeCutoff = item.diemChuanDuBao ? `${item.diemChuanDuBao.toFixed(2)} (Dự kiến)` : `${(item.diemChuanThamChieu || 24.0).toFixed(2)} (Tham chiếu)`;
       const fitLabel = item.doPhuHop >= 80 ? 'Rất phù hợp' : (item.doPhuHop >= 60 ? 'Phù hợp' : 'Khá phù hợp');
       const progressColor = item.doPhuHop >= 80 ? 'green' : (item.doPhuHop >= 60 ? 'blue' : 'amber');
@@ -1037,8 +1098,8 @@ function renderWishlistView() {
             <span class="compare-val">${escapeHtml(rangeCutoff)}</span>
           </div>
           <div class="compare-detail-row">
-            <span class="compare-label">Học phí (ước tính)</span>
-            <span class="compare-val">${escapeHtml(tuition)}</span>
+            <span class="compare-label">Học phí</span>
+            <span class="compare-val" title="${escapeHtml(tuitionBadge.fullText)}">${escapeHtml(tuitionBadge.shortText)}</span>
           </div>
           <div class="compare-detail-row">
             <span class="compare-label">Khu vực</span>
@@ -1095,7 +1156,7 @@ function renderWishlistView() {
             ${item.programId ? `<small style="color:var(--text-muted); font-size:0.75rem;">Mã: ${escapeHtml(item.programId)}</small>` : ''}
           </td>
           <td>${escapeHtml(item.tenPhuongThuc || 'Xét tuyển')}</td>
-          <td style="font-size:0.85rem; color:var(--text-main); font-weight:600;">${escapeHtml(item.hocPhiUocTinh || item.hocPhi || 'Theo quy định')}</td>
+          <td style="font-size:0.85rem; color:var(--text-main); font-weight:600;" title="${escapeHtml(formatTuitionBadge(item).fullText)}">${escapeHtml(formatTuitionBadge(item).shortText)}</td>
           <td style="font-weight:700;">${(item.diemChuanThamChieu || 24.0).toFixed(2)}</td>
           <td>
             <span class="suitability-badge ${statusClass}">
@@ -1267,7 +1328,7 @@ async function loadExploreData() {
           <td>${escapeHtml(r.maToHop || '—')}</td>
           <td>${scoreDisplay}</td>
           <td style="font-size:0.85rem; font-weight:600; color:var(--text-main);">
-            <div>${escapeHtml(r.hocPhiUocTinh || 'Theo quy định')}</div>
+            <div title="${escapeHtml(formatTuitionBadge(r).fullText)}">${escapeHtml(formatTuitionBadge(r).shortText)}</div>
             <div style="margin-top:2px; display:flex; align-items:center; gap:4px; flex-wrap:wrap;">
               ${(() => {
                 if (r.trangThaiHocPhi === 'VERIFIED') return `<span style="font-size:0.7rem; background:#dcfce7; color:#15803d; padding:1px 5px; border-radius:3px; font-weight:700;">Đã xác minh</span>`;

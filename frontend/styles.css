@@ -997,12 +997,14 @@ button {
   gap: 1rem;
   font-size: 0.82rem;
   color: var(--text-muted);
+  flex-wrap: wrap;
 }
 
 .rec-meta-line span {
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
+  white-space: nowrap;
 }
 
 .rec-score-metrics {
