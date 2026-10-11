@@ -741,8 +741,12 @@ def test_tuition_estimation_and_fields():
     hpPrivate = AdmissionService.traCuuHocPhi(uni={"maTruong": "FPT", "tenTruong": "Trường Đại học FPT"})
     assert hpPrivate["hocPhiNam"] > 35000000.0
 
-    hpPublic = AdmissionService.traCuuHocPhi(uni={"maTruong": "BKA", "tenTruong": "Đại học Bách Khoa"})
+    hpPublic = AdmissionService.traCuuHocPhi(programId="PRG_BKA_0001", uni={"maTruong": "BKA", "tenTruong": "Đại học Bách Khoa"})
     assert hpPublic["hocPhiNam"] > 0.0
+
+    hpMultiNoProg = AdmissionService.traCuuHocPhi(uni={"maTruong": "BKA", "tenTruong": "Đại học Bách Khoa"})
+    assert hpMultiNoProg["trangThaiHocPhi"] == "UNVERIFIED"
+    assert hpMultiNoProg["hocPhiNam"] is None
 
     hpUnknown = AdmissionService.traCuuHocPhi(uni={"maTruong": "UNKNOWN_UNI", "tenTruong": "Trường Không Xác Định"})
     assert hpUnknown["trangThaiHocPhi"] == "UNVERIFIED"
@@ -844,4 +848,65 @@ def test_data_architecture_tuition_relational_integrity():
     assert dcProgramIds.issubset(hpProgramIds)
 
 
+def test_distinct_programs_in_same_university_tuition():
+    from admissionService import AdmissionService
+    hpStd = AdmissionService.traCuuHocPhi(programId="PRG_BKA_0001", uni={"maTruong": "BKA"})
+    hpAdv = AdmissionService.traCuuHocPhi(programId="PRG_BKA_0003", uni={"maTruong": "BKA"})
+    assert hpStd["hocPhiToiDa"] <= 30000000.0
+    assert hpAdv["hocPhiToiDa"] >= 35000000.0
+    assert hpStd["hocPhiToiDa"] != hpAdv["hocPhiToiDa"]
 
+
+def test_hoc_ba_exact_subject_scores_prioritization():
+    from scoringService import ScoringService
+    hoSoExact = {
+        "diemToan": 9.0,
+        "diemLy": 9.5,
+        "diemHoa": 8.5,
+        "diemHocBa": 8.0,
+        "khuVucUuTien": "KV3",
+        "doiTuongUuTien": "NONE"
+    }
+    res = ScoringService.tinhDiemXetTuyenChuongTrinh(
+        hoSoExact,
+        "PT02",
+        "A00",
+        "RULE_HB_STD_30",
+        "SCALE_30"
+    )
+    assert res["hopLe"] is True
+    assert res["diemTho"] == 27.0
+    assert res.get("uocTinhTuGpa") is False
+
+
+def test_tuition_budget_match_status_distinction():
+    from admissionService import AdmissionService
+    hoSo = {
+        "diemToan": 9.0,
+        "diemLy": 9.0,
+        "diemAnh": 9.0,
+        "phuongThuc": "PT01",
+        "maToHop": "A01",
+        "mucHocPhi": 35000000.0,
+        "khuVucUuTien": "KV3",
+        "doiTuongUuTien": "NONE"
+    }
+    res = AdmissionService.deXuatNguyenVong(hoSo)
+    assert "danhSachCanKiemTraHocPhi" in res
+    for item in res.get("danhSachTongHop", []):
+        if item.get("trangThaiHocPhi") == "VERIFIED":
+            assert item.get("trangThaiHocPhiPhuHop") == "XAC_MINH_PHU_HOP"
+        elif item.get("trangThaiHocPhi") == "PROJECTED":
+            assert item.get("trangThaiHocPhiPhuHop") == "DU_KIEN_PHU_HOP"
+            assert item.get("canhBaoTaiChinh") is not None
+            assert item.get("phuongPhapSoSanh") == "NGUONG_TRAN_AN_TOAN"
+
+
+def test_no_cross_program_tuition_fallback():
+    from admissionService import AdmissionService
+    hpUnknown = AdmissionService.traCuuHocPhi(
+        programId="PRG_BKA_NONEXISTENT",
+        uni={"maTruong": "BKA"}
+    )
+    assert hpUnknown["trangThaiHocPhi"] == "UNVERIFIED"
+    assert hpUnknown["hocPhiToiDa"] is None

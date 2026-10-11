@@ -53,7 +53,7 @@ Báo cáo đánh giá độc lập được xuất tại: `data/reports/recsys_e
 ├── schemas.py              # Pydantic Schemas xác thực dữ liệu đầu vào
 ├── evaluate_recsys.py      # Benchmark đánh giá độc lập danh mục gợi ý
 ├── train.py                # Kịch bản tái tạo huấn luyện mô hình Machine Learning
-├── testApp.py              # Bộ kiểm thử tự động (39 bài kiểm thử bao phủ toàn diện)
+├── testApp.py              # Bộ kiểm thử tự động (43 bài kiểm thử bao phủ toàn diện)
 ├── data/
 │   ├── csv/                # Bảng dữ liệu vận hành hệ thống (chuẩn hóa quan hệ 3NF)
 │   ├── metadata/           # Siêu dữ liệu chương trình đào tạo & trường ĐH
@@ -68,19 +68,19 @@ Báo cáo đánh giá độc lập được xuất tại: `data/reports/recsys_e
 
 Hệ thống Tuyển Sinh+ được xây dựng trên nền tảng mô hình dữ liệu tuyển sinh toàn quốc đa chiều, chuẩn hóa theo dạng chuẩn 3 (3NF) nhằm đảm bảo tính toàn vẹn và nhất quán trên toàn bộ 359 cơ sở đại học và học viện:
 
-### Ba Trụ Cột Dữ Liệu Nền Tảng:
+### Ba Trụ Cột Dữ Liệu Nền Tảng Thiết Kế Từ Ban Đầu:
 1. **Trụ cột Điểm chuẩn Lịch sử & Chuỗi thời gian (`diemChuan.csv` - 26,474 bản ghi):**
    - Quản lý điểm trúng tuyển chính thức 2020–2026 cho 2 phương thức trọng yếu: Xét kết quả thi THPT (PT01) và Xét học bạ THPT (PT02).
    - Mỗi bản ghi xác định bởi: Cơ sở đào tạo, Mã chương trình (`programId`), Tổ hợp môn (`toHopMonId`), Phương thức xét tuyển (`phuongThucXetTuyenId`), Quy tắc tính điểm và Thang điểm chuẩn hóa (Thang 30 / Thang 40 / Thang 100).
 
 2. **Trụ cột Tài chính & Biểu phí Chương trình Đào tạo (`hocPhi.csv` - 10,979 chương trình):**
    - Quản lý biểu phí đại học toàn quốc phân cấp theo: `Trường / Cơ sở` → `Chương trình đào tạo` → `Năm / Khóa áp dụng` → `Biểu phí & Đơn vị tính`.
-   - Ánh xạ trực tiếp 1-1 với toàn bộ danh mục chương trình (`programId`) trên hệ thống.
+   - Ánh xạ trực tiếp 1-1 với toàn bộ 10,979 chương trình đào tạo (`programId`) trên hệ thống.
    - Thẩm định minh bạch 4 trạng thái pháp lý:
      + `VERIFIED`: Đã xác minh có nguồn đề án/công bố chính thức hoặc chính sách nhà nước (TDTU, BKA, NEU, FTU, UEH, FPT, RMIT, chính sách bao cấp học viên quân sự/công an, Nghị định 116 đào tạo giáo viên).
-     + `PROJECTED`: Biểu phí dự kiến theo đề án tuyển sinh hoặc áp dụng Khung trần học phí đại học công lập tại Nghị định 97/2023/NĐ-CP của Chính phủ.
+     + `PROJECTED`: Biểu phí dự kiến theo đề án tuyển sinh hoặc thông báo của trường (kèm cảnh báo tài chính và so sánh theo ngưỡng trần an toàn).
      + `PER_CREDIT`: Mức phí tính theo đơn giá tín chỉ đào tạo.
-     + `UNVERIFIED`: Chưa có công bố xác minh từ đề án trường (hiển thị nhãn minh bạch, không tự ý gán số tiền 0đ hay số liệu giả lập).
+     + `UNVERIFIED`: Chưa có công bố xác minh từ đề án trường (hiển thị nhãn minh bạch, không tự ý gán số tiền 0đ hay số liệu giả lập, tự động đưa vào danh mục cần kiểm tra khi lọc ngân sách).
 
 3. **Trụ cột Danh mục Chuẩn Quốc gia:**
    - `truongDaiHoc.csv`: 359 cơ sở đại học, học viện, phân hiệu đại học vùng và trường sĩ quan toàn quốc.
@@ -92,6 +92,12 @@ Hệ thống Tuyển Sinh+ được xây dựng trên nền tảng mô hình d�
 - **Chuẩn hóa dạng 3 (3NF):** Trong nghiệp vụ tuyển sinh, học phí là thuộc tính phụ thuộc vào bản thân **Chương trình đào tạo và Khóa học** (`Program × Cohort`), chứ không phụ thuộc vào từng tổ hợp môn hay phương thức xét tuyển. Một chương trình đào tạo thường xét tuyển bằng 3–4 tổ hợp môn khác nhau nhưng có chung một biểu phí.
 - **Tránh dư thừa và bất nhất dữ liệu (Zero Redundancy):** Việc chuẩn hóa biểu phí vào bảng thực thể `hocPhi` riêng biệt liên kết qua khóa ngoại `programId` giúp hệ thống không phải lặp lại dữ liệu học phí hàng chục nghìn lần, đồng thời đảm bảo mọi cập nhật từ đề án tài chính đều được đồng bộ tức thì trên cả trang tra cứu, thẻ gợi ý, và hộp thoại chi tiết.
 - **Phân tách chính xác các phân hệ đào tạo cùng trường:** Cho phép quản lý độc lập các hệ đào tạo trong cùng một trường đại học (Điển hình ĐH Tôn Đức Thắng: hệ tiêu chuẩn 28–35 triệu, hệ bằng tiếng Anh 70–85 triệu, hệ liên kết quốc tế 80–100 triệu, phân hiệu Khánh Hòa 20–24 triệu).
+- **Loại bỏ triệt để Fallback xuyên chương trình:** Truy vấn học phí bắt buộc căn cứ trên `programId`. Tuyệt đối không lấy dòng đầu tiên của trường để gán cho chương trình khác khi thiếu dữ liệu riêng.
+
+### Kiểm Toán Quy Trình Thu Thập Dữ Liệu (Data Collection & Audit Pipeline):
+- **Theo dõi tiến độ 3 trụ cột đồng thời (`data/metadata/collection_status_verified.csv`):** Bảng kiểm toán quản lý song song 3 trạng thái thu thập (`thpt_collection_status`, `hoc_ba_collection_status`, `tuition_collection_status`) và số lượng bản ghi của 258 cơ sở cốt lõi.
+- **Truy xuất nguồn gốc minh chứng (`data/metadata/sources_verified.csv` - 254 nguồn):** Toàn bộ các đề án tài chính, quyết định học phí và văn bản quy phạm pháp luật đều được lưu trữ URL chính thức, cơ quan ban hành, thời điểm thu thập và mã băm SHA-256.
+- **Toàn vẹn khóa ngoại 100%:** 10,979/10,979 mã chương trình (`programId`) trong `hocPhi.csv` khớp hoàn toàn với danh mục chương trình quốc gia và bao phủ 100% các chương trình có điểm chuẩn trong `diemChuan.csv`.
 
 ---
 

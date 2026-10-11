@@ -8,7 +8,9 @@
     "zero_data_leakage": true,
     "zero_averaged_labels": true,
     "temporal_split_design": "Train <= 2024, Validation 2025, Test 2026, Inference 2027",
-    "dual_method_separation": true
+    "dual_method_separation": true,
+    "multi_pillar_relational_schema": true,
+    "tuition_catalog_coverage": "10,979 programs mapped 1-1 via 3NF foreign key"
   },
   "datasets": {
     "metadata/universities_master.csv": {
@@ -58,10 +60,10 @@
     "metadata/sources_verified.csv": {
       "relative_path": "data/metadata/sources_verified.csv",
       "description": "242 nguồn tuyển sinh thật có kiểm chứng và lưu trữ bản snapshot gốc",
-      "row_count": 242,
+      "row_count": 254,
       "column_count": 15,
-      "file_size_bytes": 101455,
-      "sha256": "8313566f755de97020f72eabb25e33ab59a8ec26b80b6d34f6c2c33bbc8f3905",
+      "file_size_bytes": 106261,
+      "sha256": "88b2ab2d5e3dbcae9ea7b7ad7dd59ed66929d4a94f4bcf73b8dd0327a6209c25",
       "columns": [
         "source_id",
         "university_id",
@@ -131,9 +133,9 @@
       "relative_path": "data/metadata/collection_status_verified.csv",
       "description": "Trạng thái đối soát và thu thập dữ liệu các cơ sở",
       "row_count": 258,
-      "column_count": 11,
-      "file_size_bytes": 32718,
-      "sha256": "0b124a776c6701d1f136627407a4d2e001405072741a999edaf16c4ca1e4abd8",
+      "column_count": 13,
+      "file_size_bytes": 36163,
+      "sha256": "c7f0dca92ffdc41d0e36f786171236c9919b4b476172e348436278dc49b436e0",
       "columns": [
         "university_id",
         "university_code",
@@ -143,8 +145,10 @@
         "province",
         "thpt_collection_status",
         "hoc_ba_collection_status",
+        "tuition_collection_status",
         "thpt_records_count",
         "hoc_ba_records_count",
+        "tuition_records_count",
         "source_archive_available"
       ]
     },
@@ -279,8 +283,8 @@
       "description": "Danh mục 10,979 chương trình kèm phân loại trạng thái xét tuyển 2026 minh bạch",
       "row_count": 10979,
       "column_count": 27,
-      "file_size_bytes": 5534946,
-      "sha256": "1c6a356cc4d19cefdbb332a2ac8bd3fcdc75fcc5f026288e4a791c2e8871e8ca",
+      "file_size_bytes": 5416024,
+      "sha256": "280772f3c24ac5706c0f876453271446e92bfeec309a7a5f2279e9b3d154cdbc",
       "columns": [
         "catalog_id",
         "university_id",
@@ -513,11 +517,11 @@
     },
     "csv/hocPhi.csv": {
       "relative_path": "data/csv/hocPhi.csv",
-      "description": "Biểu phí và chính sách tài chính tuyển sinh 10,979 chương trình đào tạo của 359 trường toàn quốc",
+      "description": "Biểu phí 10,979 chương trình đào tạo toàn quốc chuẩn hóa quan hệ 3NF theo programId",
       "row_count": 10979,
       "column_count": 17,
-      "file_size_bytes": 4577565,
-      "sha256": "eceda13cb23bb0f7259e1326cd92e8532ebb2aa2e5d60767af72d45647105751",
+      "file_size_bytes": 4893981,
+      "sha256": "99d340ffd2a26457bd78eec2f86f48353c6dff5a3cb374a6b447cfa06b4acef1",
       "columns": [
         "id",
         "programId",

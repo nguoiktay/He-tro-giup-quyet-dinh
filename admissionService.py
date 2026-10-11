@@ -39,19 +39,23 @@ class AdmissionService:
     ) -> Dict[str, Any]:
         cls._ensureHocPhiCache()
         progKey = str(programId or "").strip()
-        matched = cls._hocPhiByProg.get(progKey)
-        if not matched and uni:
+        matched = None
+        if progKey:
+            matched = cls._hocPhiByProg.get(progKey)
+        elif uni:
             uCode = str(uni.get("maTruong", "")).strip().upper()
             if uCode:
-                matched = cls._hocPhiByUni.get(uCode)
+                uRecs = [r for r in cls._hocPhiByProg.values() if str(r.get("maTruong", "")).strip().upper() == uCode]
+                if uRecs and len({(r.get("hocPhiToiDa"), r.get("trangThaiHocPhi")) for r in uRecs}) == 1:
+                    matched = uRecs[0]
+                elif len(uRecs) == 1:
+                    matched = uRecs[0]
             if not matched:
                 uName = str(uni.get("tenTruong", "")).strip().lower()
-                matched = cls._hocPhiByName.get(uName)
-                if not matched and uName:
-                    for kName, r in cls._hocPhiByName.items():
-                        if uName in kName or kName in uName:
-                            matched = r
-                            break
+                if uName:
+                    uRecs = [r for r in cls._hocPhiByProg.values() if str(r.get("tenTruong", "")).strip().lower() == uName]
+                    if uRecs and len({(r.get("hocPhiToiDa"), r.get("trangThaiHocPhi")) for r in uRecs}) == 1:
+                        matched = uRecs[0]
 
         if matched:
             tMin = matched.get("hocPhiToiThieu")
@@ -60,7 +64,12 @@ class AdmissionService:
             tMaxFloat = float(tMax) if tMax is not None and str(tMax).strip() != "" and str(tMax).lower() != "none" else None
 
             tYear = tMaxFloat if tMaxFloat is not None else tMinFloat
-            tKy = round(tYear / 2.0, 1) if tYear is not None else None
+            tKy = None
+            if matched.get("donViTinh") == "VND_KY":
+                tKy = tYear
+            elif tYear == 0.0:
+                tKy = 0.0
+
             tTrieu = round(tYear / 1000000.0, 1) if tYear is not None else None
 
             phanLoai = "under_20m"
@@ -86,6 +95,7 @@ class AdmissionService:
                 "nguonMinhChung": matched.get("nguonMinhChung", "Chưa có công bố chính thức"),
                 "urlNguon": matched.get("urlNguon", ""),
                 "ghiChu": matched.get("ghiChu", ""),
+                "phuongPhapSoSanh": "NGUONG_TRAN_AN_TOAN",
                 "phanLoai": phanLoai
             }
 
@@ -102,6 +112,7 @@ class AdmissionService:
             "nguonMinhChung": "Chưa có công bố chính thức hoặc đang cập nhật",
             "urlNguon": webUrl,
             "ghiChu": "Cần tra cứu trực tiếp tại đề án tuyển sinh hoặc thông báo của trường",
+            "phuongPhapSoSanh": "CHUA_XAC_DINH",
             "phanLoai": "unverified"
         }
 
@@ -274,11 +285,16 @@ class AdmissionService:
 
                         if not isMatch:
                             continue
-                        nhomHocPhi = "PHU_HOP"
+                        if trangThaiHp == "VERIFIED":
+                            nhomHocPhi = "XAC_MINH_PHU_HOP"
+                        else:
+                            nhomHocPhi = "DU_KIEN_PHU_HOP"
                         scoreHocPhi = 100.0
 
                 scoreSoThich = round(0.40 * scoreKv + 0.40 * scoreNganh + 0.20 * scoreHocPhi, 1)
                 doPhuHopTongThe = round(0.70 * diemThuanLoi + 0.30 * scoreSoThich, 1)
+
+                canhBaoTaiChinh = "Học phí dự kiến theo đề án tham khảo của trường, có thể thay đổi theo thông báo thu thực tế" if trangThaiHp == "PROJECTED" else None
 
                 mucItem = {
                     "truongDaiHocId": uId,
@@ -289,6 +305,8 @@ class AdmissionService:
                     "loaiTruong": uni.get("loaiTruong", "Đại học"),
                     "hocPhiKy": hpInfo["hocPhiKy"],
                     "hocPhiNam": hpInfo["hocPhiNam"],
+                    "hocPhiToiThieu": hpInfo["hocPhiToiThieu"],
+                    "hocPhiToiDa": hpInfo["hocPhiToiDa"],
                     "hocPhiUocTinh": hpInfo["hocPhiText"],
                     "hocPhiPhanLoai": hpInfo["phanLoai"],
                     "trangThaiHocPhi": trangThaiHp,
@@ -297,6 +315,8 @@ class AdmissionService:
                     "urlNguon": hpInfo.get("urlNguon", ""),
                     "ghiChuHocPhi": hpInfo.get("ghiChu", ""),
                     "nhomHocPhi": nhomHocPhi,
+                    "phuongPhapSoSanh": hpInfo.get("phuongPhapSoSanh", "NGUONG_TRAN_AN_TOAN"),
+                    "canhBaoTaiChinh": canhBaoTaiChinh,
                     "chiTieu": int(dc.get("chiTieu") or 100),
                     "nganhHocId": mId,
                     "maNganh": major["maNganh"],

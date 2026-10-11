@@ -172,25 +172,24 @@ class ScoringService:
                 }
 
             elif ruleId == "RULE_HB_STD_30" and scale in ["SCALE_30", "THANG_30"]:
-                diemTho = None
+                diemTho = cls.tinhDiemToHop(diemMonHoc, maToHop)
                 uocTinh = False
-                diemHb = hoSoHocSinh.get("diemHocBa")
-                if diemHb is not None and str(diemHb).strip() != "":
-                    try:
-                        gpaVal = float(diemHb)
-                        if 0.0 <= gpaVal <= 10.0:
-                            diemTho = round(gpaVal * 3.0, 2)
-                            uocTinh = True
-                    except Exception:
-                        pass
                 if diemTho is None:
-                    diemTho = cls.tinhDiemToHop(diemMonHoc, maToHop)
+                    diemHb = hoSoHocSinh.get("diemHocBa")
+                    if diemHb is not None and str(diemHb).strip() != "":
+                        try:
+                            gpaVal = float(diemHb)
+                            if 0.0 <= gpaVal <= 10.0:
+                                diemTho = round(gpaVal * 3.0, 2)
+                                uocTinh = True
+                        except Exception:
+                            pass
                 if diemTho is None:
                     return {"hopLe": False, "lyDo": f"Thiếu điểm các môn bắt buộc của tổ hợp {maToHop} theo quy tắc xét tuyển 3 môn học bạ"}
 
                 diemUuTien = cls.tinhDiemUuTien(khuVuc, doiTuong, diemTho, "THANG_30")
                 diemXetTuyen = cls.tinhDiemXetTuyen(diemTho, diemUuTien)
-                cachTinhStr = f"Quy đổi ước tính từ GPA học bạ lớp 12 ({float(hoSoHocSinh.get('diemHocBa', 0.0)):.2f} x 3 = {diemTho:.2f})" if uocTinh else f"Tổng điểm 3 môn học bạ theo tổ hợp {maToHop} (thang 30)"
+                cachTinhStr = f"Tổng điểm 3 môn học bạ theo tổ hợp {maToHop} (thang 30)" if not uocTinh else f"Ước lượng tham khảo từ GPA học bạ lớp 12 ({float(hoSoHocSinh.get('diemHocBa', 0.0)):.2f} x 3 = {diemTho:.2f}) do chưa nhập điểm chi tiết 3 môn"
                 return {
                     "hopLe": True,
                     "maPhuongThuc": "PT02",

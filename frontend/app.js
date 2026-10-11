@@ -244,6 +244,14 @@ function initCombinationSelect() {
       updateSubjectLabels(val);
     });
   }
+
+  const selectHbComb = document.getElementById('select-hb-combination');
+  if (selectHbComb) {
+    selectHbComb.addEventListener('change', () => {
+      const val = selectHbComb.value;
+      updateHbSubjectLabels(val);
+    });
+  }
 }
 
 function updateSubjectLabels(code) {
@@ -251,6 +259,17 @@ function updateSubjectLabels(code) {
   const l1 = document.getElementById('label-mon1');
   const l2 = document.getElementById('label-mon2');
   const l3 = document.getElementById('label-mon3');
+
+  if (l1) l1.textContent = subjects[0];
+  if (l2) l2.textContent = subjects[1];
+  if (l3) l3.textContent = subjects[2];
+}
+
+function updateHbSubjectLabels(code) {
+  const subjects = COMBINATION_LABELS[code] || ['Môn 1', 'Môn 2', 'Môn 3'];
+  const l1 = document.getElementById('label-hb-mon1');
+  const l2 = document.getElementById('label-hb-mon2');
+  const l3 = document.getElementById('label-hb-mon3');
 
   if (l1) l1.textContent = subjects[0];
   if (l2) l2.textContent = subjects[1];
@@ -351,24 +370,36 @@ async function handleCalculateAndRecommend() {
     payload[subjectFields[2]] = s3;
     payload.danhSachToHopDaChon = [combCode];
   } else {
-    const gpaRaw = document.getElementById('input-score-gpa')?.value?.trim();
-    if (!gpaRaw) {
-      showFormError('Vui lòng nhập điểm trung bình học bạ (GPA).');
-      return;
-    }
-
-    const gpa = parseFloat(gpaRaw);
-    if (isNaN(gpa) || gpa < 0 || gpa > 10) {
-      showFormError('Điểm trung bình học bạ phải nằm trong khoảng từ 0.0 đến 10.0.');
-      return;
-    }
-
-    totalScore = Math.round(gpa * 3 * 100) / 100;
     const selectHbComb = document.getElementById('select-hb-combination');
     combCode = selectHbComb ? selectHbComb.value : 'A01';
     combText = selectHbComb ? selectHbComb.options[selectHbComb.selectedIndex].text : 'A01';
 
-    payload.diemHocBa = gpa;
+    const s1Raw = document.getElementById('input-hb-score-m1')?.value?.trim();
+    const s2Raw = document.getElementById('input-hb-score-m2')?.value?.trim();
+    const s3Raw = document.getElementById('input-hb-score-m3')?.value?.trim();
+    const gpaRaw = document.getElementById('input-score-gpa')?.value?.trim();
+
+    const s1 = parseFloat(s1Raw);
+    const s2 = parseFloat(s2Raw);
+    const s3 = parseFloat(s3Raw);
+    const gpa = parseFloat(gpaRaw);
+
+    if (!isNaN(s1) && !isNaN(s2) && !isNaN(s3) && s1 >= 0 && s1 <= 10 && s2 >= 0 && s2 <= 10 && s3 >= 0 && s3 <= 10) {
+      totalScore = Math.round((s1 + s2 + s3) * 100) / 100;
+      const subjectFields = getSubjectFieldsForCombination(combCode);
+      payload[subjectFields[0]] = s1;
+      payload[subjectFields[1]] = s2;
+      payload[subjectFields[2]] = s3;
+    } else if (!isNaN(gpa) && gpa >= 0 && gpa <= 10) {
+      totalScore = Math.round(gpa * 3 * 100) / 100;
+    } else {
+      showFormError('Vui lòng nhập điểm các môn học bạ hợp lệ (0.0 - 10.0) hoặc điểm GPA.');
+      return;
+    }
+
+    if (!isNaN(gpa) && gpa >= 0 && gpa <= 10) {
+      payload.diemHocBa = gpa;
+    }
     payload.danhSachToHopDaChon = [combCode];
   }
 
@@ -821,12 +852,20 @@ window.openProgramDetails = async function(idx) {
         <span style="font-weight:700;">
           ${(() => {
             if (item.trangThaiHocPhi === 'VERIFIED') return '<span style="color:#15803d;">Đã xác minh chính thức</span>';
-            if (item.trangThaiHocPhi === 'PROJECTED') return '<span style="color:#0369a1;">Dự kiến / Khung trần NĐ 97</span>';
+            if (item.trangThaiHocPhi === 'PROJECTED') return '<span style="color:#0369a1;">Dự kiến (Theo đề án tham khảo)</span>';
             if (item.trangThaiHocPhi === 'PER_CREDIT') return '<span style="color:#b45309;">Đơn giá tín chỉ</span>';
             return '<span style="color:#6b7280;">Chưa xác minh</span>';
           })()}
         </span>
       </div>
+      ${item.canhBaoTaiChinh ? `
+      <div style="font-size:0.8rem; color:#b45309; background:#fef3c7; padding:0.4rem 0.6rem; border-radius:4px; margin-bottom:0.4rem; border:1px solid #fde68a;">
+        ⚠️ <strong>Lưu ý tài chính:</strong> ${escapeHtml(item.canhBaoTaiChinh)}
+      </div>` : ''}
+      ${item.phuongPhapSoSanh === 'NGUONG_TRAN_AN_TOAN' ? `
+      <div style="font-size:0.75rem; color:#0369a1; background:#e0f2fe; padding:0.3rem 0.6rem; border-radius:4px; margin-bottom:0.4rem; border:1px solid #bae6fd;">
+        🛡️ <strong>Chính sách ngân sách:</strong> So sánh dựa trên mức trần tối đa an toàn.
+      </div>` : ''}
       ${item.nguonMinhChung ? `
       <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem; font-size:0.9rem;">
         <span style="color:var(--text-muted);">Nguồn minh chứng:</span>
