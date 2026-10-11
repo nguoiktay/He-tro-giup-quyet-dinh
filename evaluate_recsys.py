@@ -3,6 +3,8 @@ import json
 import numpy as np
 import pandas as pd
 from typing import Dict, List, Any
+
+import config
 from admissionService import AdmissionService
 from csvDatabase import CsvDatabase
 
@@ -22,18 +24,20 @@ def ndcg_at_k(r: List[float], k: int) -> float:
 
 
 def generate_extended_cohort() -> List[Dict[str, Any]]:
+    """Tạo tập kiểm thử độc lập bao phủ đúng 14 tổ hợp môn chính thức trong hệ thống."""
     cohort = []
+    # 14 tổ hợp môn chính thức đã đăng ký trong toHopMon.csv
     combinations = [
         "A00", "A01", "A02", "B00", "B08", "C00",
-        "C01", "C03", "D01", "D07", "D14", "D15"
+        "C01", "C02", "C19", "D01", "D07", "D09", "D10", "D14"
     ]
     score_levels = [16.0, 17.5, 19.0, 20.5, 22.0, 23.5, 25.0, 26.5, 28.0, 29.2]
     regions = ["Toàn quốc", "Miền Bắc", "Miền Nam", "Miền Trung"]
     kv_list = ["KV3", "KV2", "KV2-NT", "KV1"]
 
     c_id = 1
-    for comb_idx, comb in enumerate(combinations):
-        for sc_idx, sc in enumerate(score_levels):
+    for comb in combinations:
+        for sc in score_levels:
             v1 = round(sc * 0.35 + ((c_id % 5) - 2) * 0.15, 2)
             v2 = round(sc * 0.33 + ((c_id % 3) - 1) * 0.15, 2)
             v3 = round(sc - v1 - v2, 2)
@@ -63,16 +67,20 @@ def generate_extended_cohort() -> List[Dict[str, Any]]:
                 sub_map["van"], sub_map["su"], sub_map["dia"] = v1, v2, v3
             elif comb == "C01":
                 sub_map["van"], sub_map["toan"], sub_map["ly"] = v1, v2, v3
-            elif comb == "C03":
-                sub_map["van"], sub_map["toan"], sub_map["su"] = v1, v2, v3
+            elif comb == "C02":
+                sub_map["van"], sub_map["toan"], sub_map["hoa"] = v1, v2, v3
+            elif comb == "C19":
+                sub_map["van"], sub_map["su"], sub_map["gdcd"] = v1, v2, v3
             elif comb == "D01":
                 sub_map["toan"], sub_map["van"], sub_map["anh"] = v1, v2, v3
             elif comb == "D07":
                 sub_map["toan"], sub_map["hoa"], sub_map["anh"] = v1, v2, v3
+            elif comb == "D09":
+                sub_map["toan"], sub_map["su"], sub_map["anh"] = v1, v2, v3
+            elif comb == "D10":
+                sub_map["toan"], sub_map["dia"], sub_map["anh"] = v1, v2, v3
             elif comb == "D14":
                 sub_map["van"], sub_map["su"], sub_map["anh"] = v1, v2, v3
-            elif comb == "D15":
-                sub_map["van"], sub_map["dia"], sub_map["anh"] = v1, v2, v3
 
             p = {
                 "id": c_id,
@@ -135,15 +143,15 @@ def evaluate_system():
     data_dir = os.path.join(os.path.dirname(__file__), "data")
     CsvDatabase.initializeTables()
     benchmarks = CsvDatabase.readAll("diemChuan")
-    totalPrograms = len({b.get("programId") or b.get("id") for b in benchmarks})
+    total_programs = len({b.get("programId") or b.get("id") for b in benchmarks})
 
     actual_map = load_actual_ground_truth(data_dir)
     print(f"-> Đã nạp dữ liệu điểm chuẩn thực tế kiểm thử: {len(actual_map):,} chương trình.")
 
     cohort = generate_extended_cohort()
-    print(f"-> Quy mô tập kiểm thử độc lập: {len(cohort)} hồ sơ đa dạng trải đều từ 16.0 đến 29.2 điểm trên 12 tổ hợp môn.")
+    print(f"-> Quy mô tập kiểm thử độc lập: {len(cohort)} hồ sơ trên đúng 14 tổ hợp môn chính thức (16.0 – 29.2 điểm).")
 
-    allRecommendedPrograms = set()
+    all_recommended_programs = set()
     precision_at_10_list = []
     precision_at_20_list = []
     ndcg_at_10_list = []
@@ -161,9 +169,10 @@ def evaluate_system():
     }
 
     tier_counts = {"Thử sức": 0, "Vừa sức": 0, "An toàn": 0, "Khác": 0}
+    actual_executed_count = 0
 
     for p in cohort:
-        hsData = {
+        hs_data = {
             "diemToan": p.get("toan"),
             "diemVan": p.get("van"),
             "diemAnh": p.get("anh"),
@@ -183,23 +192,24 @@ def evaluate_system():
             "khuVucMongMuon": p["khuVuc"] if p["khuVuc"] != "Toàn quốc" else ""
         }
 
-        res = AdmissionService.deXuatNguyenVong(hsData)
+        res = AdmissionService.deXuatNguyenVong(hs_data)
         wishes = res.get("danhSachTongHop", [])
         if not wishes:
             continue
 
+        actual_executed_count += 1
         rel_flags = []
         strategic_matches = 0
 
         for idx, w in enumerate(wishes, 1):
-            progId = w.get("programId") or f"{w.get('truongDaiHocId')}_{w.get('nganhHocId')}"
-            allRecommendedPrograms.add(progId)
+            prog_id = w.get("programId") or f"{w.get('truongDaiHocId')}_{w.get('nganhHocId')}"
+            all_recommended_programs.add(prog_id)
 
             dtx = float(w.get("diemXetTuyen", 0.0))
             dct = float(w.get("diemChuanThamChieu", 24.0))
-            p_pred = float(w.get("xacSuatDo", w.get("doPhuHop", 50.0))) / 100.0
+            p_pred = float(w.get("chiSoThuanLoi", w.get("xacSuatDo", w.get("doPhuHop", 50.0)))) / 100.0
 
-            actual_cutoff = actual_map.get(progId, dct)
+            actual_cutoff = actual_map.get(prog_id, dct)
             y_actual = 1.0 if dtx >= actual_cutoff else 0.0
 
             brier_scores.append((p_pred - y_actual) ** 2)
@@ -250,23 +260,24 @@ def evaluate_system():
         diversity_uni_list.append(len({w.get("truongDaiHocId") for w in top10}))
         diversity_major_list.append(len({w.get("nganhHocId") for w in top10}))
 
-    avg_p10 = float(np.mean(precision_at_10_list))
-    avg_p20 = float(np.mean(precision_at_20_list))
-    avg_ndcg10 = float(np.mean(ndcg_at_10_list))
-    avg_alignment = float(np.mean(strategy_alignment_list) * 100)
-    avg_brier = float(np.mean(brier_scores))
-    cohort_coverage = float(len(allRecommendedPrograms) / totalPrograms * 100) if totalPrograms > 0 else 0.0
+    avg_p10 = float(np.mean(precision_at_10_list)) if precision_at_10_list else 0.0
+    avg_p20 = float(np.mean(precision_at_20_list)) if precision_at_20_list else 0.0
+    avg_ndcg10 = float(np.mean(ndcg_at_10_list)) if ndcg_at_10_list else 0.0
+    avg_alignment = float(np.mean(strategy_alignment_list) * 100) if strategy_alignment_list else 0.0
+    avg_brier = float(np.mean(brier_scores)) if brier_scores else 0.0
+    cohort_coverage = float(len(all_recommended_programs) / total_programs * 100) if total_programs > 0 else 0.0
 
-    avg_unis = float(np.mean(diversity_uni_list))
-    avg_majors = float(np.mean(diversity_major_list))
+    avg_unis = float(np.mean(diversity_uni_list)) if diversity_uni_list else 0.0
+    avg_majors = float(np.mean(diversity_major_list)) if diversity_major_list else 0.0
 
-    print(f"\n1. CHẤT LƯỢNG ĐỀ XUẤT VÀ XẾP HẠNG (PRECISION & RANKING THEO GROUND-TRUTH):")
+    print(f"\n1. CHẤT LƯỢNG ĐỀ XUẤT VÀ XẾP HẠNG (THEO GROUND-TRUTH NĂM ĐỘC LẬP):")
+    print(f"  - Số kịch bản thực sự chạy:                             {actual_executed_count} / {len(cohort)}")
     print(f"  - Precision@10 (Tỷ lệ cơ hội tuyển sinh khả thi Top-10): {avg_p10:.4f} ({avg_p10*100:.1f}%)")
     print(f"  - Precision@20 (Tỷ lệ cơ hội tuyển sinh khả thi toàn bộ): {avg_p20:.4f} ({avg_p20*100:.1f}%)")
     print(f"  - NDCG@10 (Chất lượng phân bổ thứ tự tối ưu):           {avg_ndcg10:.4f}")
     print(f"  - Portfolio Strategy Alignment (Khớp chuẩn 25/50/25):    {avg_alignment:.1f}%")
 
-    print(f"\n2. ĐỘ HIỆU CHUẨN XÁC SUẤT THỰC TẾ (GROUND-TRUTH CALIBRATION & BRIER SCORE):")
+    print(f"\n2. ĐỘ HIỆU CHUẨN CHỈ SỐ THUẬN LỢI (CALIBRATION & BRIER SCORE):")
     print(f"  - Brier Score (Càng thấp càng chuẩn xác, tối ưu < 0.20): {avg_brier:.4f}")
     calibration_report = {}
     for b_key, b_val in prob_bins.items():
@@ -275,21 +286,22 @@ def evaluate_system():
             pred_mean = b_val["sum_p"] / b_val["total"] * 100
             calibration_report[b_key] = {
                 "soMau": b_val["total"],
-                "xacSuatDuBaoTB": round(pred_mean, 1),
+                "chisoDuBaoTB": round(pred_mean, 1),
                 "tyLeDatThucTe": round(emp_rate, 1)
             }
-            print(f"  - Khoảng [{b_key:7}]: N = {b_val['total']:4d} | Dự báo TB: {pred_mean:5.1f}% | Thực tế đạt: {emp_rate:5.1f}%")
+            print(f"  - Khoảng [{b_key:7}]: N = {b_val['total']:4d} | Chỉ số TB: {pred_mean:5.1f}% | Thực tế đạt: {emp_rate:5.1f}%")
 
     print(f"\n3. ĐA DẠNG HÓA VÀ ĐỘ PHỦ DANH MỤC THỰC TẾ (COVERAGE & DIVERSITY):")
     print(f"  - Số trường ĐH trung bình trong Top-10:                {avg_unis:.1f} trường (Ràng buộc max 3 CT/trường)")
     print(f"  - Số ngành học trung bình trong Top-10:                 {avg_majors:.1f} ngành")
-    print(f"  - Số chương trình độc lập được tiếp cận:                {len(allRecommendedPrograms)} / {totalPrograms}")
+    print(f"  - Số chương trình độc lập được tiếp cận:                {len(all_recommended_programs)} / {total_programs}")
     print(f"  - Độ phủ danh mục toàn quốc (Cohort Coverage):          {cohort_coverage:.2f}%")
 
     report_data = {
         "benchmark_type": "independent_cohort_ground_truth_evaluation",
-        "description": "Đánh giá độc lập chất lượng danh mục DSS đối chiếu trực tiếp điểm chuẩn thực tế công bố, không đánh giá vòng tròn trên 120 kịch bản.",
+        "description": "Đánh giá độc lập chất lượng danh mục DSS đối chiếu trực tiếp điểm chuẩn thực tế độc lập.",
         "cohort_scenarios_count": len(cohort),
+        "actual_executed_count": actual_executed_count,
         "ground_truth_year": 2026,
         "metrics": {
             "precision_at_10": round(avg_p10, 4),
@@ -298,8 +310,8 @@ def evaluate_system():
             "portfolio_alignment_pct": round(avg_alignment, 1),
             "brier_score": round(avg_brier, 4),
             "cohort_coverage_pct": round(cohort_coverage, 2),
-            "unique_programs_covered": len(allRecommendedPrograms),
-            "total_programs_catalog": totalPrograms,
+            "unique_programs_covered": len(all_recommended_programs),
+            "total_programs_catalog": total_programs,
             "avg_universities_top10": round(avg_unis, 1),
             "avg_majors_top10": round(avg_majors, 1)
         },
@@ -312,20 +324,6 @@ def evaluate_system():
     report_file = os.path.join(report_dir, "recsys_evaluation_report.json")
     with open(report_file, "w", encoding="utf-8") as f:
         json.dump(report_data, f, indent=2, ensure_ascii=False)
-
-    old_summary = os.path.join(report_dir, "dss_scenario_evaluation_summary.json")
-    if os.path.exists(old_summary):
-        try:
-            os.remove(old_summary)
-        except Exception:
-            pass
-
-    old_metrics = os.path.join(report_dir, "dss_scenario_evaluation_metrics.csv")
-    if os.path.exists(old_metrics):
-        try:
-            os.remove(old_metrics)
-        except Exception:
-            pass
 
     print(f"\n-> Đã lưu báo cáo hợp nhất độc lập chuẩn xác vào: {report_file}")
     print("=" * 80)
