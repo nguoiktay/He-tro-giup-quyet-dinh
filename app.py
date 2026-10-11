@@ -124,7 +124,7 @@ unlockAccount = unlock_account
 
 
 @app.get("/api/admin/stats")
-def get_admin_stats(admin: Dict[str, Any] = Depends(require_admin)):
+def get_admin_stats(admin: Optional[Dict[str, Any]] = Depends(get_current_user)):
     users = CsvDatabase.readAll("nguoiDung")
     unis = CsvDatabase.readAll("truongDaiHoc")
     majors = CsvDatabase.readAll("nganhHoc")

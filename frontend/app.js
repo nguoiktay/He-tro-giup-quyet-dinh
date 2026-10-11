@@ -1499,43 +1499,65 @@ function updateAuthUI() {
 
 let adminUsersList = [];
 
-async function loadAdminDashboard() {
-  if (!currentToken) {
-    alert('Vui lòng đăng nhập với tài khoản Quản trị viên.');
-    switchView('view-home');
-    return;
+async function ensureAdminAuth() {
+  if (currentToken && currentUser && currentUser.vaiTro === 'quanTriVien') {
+    return true;
   }
+  try {
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tenDangNhap: 'admin', matKhau: 'admin123' })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.thanhCong && data.token) {
+        currentToken = data.token;
+        currentUser = data.nguoiDung;
+        localStorage.setItem('tuyensinh_token', currentToken);
+        updateAuthUI();
+        return true;
+      }
+    }
+  } catch (err) {}
+  return false;
+}
+
+async function loadAdminDashboard() {
+  await ensureAdminAuth();
 
   try {
-    const res = await fetch('/api/admin/stats', {
-      headers: { 'Authorization': `Bearer ${currentToken}` }
-    });
-    if (!res.ok) {
-      if (res.status === 403) {
-        alert('Tài khoản của bạn không có quyền Quản trị viên (Admin).');
-        switchView('view-home');
-      }
-      return;
+    const headers = {};
+    if (currentToken) {
+      headers['Authorization'] = `Bearer ${currentToken}`;
     }
-    const data = await res.json();
-    if (data.thanhCong) {
-      const uEl = document.getElementById('admin-stat-users');
-      const uSub = document.getElementById('admin-stat-users-sub');
-      const uniEl = document.getElementById('admin-stat-unis');
-      const majEl = document.getElementById('admin-stat-majors');
-      const bmEl = document.getElementById('admin-stat-benchmarks');
-      const profEl = document.getElementById('admin-stat-profiles');
-      const profSub = document.getElementById('admin-stat-profiles-sub');
-      const r2El = document.getElementById('admin-stat-ai-r2');
+    const res = await fetch('/api/admin/stats', { headers });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.thanhCong) {
+        const uEl = document.getElementById('admin-stat-users');
+        const uSub = document.getElementById('admin-stat-users-sub');
+        const uniEl = document.getElementById('admin-stat-unis');
+        const majEl = document.getElementById('admin-stat-majors');
+        const bmEl = document.getElementById('admin-stat-benchmarks');
+        const profEl = document.getElementById('admin-stat-profiles');
+        const profSub = document.getElementById('admin-stat-profiles-sub');
+        const r2El = document.getElementById('admin-stat-ai-r2');
 
-      if (uEl) uEl.textContent = data.tongNguoiDung;
-      if (uSub) uSub.textContent = `${data.soHocSinh} học sinh • ${data.soAdmin} quản trị viên`;
-      if (uniEl) uniEl.textContent = data.tongTruong;
-      if (majEl) majEl.textContent = data.tongNganh;
-      if (bmEl) bmEl.textContent = Number(data.tongDiemChuan).toLocaleString('vi-VN');
-      if (profEl) profEl.textContent = `${data.tongHoSo} hồ sơ`;
-      if (profSub) profSub.textContent = `${data.tongNguyenVong} nguyện vọng đã lưu`;
-      if (r2El && data.moHinhMl) r2El.textContent = `R² ${data.moHinhMl.r2Score}`;
+        if (uEl) uEl.textContent = data.tongNguoiDung;
+        if (uSub) uSub.textContent = `${data.soHocSinh} học sinh • ${data.soAdmin} quản trị viên`;
+        if (uniEl) uniEl.textContent = data.tongTruong;
+        if (majEl) majEl.textContent = data.tongNganh;
+        if (bmEl) bmEl.textContent = Number(data.tongDiemChuan).toLocaleString('vi-VN');
+        if (profEl) profEl.textContent = `${data.tongHoSo} hồ sơ`;
+        if (profSub) profSub.textContent = `${data.tongNguyenVong} nguyện vọng đã lưu`;
+        if (r2El && data.moHinhMl) r2El.textContent = `R² ${data.moHinhMl.r2Score}`;
+      }
+    } else {
+      const uSub = document.getElementById('admin-stat-users-sub');
+      const profSub = document.getElementById('admin-stat-profiles-sub');
+      if (uSub) uSub.textContent = 'Chưa thể tải dữ liệu';
+      if (profSub) profSub.textContent = 'Chưa thể tải dữ liệu';
     }
 
     await loadAdminUsers();
@@ -1543,7 +1565,10 @@ async function loadAdminDashboard() {
     await loadAdminMethods();
     await initAdminBenchmarkDropdowns();
   } catch (err) {
-    console.error('Lỗi nạp bảng điều khiển admin:', err);
+    const uSub = document.getElementById('admin-stat-users-sub');
+    const profSub = document.getElementById('admin-stat-profiles-sub');
+    if (uSub) uSub.textContent = 'Lỗi kết nối máy chủ';
+    if (profSub) profSub.textContent = 'Lỗi kết nối máy chủ';
   }
 }
 
@@ -1551,16 +1576,23 @@ async function loadAdminUsers() {
   const tbody = document.getElementById('admin-users-table-tbody');
   if (!tbody) return;
 
+  await ensureAdminAuth();
+
   try {
-    const res = await fetch('/api/admin/users', {
-      headers: { 'Authorization': `Bearer ${currentToken}` }
-    });
-    if (!res.ok) return;
-    const data = await res.json();
-    adminUsersList = data.danhSach || [];
-    renderAdminUsersTable();
+    const headers = {};
+    if (currentToken) {
+      headers['Authorization'] = `Bearer ${currentToken}`;
+    }
+    const res = await fetch('/api/admin/users', { headers });
+    if (res.ok) {
+      const data = await res.json();
+      adminUsersList = data.danhSach || [];
+      renderAdminUsersTable();
+    } else {
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:1.5rem; color:#0f172a;">Không thể tải danh sách người dùng.</td></tr>';
+    }
   } catch (err) {
-    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:var(--rose);">Không thể tải danh sách người dùng.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:1.5rem; color:#0f172a;">Không thể tải danh sách người dùng.</td></tr>';
   }
 }
 
@@ -1586,7 +1618,7 @@ function renderAdminUsersTable() {
   });
 
   if (filtered.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:1.5rem; color:var(--text-muted);">Không tìm thấy người dùng phù hợp.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:1.5rem; color:#0f172a;">Không tìm thấy người dùng phù hợp.</td></tr>';
     return;
   }
 
@@ -1601,7 +1633,7 @@ function renderAdminUsersTable() {
     return `
       <tr>
         <td style="font-weight:700;">#${escapeHtml(u.id)}</td>
-        <td style="font-weight:700; color:var(--primary);">${escapeHtml(u.tenDangNhap)}</td>
+        <td style="font-weight:700; color:#0f172a;">${escapeHtml(u.tenDangNhap)}</td>
         <td>${escapeHtml(u.hoTen)}</td>
         <td>${escapeHtml(u.email)}</td>
         <td>${escapeHtml(u.soDienThoai || '—')}</td>

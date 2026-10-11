@@ -192,6 +192,14 @@ button {
   border-radius: 9999px;
 }
 
+#nav-btn-admin.active {
+  color: #0f172a;
+}
+
+#nav-btn-admin.active::after {
+  background-color: #0f172a;
+}
+
 .btn-auth-nav {
   background-color: rgba(2, 132, 199, 0.08);
   color: var(--primary);
@@ -1442,13 +1450,13 @@ button {
 }
 
 .admin-role-badge {
-  background: linear-gradient(135deg, #7c3aed, #4f46e5);
-  color: #ffffff;
+  background: #f1f5f9;
+  color: #0f172a;
   font-size: 0.75rem;
   font-weight: 700;
   padding: 4px 12px;
   border-radius: 20px;
-  box-shadow: 0 2px 6px rgba(124, 58, 237, 0.25);
+  border: 1px solid #cbd5e1;
 }
 
 .admin-kpi-grid {
@@ -1462,10 +1470,7 @@ button {
   background: var(--bg-surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: 1.15rem 1.25rem;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+  padding: 1.25rem 1.35rem;
   box-shadow: var(--shadow-sm);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -1475,40 +1480,31 @@ button {
   box-shadow: var(--shadow-md);
 }
 
-.admin-kpi-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  flex-shrink: 0;
-}
-
 .admin-kpi-info {
   flex: 1;
 }
 
 .admin-kpi-label {
   font-size: 0.78rem;
-  color: var(--text-muted);
-  font-weight: 600;
+  color: #475569;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  margin-bottom: 0.25rem;
 }
 
 .admin-kpi-val {
-  font-size: 1.55rem;
+  font-size: 1.65rem;
   font-weight: 800;
-  color: var(--text-main);
+  color: #0f172a;
   line-height: 1.2;
-  margin: 2px 0;
+  margin: 0.15rem 0;
 }
 
 .admin-kpi-sub {
-  font-size: 0.74rem;
-  color: var(--text-muted);
+  font-size: 0.78rem;
+  color: #64748b;
+  margin-top: 0.25rem;
 }
 
 .admin-subnav-bar {
@@ -1527,19 +1523,19 @@ button {
   border-bottom: 3px solid transparent;
   font-weight: 600;
   font-size: 0.92rem;
-  color: var(--text-muted);
+  color: #475569;
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
 }
 
 .admin-subnav-tab:hover {
-  color: var(--text-main);
+  color: #0f172a;
 }
 
 .admin-subnav-tab.active {
-  color: var(--primary);
-  border-bottom-color: var(--primary);
+  color: #0f172a;
+  border-bottom-color: #0f172a;
   font-weight: 700;
 }
 
@@ -1555,12 +1551,12 @@ button {
 .admin-card-header h3 {
   font-size: 1.15rem;
   font-weight: 800;
-  color: var(--text-main);
+  color: #0f172a;
   margin-bottom: 0.2rem;
 }
 
 .admin-card-header p {
-  color: var(--text-muted);
+  color: #475569;
   font-size: 0.85rem;
   margin: 0;
 }
@@ -1574,15 +1570,15 @@ button {
 }
 
 .admin-role-tag.admin {
-  background: #f3e8ff;
-  color: #7c3aed;
-  border: 1px solid #ddd6fe;
+  background: #f1f5f9;
+  color: #0f172a;
+  border: 1px solid #cbd5e1;
 }
 
 .admin-role-tag.student {
-  background: #e0f2fe;
-  color: #0284c7;
-  border: 1px solid #bae6fd;
+  background: #f8fafc;
+  color: #0f172a;
+  border: 1px solid #e2e8f0;
 }
 
 .btn-admin-action {
@@ -1591,7 +1587,7 @@ button {
   border-radius: 4px;
   border: 1px solid var(--border);
   background: var(--bg-surface);
-  color: var(--text-main);
+  color: #0f172a;
   cursor: pointer;
   font-weight: 600;
   margin-left: 4px;
@@ -1599,9 +1595,9 @@ button {
 }
 
 .btn-admin-action:hover {
-  background: var(--bg-alt);
-  border-color: var(--primary);
-  color: var(--primary);
+  background: #f1f5f9;
+  border-color: #0f172a;
+  color: #0f172a;
 }
 
 .btn-admin-action.danger:hover {
@@ -1611,7 +1607,23 @@ button {
 }
 
 .btn-admin-action.unlock:hover {
-  background: var(--emerald-light);
-  border-color: var(--emerald-border);
-  color: var(--emerald-text);
+  background: #f1f5f9;
+  border-color: #0f172a;
+  color: #0f172a;
+}
+
+#view-admin h1,
+#view-admin h1 span,
+#view-admin h2,
+#view-admin h3,
+#view-admin h4,
+#view-admin h5,
+#view-admin strong,
+#view-admin b,
+#view-admin table th,
+#view-admin table td,
+#view-admin .form-label,
+#view-admin .admin-kpi-val,
+#view-admin .breadcrumb .active {
+  color: #0f172a !important;
 }

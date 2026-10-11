@@ -30,7 +30,7 @@
           <li><button class="nav-item-btn" id="nav-btn-profile" data-target="view-profile">Khuyến nghị</button></li>
           <li><button class="nav-item-btn" id="nav-btn-wishlist" data-target="view-wishlist">Sắp xếp nguyện vọng</button></li>
           <li><button class="nav-item-btn" id="nav-btn-about" data-target="view-about">Giới thiệu</button></li>
-          <li><button class="nav-item-btn" id="nav-btn-admin" data-target="view-admin" style="display:none; color:#7c3aed; font-weight:700;">🛡️ Quản trị Admin</button></li>
+          <li><button class="nav-item-btn" id="nav-btn-admin" data-target="view-admin" style="display:none; color:#0f172a; font-weight:700;">Quản trị Admin</button></li>
         </ul>
         <div id="auth-header-slot">
           <button class="btn-auth-nav" id="btn-open-auth-modal">
@@ -725,22 +725,17 @@
       <div class="breadcrumb">
         <a href="#home" class="btn-crumb-home">Trang chủ</a>
         <span>&gt;</span>
-        <span class="active">Quản trị hệ thống</span>
+        <span class="active" style="color:#0f172a;">Quản trị hệ thống</span>
       </div>
 
       <div class="page-title-header" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
         <div>
-          <h1>Bảng Điều Khiển <span>Quản Trị Hệ Thống</span></h1>
-          <p>Trung tâm kiểm soát người dùng, phân quyền, quản lý tổ hợp, phương thức, điểm chuẩn và mô hình AI.</p>
+          <h1 style="color:#0f172a;">Bảng Điều Khiển <span style="color:#0f172a;">Quản Trị Hệ Thống</span></h1>
+          <p style="color:#475569;">Trung tâm kiểm soát người dùng, phân quyền, quản lý tổ hợp, phương thức, điểm chuẩn và mô hình AI.</p>
         </div>
         <div style="display:flex; gap:0.5rem; align-items:center;">
           <span class="admin-role-badge">Super Admin</span>
           <button class="btn-filter-refresh" id="btn-admin-refresh" title="Làm mới dữ liệu">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M23 4v6h-6"></path>
-              <path d="M1 20v-6h6"></path>
-              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
-            </svg>
             Làm mới
           </button>
         </div>
@@ -748,7 +743,6 @@
 
       <div class="admin-kpi-grid">
         <div class="admin-kpi-card">
-          <div class="admin-kpi-icon" style="background:#ede9fe; color:#7c3aed;">👥</div>
           <div class="admin-kpi-info">
             <div class="admin-kpi-label">Tổng người dùng</div>
             <div class="admin-kpi-val" id="admin-stat-users">—</div>
@@ -757,7 +751,6 @@
         </div>
 
         <div class="admin-kpi-card">
-          <div class="admin-kpi-icon" style="background:#e0f2fe; color:#0284c7;">🏛️</div>
           <div class="admin-kpi-info">
             <div class="admin-kpi-label">Trường đại học</div>
             <div class="admin-kpi-val" id="admin-stat-unis">—</div>
@@ -766,7 +759,6 @@
         </div>
 
         <div class="admin-kpi-card">
-          <div class="admin-kpi-icon" style="background:#fef3c7; color:#d97706;">🎓</div>
           <div class="admin-kpi-info">
             <div class="admin-kpi-label">Ngành đào tạo</div>
             <div class="admin-kpi-val" id="admin-stat-majors">—</div>
@@ -775,7 +767,6 @@
         </div>
 
         <div class="admin-kpi-card">
-          <div class="admin-kpi-icon" style="background:var(--emerald-light); color:var(--emerald-text);">📊</div>
           <div class="admin-kpi-info">
             <div class="admin-kpi-label">Dữ liệu điểm chuẩn</div>
             <div class="admin-kpi-val" id="admin-stat-benchmarks">—</div>
@@ -784,7 +775,6 @@
         </div>
 
         <div class="admin-kpi-card">
-          <div class="admin-kpi-icon" style="background:#fce7f3; color:#db2777;">📑</div>
           <div class="admin-kpi-info">
             <div class="admin-kpi-label">Hồ sơ & Nguyện vọng</div>
             <div class="admin-kpi-val" id="admin-stat-profiles">—</div>
@@ -793,7 +783,6 @@
         </div>
 
         <div class="admin-kpi-card">
-          <div class="admin-kpi-icon" style="background:#f3e8ff; color:#9333ea;">🤖</div>
           <div class="admin-kpi-info">
             <div class="admin-kpi-label">Mô hình Random Forest</div>
             <div class="admin-kpi-val" id="admin-stat-ai-r2">R² 0.762</div>
@@ -804,16 +793,16 @@
 
       <div class="admin-subnav-bar">
         <button class="admin-subnav-tab active" data-admin-panel="admin-panel-users">
-          👥 Quản lý người dùng
+          Quản lý người dùng
         </button>
         <button class="admin-subnav-tab" data-admin-panel="admin-panel-combs">
-          📚 Tổ hợp & Phương thức
+          Tổ hợp & Phương thức
         </button>
         <button class="admin-subnav-tab" data-admin-panel="admin-panel-benchmarks">
-          📈 Bổ sung điểm chuẩn
+          Bổ sung điểm chuẩn
         </button>
         <button class="admin-subnav-tab" data-admin-panel="admin-panel-system">
-          ⚙️ Cấu hình hệ thống & AI
+          Cấu hình hệ thống & AI
         </button>
       </div>
 
@@ -831,7 +820,7 @@
               <option value="hocSinh">Học sinh</option>
             </select>
             <button class="btn-submit-recommend" id="btn-admin-add-user" style="margin:0; padding:0.5rem 1rem; font-size:0.85rem; white-space:nowrap;">
-              + Thêm người dùng
+              Thêm người dùng
             </button>
           </div>
         </div>
@@ -862,7 +851,7 @@
           <div class="form-card" style="margin:0;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
               <h3 style="font-size:1.15rem; font-weight:700; color:var(--text-main); margin:0;">Tổ hợp môn xét tuyển</h3>
-              <button class="btn-filter-refresh" id="btn-show-add-comb" style="padding:0.35rem 0.75rem; font-size:0.8rem;">+ Thêm tổ hợp</button>
+              <button class="btn-filter-refresh" id="btn-show-add-comb" style="padding:0.35rem 0.75rem; font-size:0.8rem;">Thêm tổ hợp</button>
             </div>
             
             <div id="admin-add-comb-form" style="display:none; background:var(--bg-alt); padding:1rem; border-radius:8px; margin-bottom:1rem; border:1px solid var(--border);">
@@ -900,7 +889,7 @@
           <div class="form-card" style="margin:0;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
               <h3 style="font-size:1.15rem; font-weight:700; color:var(--text-main); margin:0;">Phương thức xét tuyển</h3>
-              <button class="btn-filter-refresh" id="btn-show-add-method" style="padding:0.35rem 0.75rem; font-size:0.8rem;">+ Thêm phương thức</button>
+              <button class="btn-filter-refresh" id="btn-show-add-method" style="padding:0.35rem 0.75rem; font-size:0.8rem;">Thêm phương thức</button>
             </div>
 
             <div id="admin-add-method-form" style="display:none; background:var(--bg-alt); padding:1rem; border-radius:8px; margin-bottom:1rem; border:1px solid var(--border);">
@@ -996,46 +985,46 @@
                 <span style="font-weight:700;">Random Forest Regressor</span>
               </div>
               <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-light); padding-bottom:0.5rem;">
-                <span style="color:var(--text-muted);">Hệ số xác định R² Score:</span>
-                <span style="font-weight:700; color:var(--emerald-text);">0.762</span>
+                <span style="color:#0f172a;">Hệ số xác định R² Score:</span>
+                <span style="font-weight:700; color:#0f172a;">0.762</span>
               </div>
               <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-light); padding-bottom:0.5rem;">
-                <span style="color:var(--text-muted);">Sai số tuyệt đối trung bình (MAE):</span>
-                <span style="font-weight:700;">1.15 điểm</span>
+                <span style="color:#0f172a;">Sai số tuyệt đối trung bình (MAE):</span>
+                <span style="font-weight:700; color:#0f172a;">1.15 điểm</span>
               </div>
               <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-light); padding-bottom:0.5rem;">
-                <span style="color:var(--text-muted);">Số lượng mẫu đào tạo:</span>
-                <span style="font-weight:700;">7,280 kịch bản</span>
+                <span style="color:#0f172a;">Số lượng mẫu đào tạo:</span>
+                <span style="font-weight:700; color:#0f172a;">7,280 kịch bản</span>
               </div>
               <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-light); padding-bottom:0.5rem;">
-                <span style="color:var(--text-muted);">Năm tham chiếu / Mục tiêu:</span>
-                <span style="font-weight:700;">2026 ➔ 2027</span>
+                <span style="color:#0f172a;">Năm tham chiếu / Mục tiêu:</span>
+                <span style="font-weight:700; color:#0f172a;">2026 ➔ 2027</span>
               </div>
             </div>
           </div>
 
           <div class="form-card" style="margin:0;">
-            <h3 style="font-size:1.15rem; font-weight:700; color:var(--text-main); margin-bottom:0.75rem;">Trọng số Quyết định & Phân tầng</h3>
+            <h3 style="font-size:1.15rem; font-weight:700; color:#0f172a; margin-bottom:0.75rem;">Trọng số Quyết định & Phân tầng</h3>
             <div style="display:flex; flex-direction:column; gap:0.75rem; font-size:0.9rem;">
               <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-light); padding-bottom:0.5rem;">
-                <span style="color:var(--text-muted);">Trọng số Điểm thuận lợi:</span>
-                <span style="font-weight:700;">70% (0.70)</span>
+                <span style="color:#0f172a;">Trọng số Điểm thuận lợi:</span>
+                <span style="font-weight:700; color:#0f172a;">70% (0.70)</span>
               </div>
               <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-light); padding-bottom:0.5rem;">
-                <span style="color:var(--text-muted);">Trọng số Sở thích / Định hướng:</span>
-                <span style="font-weight:700;">30% (0.30)</span>
+                <span style="color:#0f172a;">Trọng số Sở thích / Định hướng:</span>
+                <span style="font-weight:700; color:#0f172a;">30% (0.30)</span>
               </div>
               <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-light); padding-bottom:0.5rem;">
-                <span style="color:var(--text-muted);">Ngưỡng nhóm An toàn:</span>
-                <span style="font-weight:700; color:var(--emerald-text);">≥ 80.0%</span>
+                <span style="color:#0f172a;">Ngưỡng nhóm An toàn:</span>
+                <span style="font-weight:700; color:#0f172a;">≥ 80.0%</span>
               </div>
               <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-light); padding-bottom:0.5rem;">
-                <span style="color:var(--text-muted);">Ngưỡng nhóm Vừa sức:</span>
-                <span style="font-weight:700; color:#0284c7;">40.0% - 79.9%</span>
+                <span style="color:#0f172a;">Ngưỡng nhóm Vừa sức:</span>
+                <span style="font-weight:700; color:#0f172a;">40.0% - 79.9%</span>
               </div>
               <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-light); padding-bottom:0.5rem;">
-                <span style="color:var(--text-muted);">Ngưỡng nhóm Thử sức:</span>
-                <span style="font-weight:700; color:#d97706;">15.0% - 39.9%</span>
+                <span style="color:#0f172a;">Ngưỡng nhóm Thử sức:</span>
+                <span style="font-weight:700; color:#0f172a;">15.0% - 39.9%</span>
               </div>
             </div>
           </div>
