@@ -71,7 +71,7 @@ def train_thpt_branch(
     df_um: pd.DataFrame,
     save_path: str = None
 ) -> Dict[str, Any]:
-    print("\n--- Huấn luyện mô hình điểm thi THPT (chuỗi thời gian 2-lag) ---")
+    print("\n Huấn luyện mô hình điểm thi THPT ")
 
     if not df_up.empty:
         up_sub = df_up[["program_id", "major_group_id", "program_type"]].drop_duplicates("program_id")
@@ -206,7 +206,7 @@ def train_hoc_ba_branch(
     df_um: pd.DataFrame,
     save_path: str = None
 ) -> Dict[str, Any]:
-    print("\n--- Huấn luyện và đánh giá phương thức Học bạ (thang 30) ---")
+    print("\nHuấn luyện và đánh giá phương thức Học bạ (thang 30)")
 
     if not df_up.empty:
         up_sub = df_up[["program_id", "major_group_id", "program_type"]].drop_duplicates("program_id")
