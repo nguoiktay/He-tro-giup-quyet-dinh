@@ -705,4 +705,61 @@ def test_auto_gpa_conversion_for_standard_hoc_ba():
     assert res.get("uocTinhTuGpa") is True
 
 
+def test_tuition_estimation_and_fields():
+    from admissionService import AdmissionService
+    hpMilitary = AdmissionService.uocLuongHocPhi({"loaiTruong": "Quân đội", "tenTruong": "Học viện Kỹ thuật Quân sự"}, {"tenNganh": "Công nghệ thông tin"})
+    assert hpMilitary["hocPhiKy"] == 0.0
+    assert "Miễn học phí" in hpMilitary["hocPhiText"]
+
+    hpPrivate = AdmissionService.uocLuongHocPhi({"loaiTruong": "Tư thục", "tenTruong": "Đại học FPT"}, {"tenNganh": "Kỹ thuật phần mềm"})
+    assert hpPrivate["hocPhiNam"] > 35000000.0
+
+    hpPublic = AdmissionService.uocLuongHocPhi({"loaiTruong": "Công lập", "tenTruong": "Đại học Bách Khoa"}, {"tenNganh": "Khoa học máy tính"})
+    assert hpPublic["hocPhiNam"] > 0.0
+
+    res = client.post("/api/recommend", json={
+        "diemToan": 8.5, "diemLy": 8.0, "diemAnh": 8.0,
+        "khuVucUuTien": "KV3", "doiTuongUuTien": "NONE",
+        "phuongThucMongMuon": ["PT01"],
+        "danhSachToHopDaChon": ["A01"]
+    })
+    assert res.status_code == 200
+    data = res.json()
+    firstWish = data["danhSachTongHop"][0]
+    assert "hocPhiKy" in firstWish
+    assert "hocPhiNam" in firstWish
+    assert "hocPhiUocTinh" in firstWish
+    assert "chiTieu" in firstWish
+
+
+def test_hoc_ba_multiple_combinations():
+    for comb in ["B00", "C00", "D07"]:
+        res = client.post("/api/recommend", json={
+            "diemHocBa": 8.8,
+            "khuVucUuTien": "KV3",
+            "doiTuongUuTien": "NONE",
+            "phuongThucMongMuon": ["PT02"],
+            "danhSachToHopDaChon": [comb]
+        })
+        assert res.status_code == 200
+        data = res.json()
+        assert data["thanhCong"] is True
+        assert len(data["danhSachTongHop"]) > 0
+        assert data["danhSachTongHop"][0]["maToHop"] == comb
+
+
+def test_tuition_filters():
+    resUnder20 = client.post("/api/recommend", json={
+        "diemToan": 8.5, "diemLy": 8.0, "diemHoa": 8.0,
+        "khuVucUuTien": "KV3", "doiTuongUuTien": "NONE",
+        "phuongThucMongMuon": ["PT01"],
+        "danhSachToHopDaChon": ["A00"],
+        "mucHocPhi": "under_20m"
+    })
+    assert resUnder20.status_code == 200
+    dataUnder = resUnder20.json()
+    for item in dataUnder.get("danhSachTongHop", []):
+        assert item["hocPhiNam"] <= 20000000.0
+
+
 

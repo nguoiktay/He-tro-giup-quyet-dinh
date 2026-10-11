@@ -7,6 +7,87 @@ from mlService import mlServiceInstance
 
 class AdmissionService:
 
+    @staticmethod
+    def uocLuongHocPhi(uni: Dict[str, Any], major: Dict[str, Any]) -> Dict[str, Any]:
+        loaiTruong = str(uni.get("loaiTruong", "")).strip().lower()
+        tenTruong = str(uni.get("tenTruong", "")).strip().lower()
+        tenNganh = str(major.get("tenNganh", "")).strip().lower()
+
+        isQuanDoiCongAn = (
+            "quân đội" in loaiTruong or
+            "công an" in tenTruong or
+            "an ninh" in tenTruong or
+            "cảnh sát" in tenTruong or
+            "biên phòng" in tenTruong or
+            "quân y" in tenTruong or
+            "sĩ quan" in tenTruong
+        )
+        isSuPham = "sư phạm" in tenTruong and "sư phạm" in tenNganh
+
+        if isQuanDoiCongAn:
+            return {
+                "hocPhiKy": 0.0,
+                "hocPhiNam": 0.0,
+                "hocPhiTrieuNam": 0.0,
+                "hocPhiText": "Miễn học phí ",
+                "phanLoai": "under_20m"
+            }
+
+        if isSuPham:
+            return {
+                "hocPhiKy": 0.0,
+                "hocPhiNam": 0.0,
+                "hocPhiTrieuNam": 0.0,
+                "hocPhiText": "Miễn học phí ",
+                "phanLoai": "under_20m"
+            }
+
+        if "quốc tế" in loaiTruong or "quốc tế" in tenTruong:
+            return {
+                "hocPhiKy": 40000000.0,
+                "hocPhiNam": 80000000.0,
+                "hocPhiTrieuNam": 80.0,
+                "hocPhiText": "Khoảng 40 triệu/kỳ (80 triệu/năm)",
+                "phanLoai": "over_35m"
+            }
+
+        if "tư thục" in loaiTruong or "dân lập" in loaiTruong:
+            return {
+                "hocPhiKy": 22000000.0,
+                "hocPhiNam": 44000000.0,
+                "hocPhiTrieuNam": 44.0,
+                "hocPhiText": "Khoảng 22 triệu/kỳ (44 triệu/năm)",
+                "phanLoai": "over_35m"
+            }
+
+        isYDuoc = "y khoa" in tenNganh or "dược" in tenNganh or "răng hàm mặt" in tenNganh
+        if isYDuoc:
+            return {
+                "hocPhiKy": 16000000.0,
+                "hocPhiNam": 32000000.0,
+                "hocPhiTrieuNam": 32.0,
+                "hocPhiText": "Khoảng 16 triệu/kỳ (32 triệu/năm)",
+                "phanLoai": "20m_35m"
+            }
+
+        isKinhTeKT = any(k in tenNganh for k in ["công nghệ thông tin", "khoa học máy tính", "kinh tế", "quản trị", "tài chính", "kỹ thuật"])
+        if isKinhTeKT:
+            return {
+                "hocPhiKy": 13500000.0,
+                "hocPhiNam": 27000000.0,
+                "hocPhiTrieuNam": 27.0,
+                "hocPhiText": "Khoảng 13.5 triệu/kỳ (27 triệu/năm)",
+                "phanLoai": "20m_35m"
+            }
+
+        return {
+            "hocPhiKy": 9500000.0,
+            "hocPhiNam": 19000000.0,
+            "hocPhiTrieuNam": 19.0,
+            "hocPhiText": "Khoảng 9.5 triệu/kỳ (19 triệu/năm)",
+            "phanLoai": "under_20m"
+        }
+
     @classmethod
     def deXuatNguyenVong(cls, hoSoHocSinh: Dict[str, Any]) -> Dict[str, Any]:
         scoreFields = ["diemToan", "diemVan", "diemAnh", "diemLy", "diemHoa", "diemSinh", "diemSu", "diemDia", "diemGDCD", "diemHocBa"]

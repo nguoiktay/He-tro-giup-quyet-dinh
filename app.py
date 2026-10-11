@@ -194,6 +194,7 @@ def exploreBenchmarks(query: Optional[str] = None, limit: int = 50):
                 continue
 
         scoreVal = b.get("diemChuan")
+        hpInfo = AdmissionService.uocLuongHocPhi(u, m)
         results.append({
             "maTruong": maTruong,
             "tenTruong": tenTruong,
@@ -204,7 +205,9 @@ def exploreBenchmarks(query: Optional[str] = None, limit: int = 50):
             "maPhuongThuc": method.get("maPhuongThuc", "PT01"),
             "maToHop": maToHop,
             "nam": b.get("nam", 2025),
-            "diemChuan": float(scoreVal) if (scoreVal is not None and str(scoreVal).strip() != "") else None
+            "diemChuan": float(scoreVal) if (scoreVal is not None and str(scoreVal).strip() != "") else None,
+            "hocPhiUocTinh": hpInfo["hocPhiText"],
+            "chiTieu": int(b.get("chiTieu") or 100)
         })
 
         if len(results) >= limit:

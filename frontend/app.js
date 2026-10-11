@@ -22,9 +22,16 @@ const COMBINATION_LABELS = {
   'A01': ['Toán', 'Vật lý', 'Tiếng Anh'],
   'A02': ['Toán', 'Vật lý', 'Sinh học'],
   'B00': ['Toán', 'Hóa học', 'Sinh học'],
+  'B08': ['Toán', 'Sinh học', 'Tiếng Anh'],
   'C00': ['Ngữ văn', 'Lịch sử', 'Địa lý'],
+  'C01': ['Ngữ văn', 'Toán', 'Vật lý'],
+  'C02': ['Ngữ văn', 'Toán', 'Hóa học'],
+  'C19': ['Ngữ văn', 'Lịch sử', 'GDCD'],
   'D01': ['Toán', 'Ngữ văn', 'Tiếng Anh'],
-  'D07': ['Toán', 'Hóa học', 'Tiếng Anh']
+  'D07': ['Toán', 'Hóa học', 'Tiếng Anh'],
+  'D09': ['Toán', 'Lịch sử', 'Tiếng Anh'],
+  'D10': ['Toán', 'Địa lý', 'Tiếng Anh'],
+  'D14': ['Ngữ văn', 'Lịch sử', 'Tiếng Anh']
 };
 
 const UNI_AVATARS = {
@@ -535,6 +542,21 @@ function renderRecommendationCards(items) {
               </svg>
               ${item.loaiTruong || 'Trường công lập'}
             </span>
+            <span style="font-weight: 600; color: var(--text-main);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="1" x2="12" y2="23"></line>
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+              </svg>
+              ${item.hocPhiUocTinh || 'Học phí theo quy định'}
+            </span>
+            ${item.chiTieu ? `
+            <span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+              </svg>
+              Chỉ tiêu: ${item.chiTieu}
+            </span>` : ''}
           </div>
         </div>
 
@@ -637,6 +659,15 @@ window.openProgramDetails = async function(idx) {
         <span style="font-weight:700;">${item.khuVuc ? item.khuVuc : 'Chưa có thông tin'}</span>
       </div>
       <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem; font-size:0.9rem;">
+        <span style="color:var(--text-muted);">Mức học phí dự kiến:</span>
+        <span style="font-weight:700; color:var(--text-main);">${item.hocPhiUocTinh || 'Theo quy định'}</span>
+      </div>
+      ${item.chiTieu ? `
+      <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem; font-size:0.9rem;">
+        <span style="color:var(--text-muted);">Chỉ tiêu tuyển sinh:</span>
+        <span style="font-weight:700;">${item.chiTieu} sinh viên</span>
+      </div>` : ''}
+      <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem; font-size:0.9rem;">
         <span style="color:var(--text-muted);">Điểm chuẩn chính thức (${item.namThamChieu || 2025}):</span>
         <span style="font-weight:700; color:var(--primary);">${scoreText}</span>
       </div>
@@ -712,7 +743,7 @@ function renderWishlistView() {
   if (compareSlot) {
     compareSlot.innerHTML = top3.map((item, i) => {
       const avatarInfo = UNI_AVATARS[item.maTruong] || UNI_AVATARS['DEFAULT'];
-      const tuition = item.hocPhi || 'Theo quy định';
+      const tuition = item.hocPhiUocTinh || item.hocPhi || 'Theo quy định';
       const rangeCutoff = item.diemChuanDuBao ? `${item.diemChuanDuBao.toFixed(2)} (Dự kiến)` : `${(item.diemChuanThamChieu || 24.0).toFixed(2)} (Tham chiếu)`;
       const fitLabel = item.doPhuHop >= 80 ? 'Rất phù hợp' : (item.doPhuHop >= 60 ? 'Phù hợp' : 'Khá phù hợp');
       const progressColor = item.doPhuHop >= 80 ? 'green' : (item.doPhuHop >= 60 ? 'blue' : 'amber');
@@ -802,6 +833,7 @@ function renderWishlistView() {
             ${item.programId ? `<small style="color:var(--text-muted); font-size:0.75rem;">Mã: ${item.programId}</small>` : ''}
           </td>
           <td>${item.tenPhuongThuc || 'Xét tuyển'}</td>
+          <td style="font-size:0.85rem; color:var(--text-main); font-weight:600;">${item.hocPhiUocTinh || item.hocPhi || 'Theo quy định'}</td>
           <td style="font-weight:700;">${(item.diemChuanThamChieu || 24.0).toFixed(2)}</td>
           <td>
             <span class="suitability-badge ${statusClass}">
@@ -943,7 +975,7 @@ async function loadExploreData() {
     if (!Array.isArray(records) || records.length === 0) {
       tbody.innerHTML = `
         <tr>
-          <td colspan="6" style="text-align:center; padding:2rem; color:var(--text-muted);">
+          <td colspan="7" style="text-align:center; padding:2rem; color:var(--text-muted);">
             Không tìm thấy chương trình đào tạo hoặc điểm chuẩn phù hợp với từ khóa "${query}".
           </td>
         </tr>
@@ -972,6 +1004,7 @@ async function loadExploreData() {
           <td>${r.tenPhuongThuc || 'Xét tuyển'}</td>
           <td>${r.maToHop || '—'}</td>
           <td>${scoreDisplay}</td>
+          <td style="font-size:0.85rem; font-weight:600; color:var(--text-main);">${r.hocPhiUocTinh || 'Theo quy định'}</td>
         </tr>
       `;
     }).join('');
@@ -979,7 +1012,7 @@ async function loadExploreData() {
     console.error('Explore load err:', err);
     tbody.innerHTML = `
       <tr>
-        <td colspan="6" style="text-align:center; padding:1.5rem; color:var(--rose);">
+        <td colspan="7" style="text-align:center; padding:1.5rem; color:var(--rose);">
           Không thể nạp dữ liệu tra cứu từ máy chủ. Vui lòng thử lại.
         </td>
       </tr>
