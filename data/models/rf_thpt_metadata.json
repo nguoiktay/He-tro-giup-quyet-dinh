@@ -1,0 +1,16 @@
+{
+  "model_name": "RFTrendResidualRegressor",
+  "scikit_learn_version": "1.9.0",
+  "target_year": 2027,
+  "input_features": [
+    "score_lag_1",
+    "score_lag_2",
+    "score_diff_lag",
+    "score_rolling_mean_2y"
+  ],
+  "calibrated_radius_80": 2.2,
+  "total_records": 3972,
+  "thpt_ml_predictions": 1113,
+  "thpt_lag1_fallbacks": 68,
+  "hoc_ba_lookups": 2791
+}

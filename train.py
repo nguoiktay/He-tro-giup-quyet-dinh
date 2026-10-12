@@ -208,13 +208,132 @@ def train_hoc_ba_branch(
     return {"mae": mae_rf, "rmse": rmse_rf, "r2": r2_rf}
 
 
+def generate_and_release_forecast_2027(
+    data_dir: str,
+    model_thpt: Any,
+    q80: float
+) -> str:
+    import sklearn
+    radius = round(float(q80), 2)
+    src_forecast = os.path.join(data_dir, "processed", "forecast_records_2026.csv")
+    if not os.path.exists(src_forecast):
+        raise FileNotFoundError(f"Không tìm thấy file nguồn: {src_forecast}")
+
+    df_src = pd.read_csv(src_forecast)
+    records_2027 = []
+    thpt_ml_count = 0
+    thpt_lag1_count = 0
+    hb_count = 0
+
+    for idx, row in df_src.iterrows():
+        r = dict(row)
+        prog_id = str(r.get("program_id", "")).strip()
+        adm_case = str(r.get("admission_case_id", "")).strip()
+        m_code = str(r.get("method_code", "")).strip().upper()
+        scale = str(r.get("score_scale", "SCALE_30")).strip()
+        calc_rule = str(r.get("calculation_rule_id", "RULE_THPT_STD_30")).strip()
+        u_code = str(r.get("university_code", "")).strip().upper()
+
+        c_2026 = r.get("actual_cutoff_2026")
+        c_2025 = r.get("historical_cutoff_2025")
+        val_2026 = float(c_2026) if pd.notna(c_2026) and str(c_2026).strip() != "" else None
+        val_2025 = float(c_2025) if pd.notna(c_2025) and str(c_2025).strip() != "" else None
+
+        if m_code == "THPT" and val_2026 is not None and val_2025 is not None and model_thpt is not None:
+            feat_df = pd.DataFrame([{
+                "score_lag_1": val_2026,
+                "score_lag_2": val_2025,
+                "score_diff_lag": val_2026 - val_2025,
+                "score_rolling_mean_2y": (val_2026 + val_2025) / 2.0
+            }])
+            pred = float(model_thpt.predict(feat_df)[0])
+            pred = round(pred, 2)
+            f_status = "PREDICTED_TIME_SERIES"
+            m_version = "RF_THPT_TIME_SERIES_V4_2027"
+            thpt_ml_count += 1
+        elif m_code == "THPT" and val_2026 is not None:
+            pred = round(val_2026, 2)
+            f_status = "FALLBACK_LAG1_ONLY"
+            m_version = "BASELINE_LAG1_2027"
+            thpt_lag1_count += 1
+        elif m_code == "THPT" and val_2025 is not None:
+            pred = round(val_2025, 2)
+            f_status = "FALLBACK_LAG2_ONLY"
+            m_version = "BASELINE_LAG2_2027"
+            thpt_lag1_count += 1
+        else:
+            pred = round(val_2026, 2) if val_2026 is not None else (round(val_2025, 2) if val_2025 is not None else 0.0)
+            f_status = "HISTORICAL_LOOKUP_ONLY"
+            m_version = "HISTORICAL_LOOKUP_2027"
+            hb_count += 1
+
+        f_id = f"FC_2027_{u_code}_{idx+1:05d}"
+        low_80 = round(pred - radius, 2) if pred > 0 else 0.0
+        up_80 = round(pred + radius, 2) if pred > 0 else 0.0
+        low_90 = round(pred - radius * 1.28, 2) if pred > 0 else 0.0
+        up_90 = round(pred + radius * 1.28, 2) if pred > 0 else 0.0
+
+        records_2027.append({
+            "forecast_id": f_id,
+            "target_year": 2027,
+            "method_code": m_code,
+            "program_id": prog_id,
+            "admission_case_id": adm_case,
+            "university_code": u_code,
+            "university_name": r.get("university_name", ""),
+            "program_name": r.get("program_name", ""),
+            "subject_combination": r.get("subject_combination", ""),
+            "sub_criteria": r.get("sub_criteria", ""),
+            "forecast_status": f_status,
+            "model_version": m_version,
+            "predicted_cutoff": pred,
+            "uncertainty_radius_80": radius,
+            "lower_bound_80": low_80,
+            "upper_bound_80": up_80,
+            "lower_bound_90": low_90,
+            "upper_bound_90": up_90,
+            "historical_cutoff_2026": val_2026,
+            "historical_cutoff_2025": val_2025,
+            "historical_cutoff_2024": r.get("historical_cutoff_2024"),
+            "score_scale": scale,
+            "calculation_rule_id": calc_rule
+        })
+
+    df_2027 = pd.DataFrame(records_2027)
+    out_path = os.path.join(data_dir, "processed", "forecast_records_2027.csv")
+    df_2027.to_csv(out_path, index=False, encoding="utf-8-sig")
+
+    meta_path = os.path.join(data_dir, "models", "rf_thpt_metadata.json")
+    meta = {
+        "model_name": "RFTrendResidualRegressor",
+        "scikit_learn_version": sklearn.__version__,
+        "target_year": 2027,
+        "input_features": ["score_lag_1", "score_lag_2", "score_diff_lag", "score_rolling_mean_2y"],
+        "calibrated_radius_80": radius,
+        "total_records": len(df_2027),
+        "thpt_ml_predictions": thpt_ml_count,
+        "thpt_lag1_fallbacks": thpt_lag1_count,
+        "hoc_ba_lookups": hb_count
+    }
+    with open(meta_path, "w", encoding="utf-8") as f:
+        json.dump(meta, f, indent=2, ensure_ascii=False)
+
+    print(f"\n[OK] Đã phát hành bộ dữ liệu dự báo 2027: {out_path}")
+    print(f"  - Tổng số bản ghi dự báo: {len(df_2027):,}")
+    print(f"  - THPT dự báo bằng mô hình lai (ML Time-Series): {thpt_ml_count:,}")
+    print(f"  - THPT tra cứu theo baseline 1 năm: {thpt_lag1_count:,}")
+    print(f"  - Phương thức học bạ / tra cứu lịch sử: {hb_count:,}")
+    return out_path
+
+
 def sync_calibrator_and_forecast(
     data_dir: str,
     q80: float,
     val_size: Optional[int] = None,
     test_size: Optional[int] = None,
     test_coverage: Optional[float] = None,
-    regenerated_predictions: bool = False
+    model_thpt: Any = None,
+    regenerated_predictions: bool = True
 ) -> None:
     models_dir = os.path.join(data_dir, "models")
     calibrator_path = os.path.join(models_dir, "conformal_calibrator_thpt.json")
@@ -239,18 +358,8 @@ def sync_calibrator_and_forecast(
         json.dump(cal_data, f, indent=2, ensure_ascii=False)
     print(f"\n[OK] Đã đồng bộ bộ hiệu chỉnh Conformal: {calibrator_path} (bán kính ±{radius} điểm)")
 
-    if regenerated_predictions:
-        forecast_path = os.path.join(data_dir, "processed", "forecast_records_2026.csv")
-        if os.path.exists(forecast_path):
-            df_fc = pd.read_csv(forecast_path)
-            mask = df_fc["forecast_status"].str.upper() == "PREDICTED_TIME_SERIES"
-            df_fc.loc[mask, "uncertainty_radius_80"] = radius
-            df_fc.loc[mask, "lower_bound_80"] = (df_fc.loc[mask, "predicted_cutoff"] - radius).round(2)
-            df_fc.loc[mask, "upper_bound_80"] = (df_fc.loc[mask, "predicted_cutoff"] + radius).round(2)
-            df_fc.to_csv(forecast_path, index=False)
-            print(f"[OK] Đã đồng bộ bảng dữ liệu dự báo: {forecast_path}")
-    else:
-        print("[INFO] Bỏ qua ghi đè forecast_records_2026.csv do chưa tái sinh predicted_cutoff từ model.")
+    if regenerated_predictions and model_thpt is not None:
+        generate_and_release_forecast_2027(data_dir, model_thpt, q80)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -259,7 +368,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--data-dir", default=os.path.join(os.path.dirname(__file__), "data"), help="Thư mục chứa dữ liệu")
     parser.add_argument("--save", action=argparse.BooleanOptionalAction, default=True, help="Lưu mô hình đã huấn luyện (--no-save để tắt)")
     parser.add_argument("--promote", action=argparse.BooleanOptionalAction, default=True, help="Lưu vào model chính thức rf_thpt_best.joblib (--no-promote để tắt)")
-    parser.add_argument("--sync-forecast", action=argparse.BooleanOptionalAction, default=True, help="Đồng bộ Conformal calibrator (--no-sync-forecast để tắt)")
+    parser.add_argument("--sync-forecast", action=argparse.BooleanOptionalAction, default=True, help="Đồng bộ Conformal calibrator và phát hành dự báo 2027 (--no-sync-forecast để tắt)")
     return parser
 
 
@@ -287,10 +396,11 @@ def main():
             val_size=res_thpt.get("val_size"),
             test_size=res_thpt.get("test_size"),
             test_coverage=res_thpt.get("test_cov"),
-            regenerated_predictions=False
+            model_thpt=res_thpt.get("model"),
+            regenerated_predictions=True
         )
 
-    print("\nHoàn tất quá trình huấn luyện và đánh giá mô hình.")
+    print("\nHoàn tất quá trình huấn luyện và phát hành mô hình + bảng dự báo 2027.")
 
 
 if __name__ == "__main__":

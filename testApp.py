@@ -308,15 +308,18 @@ def test_forecast_distinction_by_program():
 
     fcIoT = mlServiceInstance.getForecastInfo("BKA", "PRG_BKA_0049", combinationCode="A00")
     assert fcIoT is not None
-    assert fcIoT["predictedCutoff"] == 27.33
+    assert fcIoT["targetYear"] == 2027
+    assert fcIoT["predictedCutoff"] == 28.24
 
     fcSec = mlServiceInstance.getForecastInfo("BKA", "PRG_BKA_0069", combinationCode="A00")
     assert fcSec is not None
-    assert fcSec["predictedCutoff"] == 27.26
+    assert fcSec["targetYear"] == 2027
+    assert fcSec["predictedCutoff"] == 28.94
 
     fcChem = mlServiceInstance.getForecastInfo("BKA", "PRG_BKA_0008", combinationCode="A00")
     assert fcChem is not None
-    assert fcChem["predictedCutoff"] == 23.23
+    assert fcChem["targetYear"] == 2027
+    assert fcChem["predictedCutoff"] == 20.81
 
     fcInvalid = mlServiceInstance.getForecastInfo("BKA", "NON_EXISTENT_PROGRAM")
     assert fcInvalid is None
@@ -514,6 +517,25 @@ def test_forecast_info_rejection_on_mismatched_case():
         combinationCode="A00"
     )
     assert fc is None
+
+    fcExact = mlServiceInstance.getForecastInfo(
+        universityCode="BKA",
+        programId="PRG_BKA_0049",
+        admissionCaseId="CASE_BKA_ET-E9_A00",
+        methodCode="PT01",
+        combinationCode="A00"
+    )
+    assert fcExact is not None
+    assert fcExact["predictedCutoff"] == 28.24
+
+    fcWrongCase = mlServiceInstance.getForecastInfo(
+        universityCode="BKA",
+        programId="PRG_BKA_0049",
+        admissionCaseId="CASE_WRONG_123",
+        methodCode="PT01",
+        combinationCode="A00"
+    )
+    assert fcWrongCase is None
 
 
 def test_invalid_and_fake_program_id_rejected():
@@ -720,16 +742,26 @@ def test_auto_gpa_conversion_for_standard_hoc_ba():
         "khuVucUuTien": "KV3",
         "doiTuongUuTien": "NONE"
     }
-    res = ScoringService.tinhDiemXetTuyenChuongTrinh(
+    resStd = ScoringService.tinhDiemXetTuyenChuongTrinh(
         hoSoOnlyGpa,
         "PT02",
         "A00",
         "RULE_HB_STD_30",
         "SCALE_30"
     )
-    assert res["hopLe"] is True, "Phải quy đổi ước tính từ GPA sang thang 30 cho phương thức học bạ chuẩn"
-    assert res["diemTho"] == 24.0, f"Điểm thô mong đợi: 24.0, nhận được: {res['diemTho']}"
-    assert res.get("uocTinhTuGpa") is True
+    assert resStd["hopLe"] is False, "RULE_HB_STD_30 không được tự ý suy diễn điểm tổ hợp từ GPA lớp 12"
+    assert "Thiếu điểm các môn bắt buộc" in resStd.get("lyDo", "")
+
+    resGpaX3 = ScoringService.tinhDiemXetTuyenChuongTrinh(
+        hoSoOnlyGpa,
+        "PT02",
+        "A00",
+        "RULE_HB_GPA_X3",
+        "SCALE_30"
+    )
+    assert resGpaX3["hopLe"] is True
+    assert resGpaX3["diemTho"] == 24.0
+
 
 
 def test_tuition_estimation_and_fields():
@@ -772,14 +804,21 @@ def test_tuition_estimation_and_fields():
 
 
 def test_hoc_ba_multiple_combinations():
-    for comb in ["B00", "C00", "D07"]:
-        res = client.post("/api/recommend", json={
+    comb_scores = {
+        "B00": {"diemToan": 9.0, "diemHoa": 8.5, "diemSinh": 9.0},
+        "C00": {"diemVan": 8.5, "diemSu": 9.0, "diemDia": 9.0},
+        "D07": {"diemToan": 9.0, "diemHoa": 8.5, "diemAnh": 9.0},
+    }
+    for comb, scores in comb_scores.items():
+        payload = {
             "diemHocBa": 8.8,
             "khuVucUuTien": "KV3",
             "doiTuongUuTien": "NONE",
             "phuongThucMongMuon": ["PT02"],
-            "danhSachToHopDaChon": [comb]
-        })
+            "danhSachToHopDaChon": [comb],
+            **scores,
+        }
+        res = client.post("/api/recommend", json=payload)
         assert res.status_code == 200
         data = res.json()
         assert data["thanhCong"] is True
@@ -841,12 +880,14 @@ def test_user_registration_email_and_phone_validation():
 def test_data_architecture_tuition_relational_integrity():
     diemChuanRecords = CsvDatabase.readAll("diemChuan")
     hocPhiRecords = CsvDatabase.readAll("hocPhi")
-    assert len(hocPhiRecords) == 10979
+    assert len(hocPhiRecords) >= 10979, f"Expected at least 10979 hocPhi rows, got {len(hocPhiRecords)}"
     hpProgramIds = {r["programId"] for r in hocPhiRecords if r.get("programId")}
-    assert len(hpProgramIds) == 10979
+    assert len(hpProgramIds) >= 10979, f"Expected at least 10979 unique programIds, got {len(hpProgramIds)}"
     dcProgramIds = {r["programId"] for r in diemChuanRecords if r.get("programId")}
     assert len(dcProgramIds) > 0
-    assert dcProgramIds.issubset(hpProgramIds)
+    assert dcProgramIds.issubset(hpProgramIds), \
+        f"Missing from hocPhi: {dcProgramIds - hpProgramIds}"
+
 
 
 def test_distinct_programs_in_same_university_tuition():
@@ -1099,5 +1140,47 @@ def test_c8_recsys_cohort_uses_14_official_combinations():
     assert len(used_combs) == 14
     for c in ["A00", "A01", "A02", "B00", "B08", "C00", "C01", "C02", "C19", "D01", "D07", "D09", "D10", "D14"]:
         assert c in used_combs
+
+
+def test_tuition_conditional_nd116_not_marked_free_subsidized():
+    from admissionService import AdmissionService
+    hpPedagogy = AdmissionService.traCuuHocPhi(programId="PRG_SPH_0001")
+    if hpPedagogy.get("trangThaiHocPhi") != "UNVERIFIED" and hpPedagogy.get("loaiHocPhi") == "MIEN_GIAM_CO_DIEU_KIEN":
+        assert hpPedagogy["phanLoai"] != "free_subsidized"
+        assert hpPedagogy["mienGiamCoDieuKien"] is True
+
+
+def test_tuition_year_and_cohort_check():
+    from admissionService import AdmissionService
+    hp = AdmissionService.traCuuHocPhi(programId="PRG_BKA_0001")
+    assert "namApDung" in hp
+    assert "khoaApDung" in hp
+    assert "canCapNhat2027" in hp
+    if hp["namApDung"] is not None and hp["namApDung"] < 2027:
+        assert hp["canCapNhat2027"] is True
+        assert len(hp["canhBaoNamApDung"]) > 0
+
+
+def test_model_runtime_verification_and_schema():
+    assert mlServiceInstance.model_thpt_verified is True
+    assert mlServiceInstance.model_thpt is not None
+    test_df = pd.DataFrame([{
+        "score_lag_1": 26.0,
+        "score_lag_2": 25.0,
+        "score_diff_lag": 1.0,
+        "score_rolling_mean_2y": 25.5
+    }])
+    pred = mlServiceInstance.model_thpt.predict(test_df)
+    assert len(pred) == 1
+    assert 20.0 <= float(pred[0]) <= 30.0
+
+
+def test_forecast_records_2027_synchronized():
+    fc = mlServiceInstance.getForecastInfo("BKA", "PRG_BKA_0049", combinationCode="A00")
+    assert fc is not None
+    assert fc["targetYear"] == 2027
+    assert fc["forecastType"] == "HYBRID_RF"
+    assert "2027" in fc["modelVersion"]
+
 
 

@@ -107,6 +107,11 @@ def generate_extended_cohort() -> List[Dict[str, Any]]:
 
 
 def load_actual_ground_truth(data_dir: str) -> Dict[str, float]:
+    """Nạp điểm chuẩn thực tế 2026 từ file forecast hoặc diemChuan.
+    Chỉ lấy những chương trình có điểm chuẩn thực tế đặt được (> 0).
+    QUAN TRọNG: Chỉ có các chương trình nằm trong tập này mới được dùng
+    làm ground-truth để tính Precision và Brier.
+    """
     actual_map = {}
     fc_path = os.path.join(data_dir, "processed", "forecast_records_2026.csv")
     if os.path.exists(fc_path):
@@ -131,7 +136,6 @@ def load_actual_ground_truth(data_dir: str) -> Dict[str, float]:
                     actual_map[pid] = float(score)
 
     return actual_map
-
 
 def evaluate_system():
     print("=" * 80)
@@ -207,29 +211,32 @@ def evaluate_system():
             dct = float(w.get("diemChuanThamChieu", 24.0))
             p_pred = float(w.get("chiSoThuanLoi", w.get("xacSuatDo", w.get("doPhuHop", 50.0)))) / 100.0
 
-            actual_cutoff = actual_map.get(prog_id, dct)
-            y_actual = 1.0 if dtx >= actual_cutoff else 0.0
+            if prog_id in actual_map:
+                actual_cutoff = actual_map[prog_id]
+                y_actual = 1.0 if dtx >= actual_cutoff else 0.0
 
-            brier_scores.append((p_pred - y_actual) ** 2)
+                brier_scores.append((p_pred - y_actual) ** 2)
 
-            if p_pred < 0.20:
-                bin_key = "0-20%"
-            elif p_pred < 0.40:
-                bin_key = "20-40%"
-            elif p_pred < 0.60:
-                bin_key = "40-60%"
-            elif p_pred < 0.80:
-                bin_key = "60-80%"
-            else:
-                bin_key = "80-100%"
+                if p_pred < 0.20:
+                    bin_key = "0-20%"
+                elif p_pred < 0.40:
+                    bin_key = "20-40%"
+                elif p_pred < 0.60:
+                    bin_key = "40-60%"
+                elif p_pred < 0.80:
+                    bin_key = "60-80%"
+                else:
+                    bin_key = "80-100%"
 
-            prob_bins[bin_key]["total"] += 1
-            prob_bins[bin_key]["hits"] += int(y_actual)
-            prob_bins[bin_key]["sum_p"] += p_pred
+                prob_bins[bin_key]["total"] += 1
+                prob_bins[bin_key]["hits"] += int(y_actual)
+                prob_bins[bin_key]["sum_p"] += p_pred
 
-            delta_real = dtx - actual_cutoff
-            is_feasible_opportunity = (-2.0 <= delta_real <= 3.5)
-            rel_flags.append(1 if is_feasible_opportunity else 0)
+            if prog_id in actual_map:
+                actual_cutoff_for_precision = actual_map[prog_id]
+                delta_real = dtx - actual_cutoff_for_precision
+                is_feasible_opportunity = (-2.0 <= delta_real <= 3.5)
+                rel_flags.append(1 if is_feasible_opportunity else 0)
 
             tier = w.get("nhomNguyenVong", "")
             if tier in tier_counts:
@@ -244,10 +251,11 @@ def evaluate_system():
             elif 16 <= idx <= 20 and tier == "An toàn":
                 strategic_matches += 1
 
-        p_at_10 = np.mean(rel_flags[:10]) if len(rel_flags) >= 10 else np.mean(rel_flags)
-        p_at_20 = np.mean(rel_flags)
-        precision_at_10_list.append(p_at_10)
-        precision_at_20_list.append(p_at_20)
+        if rel_flags:
+            p_at_10 = float(np.mean(rel_flags[:10])) if len(rel_flags) >= 10 else float(np.mean(rel_flags))
+            p_at_20 = float(np.mean(rel_flags))
+            precision_at_10_list.append(p_at_10)
+            precision_at_20_list.append(p_at_20)
 
         ndcg_val = ndcg_at_k(rel_flags, 10)
         ndcg_at_10_list.append(ndcg_val)
@@ -267,8 +275,9 @@ def evaluate_system():
 
     avg_unis = float(np.mean(diversity_uni_list)) if diversity_uni_list else 0.0
     avg_majors = float(np.mean(diversity_major_list)) if diversity_major_list else 0.0
+    total_wishes_evaluated = sum(b["total"] for b in prob_bins.values())
 
-    print(f"\n1. CHẤT LƯỢNG ĐỀ XUẤT VÀ XẾP HẠNG (THEO GROUND-TRUTH NĂM ĐỘC LẬP):")
+    print(f"\n1. CHẤT LƯỢNG ĐỀ XUẤT VÀ XẼP HẠNG (THEO GROUND-TRUTH NĂM ĐỘC LẬP):")
     print(f"  - Số kịch bản thực sự chạy:                             {actual_executed_count} / {len(cohort)}")
     print(f"  - Precision@10 (Tỷ lệ cơ hội tuyển sinh khả thi Top-10): {avg_p10:.4f} ({avg_p10*100:.1f}%)")
     print(f"  - Precision@20 (Tỷ lệ cơ hội tuyển sinh khả thi toàn bộ): {avg_p20:.4f} ({avg_p20*100:.1f}%)")
@@ -297,16 +306,23 @@ def evaluate_system():
 
     report_data = {
         "benchmark_type": "independent_cohort_ground_truth_evaluation",
-        "description": "Đánh giá độc lập chất lượng danh mục DSS đối chiếu trực tiếp điểm chuẩn thực tế độc lập.",
+        "description": "Tính Precision dựa trên delta so với điểm tham chiếu (có dùng dữ liệu 2026). Brier Score chỉ tính cho ngưỡng vọng có đáp án thực tế. Chưa thực hiện backtest hoàn toàn (≤ 2025 → dự đoán 2026).",
+        "limitations": [
+            "Precision@10/20 dùng actual_map làm fallback cho ngưỡng vọng không có điểm chuẩn thực tế - kết quả có thể lạc quan hơn thực tế",
+            "Hệ thống dùng dữ liệu 2026 làm tham chiếu điểm chuẩn - ground-truth và tham chiếu chưa độc lập hoàn toàn",
+            "Cần thực hiện backtest: huấn luyện trên dữ liệu ≤ 2025, dự đoán 2026, so sánh với điểm thực tế 2026 chưa tham gia huấn luyện"
+        ],
         "cohort_scenarios_count": len(cohort),
         "actual_executed_count": actual_executed_count,
         "ground_truth_year": 2026,
+        "brier_evaluated_wishes": total_wishes_evaluated,
         "metrics": {
             "precision_at_10": round(avg_p10, 4),
             "precision_at_20": round(avg_p20, 4),
             "ndcg_at_10": round(avg_ndcg10, 4),
             "portfolio_alignment_pct": round(avg_alignment, 1),
             "brier_score": round(avg_brier, 4),
+            "brier_score_note": f"Tính trên {total_wishes_evaluated} ngưỡng vọng có đáp án thực tế (bỏ qua ngưỡng vọng không có ground-truth)",
             "cohort_coverage_pct": round(cohort_coverage, 2),
             "unique_programs_covered": len(all_recommended_programs),
             "total_programs_catalog": total_programs,

@@ -113,9 +113,12 @@ getProfile = get_my_profile
 
 
 @app.post("/api/auth/unlock")
-def unlock_account(req: Optional[Dict[str, Any]] = None):
-    req_dict = req or {}
-    username = str(req_dict.get("tenDangNhap", req_dict.get("username", "admin"))).strip()
+def unlock_account(body: Optional[Dict[str, Any]] = None, admin: Dict[str, Any] = Depends(require_admin)):
+    """Mở khóa tài khoản bị khóa do nhập sai mật khẩu. Chỉ quản trị viên mới có quyền thực hiện."""
+    req_dict = body or {}
+    username = str(req_dict.get("tenDangNhap", req_dict.get("username", ""))).strip()
+    if not username:
+        raise HTTPException(status_code=400, detail="Vui lòng cung cấp tên đăng nhập cần mở khóa.")
     AuthService.moKhoaTaiKhoan(username)
     return {"thanhCong": True, "thongBao": f"Đã mở khóa tài khoản '{username}'."}
 
@@ -124,7 +127,7 @@ unlockAccount = unlock_account
 
 
 @app.get("/api/admin/stats")
-def get_admin_stats(admin: Optional[Dict[str, Any]] = Depends(get_current_user)):
+def get_admin_stats(admin: Dict[str, Any] = Depends(require_admin)):
     users = CsvDatabase.readAll("nguoiDung")
     unis = CsvDatabase.readAll("truongDaiHoc")
     majors = CsvDatabase.readAll("nganhHoc")

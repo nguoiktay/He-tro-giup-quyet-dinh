@@ -212,24 +212,17 @@ class ScoringService:
 
         if ruleId == "RULE_HB_STD_30" and scale in ("SCALE_30", "THANG_30"):
             diemTho = cls.tinhDiemToHop(diemMonHoc, maToHop)
-            uoc_tinh = False
             if diemTho is None:
-                gpa = _gpa_float(hoSoHocSinh.get("diemHocBa"))
-                if gpa is not None:
-                    diemTho = round(gpa * 3.0, 2)
-                    uoc_tinh = True
-            if diemTho is None:
-                return {"hopLe": False, "lyDo": f"Thiếu điểm các môn bắt buộc của tổ hợp {maToHop} theo quy tắc xét tuyển 3 môn học bạ"}
+                return {
+                    "hopLe": False,
+                    "lyDo": f"Thiếu điểm các môn bắt buộc của tổ hợp {maToHop} theo quy tắc xét tuyển 3 môn học bạ (yêu cầu nhập điểm chi tiết từng môn, không suy diễn từ GPA chung)"
+                }
             uuTien = cls.tinhDiemUuTien(khuVuc, doiTuong, diemTho, "THANG_30")
-            cachTinh = (
-                f"Ước lượng tham khảo từ GPA học bạ lớp 12 ({float(hoSoHocSinh.get('diemHocBa', 0.0)):.2f} x 3 = {diemTho:.2f}) do chưa nhập điểm chi tiết 3 môn"
-                if uoc_tinh else
-                f"Tổng điểm 3 môn học bạ theo tổ hợp {maToHop} (thang 30)"
-            )
+            cachTinh = f"Tổng điểm 3 môn học bạ theo tổ hợp {maToHop} (thang 30)"
             return cls._build_score_result(
                 "PT02", "Xét theo học bạ THPT", maToHop,
                 diemTho, uuTien, "THANG_30", "SCALE_30", ruleId, cachTinh,
-                uocTinhTuGpa=uoc_tinh,
+                uocTinhTuGpa=False,
             )
 
         return {

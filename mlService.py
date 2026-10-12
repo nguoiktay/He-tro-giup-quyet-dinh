@@ -12,7 +12,9 @@ import config
 
 RF_THPT_PATH = os.path.join(os.path.dirname(__file__), "data", "models", "rf_thpt_best.joblib")
 RF_HOC_BA_PATH = os.path.join(os.path.dirname(__file__), "data", "models", "rf_hoc_ba_metadata.joblib")
-FORECAST_RECORDS_PATH = os.path.join(os.path.dirname(__file__), "data", "processed", "forecast_records_2026.csv")
+FORECAST_RECORDS_PATH = os.path.join(os.path.dirname(__file__), "data", "processed", f"forecast_records_{config.TARGET_YEAR}.csv")
+if not os.path.exists(FORECAST_RECORDS_PATH):
+    FORECAST_RECORDS_PATH = os.path.join(os.path.dirname(__file__), "data", "processed", "forecast_records_2026.csv")
 
 
 class RFTrendResidualRegressor(BaseEstimator, RegressorMixin):
@@ -72,17 +74,28 @@ class MlService:
     def __init__(self):
         self.model_thpt = None
         self.model_hoc_ba = None
+        self.model_thpt_verified = False
         self.forecast_df = None
         self._forecast_by_program: Dict[str, List[Dict[str, Any]]] = {}
         self._load_models()
         self._load_forecast_data()
 
     def _load_models(self) -> None:
+        self.model_thpt_verified = False
         if os.path.exists(RF_THPT_PATH):
             try:
                 self.model_thpt = joblib.load(RF_THPT_PATH)
+                test_x = pd.DataFrame([{
+                    "score_lag_1": 25.0,
+                    "score_lag_2": 24.5,
+                    "score_diff_lag": 0.5,
+                    "score_rolling_mean_2y": 24.75
+                }])
+                self.model_thpt.predict(test_x)
+                self.model_thpt_verified = True
             except Exception:
                 self.model_thpt = None
+                self.model_thpt_verified = False
         else:
             self.model_thpt = None
 
@@ -115,9 +128,10 @@ class MlService:
                         "uncertainty_radius_80": row.get("uncertainty_radius_80", 0.5),
                         "lower_bound_80": row.get("lower_bound_80"),
                         "upper_bound_80": row.get("upper_bound_80"),
+                        "historical_cutoff_2026": row.get("historical_cutoff_2026"),
                         "historical_cutoff_2025": row.get("historical_cutoff_2025"),
-                        "target_year": row.get("target_year", config.REFERENCE_YEAR),
-                        "model_version": row.get("model_version", "RF_THPT_TIME_SERIES_V3"),
+                        "target_year": int(row.get("target_year", config.TARGET_YEAR)),
+                        "model_version": row.get("model_version", "RF_THPT_TIME_SERIES_V4_2027"),
                         "forecast_status": str(row.get("forecast_status", "")).strip().upper()
                     }
                     self._forecast_by_program.setdefault(prog_id, []).append(item)
@@ -178,17 +192,14 @@ class MlService:
                 continue
             if c["method_code"] != m_code:
                 continue
+            if int(c.get("target_year", 0)) != config.TARGET_YEAR:
+                continue
 
-            if admissionCaseId and admissionCaseId != "CHUA_RO":
-                c_case = c.get("admission_case_id", "")
-                if c_case and c_case != "CHUA_RO":
-                    case_match = (
-                        c_case == admissionCaseId
-                        or admissionCaseId in c_case
-                        or c_case in admissionCaseId
-                    )
-                    if not case_match:
-                        continue
+            req_case = str(admissionCaseId).strip().upper() if admissionCaseId else ""
+            if req_case and req_case != "CHUA_RO":
+                c_case = str(c.get("admission_case_id", "")).strip().upper()
+                if not c_case or c_case == "CHUA_RO" or c_case != req_case:
+                    continue
 
             if target_comb and target_comb not in c["combination_tokens"]:
                 continue
@@ -205,9 +216,10 @@ class MlService:
         radius = row.get("uncertainty_radius_80", 0.5)
         low_bound = row.get("lower_bound_80")
         up_bound = row.get("upper_bound_80")
+        hist_2026 = row.get("historical_cutoff_2026")
         hist_2025 = row.get("historical_cutoff_2025")
-        target_year = row.get("target_year", config.REFERENCE_YEAR)
-        model_version = row.get("model_version", "RF_THPT_TIME_SERIES_V3")
+        target_year = int(row.get("target_year", config.TARGET_YEAR))
+        model_version = row.get("model_version", "RF_THPT_TIME_SERIES_V4_2027")
 
         fc_status = row.get("forecast_status", "")
         m_ver = str(model_version).strip().upper()
@@ -227,9 +239,11 @@ class MlService:
             "uncertaintyRadius": round(float(radius), 2) if pd.notna(radius) else 0.5,
             "lowerBound80": round(float(low_bound), 2) if pd.notna(low_bound) else None,
             "upperBound80": round(float(up_bound), 2) if pd.notna(up_bound) else None,
+            "historicalCutoff2026": round(float(hist_2026), 2) if pd.notna(hist_2026) else None,
             "historicalCutoff2025": round(float(hist_2025), 2) if pd.notna(hist_2025) else None,
-            "targetYear": int(target_year) if pd.notna(target_year) else config.REFERENCE_YEAR,
-            "modelVersion": str(model_version) if pd.notna(model_version) else "RF_THPT_TIME_SERIES_V3",
+            "targetYear": target_year,
+            "admissionCaseId": row.get("admission_case_id", ""),
+            "modelVersion": str(model_version) if pd.notna(model_version) else "RF_THPT_TIME_SERIES_V4_2027",
             "forecastType": forecast_type,
             "forecastTypeLabel": forecast_type_label,
             "displayLabel": forecast_type_label

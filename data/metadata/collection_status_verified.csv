@@ -1,44 +1,44 @@
 university_id,university_code,university_name,university_type,region,province,thpt_collection_status,hoc_ba_collection_status,tuition_collection_status,thpt_records_count,hoc_ba_records_count,tuition_records_count,source_archive_available
 UNI_QHI,QHI,Trường Đại học Công nghệ - ĐHQGHN,Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,PROJECTED,216,0,22,True
-UNI_QHT,QHT,Trường Đại học Khoa học Tự nhiên - ĐHQGHN,Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,UNVERIFIED,568,0,35,True
-UNI_QHX,QHX,Trường Đại học Khoa học Xã hội và Nhân văn - ĐHQGHN,Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,UNVERIFIED,755,0,33,True
-UNI_QHE,QHE,Trường Đại học Kinh tế - ĐHQGHN,Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,UNVERIFIED,12,0,6,True
+UNI_QHT,QHT,Trường Đại học Khoa học Tự nhiên - ĐHQGHN,Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,PROJECTED,568,0,35,True
+UNI_QHX,QHX,Trường Đại học Khoa học Xã hội và Nhân văn - ĐHQGHN,Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,PROJECTED,755,0,33,True
+UNI_QHE,QHE,Trường Đại học Kinh tế - ĐHQGHN,Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,PROJECTED,12,0,6,True
 UNI_QHF,QHF,Trường Đại học Ngoại ngữ - ĐHQGHN,Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,VERIFIED,46,0,16,True
-UNI_QHD,QHD,Trường Đại học Giáo dục - ĐHQGHN,Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,UNVERIFIED,88,0,6,True
-UNI_QHY,QHY,Trường Đại học Y Dược - ĐHQGHN,Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,UNVERIFIED,42,0,7,True
-UNI_QHL,QHL,Trường Đại học Luật - ĐHQGHN,Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,UNVERIFIED,105,0,4,True
-UNI_VJU,VJU,Trường Đại học Việt Nhật - ĐHQGHN,Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,UNVERIFIED,59,0,15,True
-UNI_SIS,SIS,Trường Khoa học liên ngành và Nghệ thuật - ĐHQGHN,Công lập,Miền Bắc,Hà Nội,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
+UNI_QHD,QHD,Trường Đại học Giáo dục - ĐHQGHN,Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,PROJECTED,88,0,6,True
+UNI_QHY,QHY,Trường Đại học Y Dược - ĐHQGHN,Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,PROJECTED,42,0,7,True
+UNI_QHL,QHL,Trường Đại học Luật - ĐHQGHN,Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,PROJECTED,105,0,4,True
+UNI_VJU,VJU,Trường Đại học Việt Nhật - ĐHQGHN,Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,PROJECTED,59,0,15,True
+UNI_SIS,SIS,Trường Khoa học liên ngành và Nghệ thuật - ĐHQGHN,Công lập,Miền Bắc,Hà Nội,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
 UNI_QSB,QSB,Trường Đại học Bách khoa - ĐHQG TP.HCM,Công lập,Miền Nam,TP. Hồ Chí Minh,VERIFIED,UNVERIFIED,PROJECTED,159,0,40,True
-UNI_QSC,QSC,Trường Đại học Khoa học Tự nhiên - ĐHQG TP.HCM,Công lập,Miền Nam,TP. Hồ Chí Minh,VERIFIED,UNVERIFIED,UNVERIFIED,277,0,26,True
+UNI_QSC,QSC,Trường Đại học Khoa học Tự nhiên - ĐHQG TP.HCM,Công lập,Miền Nam,TP. Hồ Chí Minh,VERIFIED,UNVERIFIED,PROJECTED,277,0,26,True
 UNI_QSX,QSX,Trường Đại học Khoa học Xã hội và Nhân văn - ĐHQG TP.HCM,Công lập,Miền Nam,TP. Hồ Chí Minh,VERIFIED,UNVERIFIED,VERIFIED,661,0,52,True
 UNI_QST,QST,Trường Đại học Công nghệ Thông tin - ĐHQG TP.HCM,Công lập,Miền Nam,TP. Hồ Chí Minh,VERIFIED,UNVERIFIED,VERIFIED,554,0,46,True
-UNI_QSK,QSK,Trường Đại học Kinh tế - Luật - ĐHQG TP.HCM,Công lập,Miền Nam,TP. Hồ Chí Minh,VERIFIED,UNVERIFIED,UNVERIFIED,652,0,65,True
-UNI_QSI,QSI,Trường Đại học Quốc tế - ĐHQG TP.HCM,Công lập,Miền Nam,TP. Hồ Chí Minh,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-UNI_QSY,QSY,Trường Đại học Khoa học Sức khỏe - ĐHQG TP.HCM,Công lập,Miền Nam,TP. Hồ Chí Minh,VERIFIED,UNVERIFIED,UNVERIFIED,30,0,13,True
-UNI_AGU,DAn,Trường Đại học An Giang - ĐHQG TP.HCM,Công lập,Miền Nam,An Giang,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-UNI_DDK,DDK,Trường Đại học Bách khoa - Đại học Đà Nẵng,Công lập,Miền Trung,Đà Nẵng,VERIFIED,UNVERIFIED,UNVERIFIED,341,0,51,True
-UNI_DDE,DDQ,Trường Đại học Kinh tế - Đại học Đà Nẵng,Công lập,Miền Trung,Đà Nẵng,VERIFIED,UNVERIFIED,UNVERIFIED,294,0,20,True
+UNI_QSK,QSK,Trường Đại học Kinh tế - Luật - ĐHQG TP.HCM,Công lập,Miền Nam,TP. Hồ Chí Minh,VERIFIED,UNVERIFIED,PROJECTED,652,0,65,True
+UNI_QSI,QSI,Trường Đại học Quốc tế - ĐHQG TP.HCM,Công lập,Miền Nam,TP. Hồ Chí Minh,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+UNI_QSY,QSY,Trường Đại học Khoa học Sức khỏe - ĐHQG TP.HCM,Công lập,Miền Nam,TP. Hồ Chí Minh,VERIFIED,UNVERIFIED,PROJECTED,30,0,13,True
+UNI_AGU,DAn,Trường Đại học An Giang - ĐHQG TP.HCM,Công lập,Miền Nam,An Giang,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+UNI_DDK,DDK,Trường Đại học Bách khoa - Đại học Đà Nẵng,Công lập,Miền Trung,Đà Nẵng,VERIFIED,UNVERIFIED,PROJECTED,341,0,51,True
+UNI_DDE,DDQ,Trường Đại học Kinh tế - Đại học Đà Nẵng,Công lập,Miền Trung,Đà Nẵng,VERIFIED,UNVERIFIED,PROJECTED,294,0,20,True
 UNI_DDS,DDS,Trường Đại học Sư phạm - Đại học Đà Nẵng,Công lập,Miền Trung,Đà Nẵng,VERIFIED,UNVERIFIED,VERIFIED,465,0,41,True
 UNI_DDL_UDN,DDF,Trường Đại học Ngoại ngữ - Đại học Đà Nẵng,Công lập,Miền Trung,Đà Nẵng,VERIFIED,UNVERIFIED,VERIFIED,201,0,20,True
-UNI_DDC,DDC,Trường Đại học Sư phạm Kỹ thuật - Đại học Đà Nẵng,Công lập,Miền Trung,Đà Nẵng,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-UNI_VKU,VKU,Trường Đại học Công nghệ Thông tin & Truyền thông Việt - Hàn,Công lập,Miền Trung,Đà Nẵng,VERIFIED,UNVERIFIED,UNVERIFIED,196,0,20,True
-UNI_YDN,DDY,Khoa Y - Dược - Đại học Đà Nẵng,Công lập,Miền Trung,Đà Nẵng,VERIFIED,VERIFIED,UNVERIFIED,36,4,11,True
-UNI_DHK,DHK,Trường Đại học Khoa học - Đại học Huế,Công lập,Miền Trung,Thừa Thiên Huế,VERIFIED,UNVERIFIED,UNVERIFIED,410,0,28,True
+UNI_DDC,DDC,Trường Đại học Sư phạm Kỹ thuật - Đại học Đà Nẵng,Công lập,Miền Trung,Đà Nẵng,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+UNI_VKU,VKU,Trường Đại học Công nghệ Thông tin & Truyền thông Việt - Hàn,Công lập,Miền Trung,Đà Nẵng,VERIFIED,UNVERIFIED,PROJECTED,196,0,20,True
+UNI_YDN,DDY,Khoa Y - Dược - Đại học Đà Nẵng,Công lập,Miền Trung,Đà Nẵng,VERIFIED,VERIFIED,PROJECTED,36,4,11,True
+UNI_DHK,DHK,Trường Đại học Khoa học - Đại học Huế,Công lập,Miền Trung,Thừa Thiên Huế,VERIFIED,UNVERIFIED,PROJECTED,410,0,28,True
 UNI_DHS,DHS,Trường Đại học Sư phạm - Đại học Huế,Công lập,Miền Trung,Thừa Thiên Huế,VERIFIED,VERIFIED,VERIFIED,434,3,32,True
-UNI_DHY,DHY,Trường Đại học Y - Dược - Đại học Huế,Công lập,Miền Trung,Thừa Thiên Huế,VERIFIED,UNVERIFIED,UNVERIFIED,73,0,14,True
+UNI_DHY,DHY,Trường Đại học Y - Dược - Đại học Huế,Công lập,Miền Trung,Thừa Thiên Huế,VERIFIED,UNVERIFIED,PROJECTED,73,0,14,True
 UNI_DHN,DHN,Trường Đại học Nông Lâm - Đại học Huế,Công lập,Miền Trung,Thừa Thiên Huế,VERIFIED,UNVERIFIED,VERIFIED,30,0,6,True
-UNI_DHA,DHA,Trường Đại học Nghệ thuật - Đại học Huế,Công lập,Miền Trung,Thừa Thiên Huế,VERIFIED,VERIFIED,UNVERIFIED,40,2,4,True
-UNI_DHE,DHE,Trường Đại học Kinh tế - Đại học Huế,Công lập,Miền Trung,Thừa Thiên Huế,VERIFIED,VERIFIED,UNVERIFIED,37,8,14,True
+UNI_DHA,DHA,Trường Đại học Nghệ thuật - Đại học Huế,Công lập,Miền Trung,Thừa Thiên Huế,VERIFIED,VERIFIED,PROJECTED,40,2,4,True
+UNI_DHE,DHE,Trường Đại học Kinh tế - Đại học Huế,Công lập,Miền Trung,Thừa Thiên Huế,VERIFIED,VERIFIED,PROJECTED,37,8,14,True
 UNI_DHF,DHF,Trường Đại học Ngoại ngữ - Đại học Huế,Công lập,Miền Trung,Thừa Thiên Huế,VERIFIED,VERIFIED,VERIFIED,155,13,25,True
-UNI_DHL,DHL,Trường Đại học Luật - Đại học Huế,Công lập,Miền Trung,Thừa Thiên Huế,VERIFIED,VERIFIED,UNVERIFIED,248,19,44,True
+UNI_DHL,DHL,Trường Đại học Luật - Đại học Huế,Công lập,Miền Trung,Thừa Thiên Huế,VERIFIED,VERIFIED,PROJECTED,248,19,44,True
 UNI_DTS,DTS,Trường Đại học Sư phạm - Đại học Thái Nguyên,Công lập,Miền Bắc,Thái Nguyên,VERIFIED,UNVERIFIED,VERIFIED,251,0,18,True
-UNI_DTY,DTY,Trường Đại học Y - Dược - Đại học Thái Nguyên,Công lập,Miền Bắc,Thái Nguyên,VERIFIED,VERIFIED,UNVERIFIED,98,9,20,True
-UNI_DTK,DTK,Trường Đại học Kỹ thuật Công nghiệp - Đại học Thái Nguyên,Công lập,Miền Bắc,Thái Nguyên,VERIFIED,VERIFIED,UNVERIFIED,300,29,51,True
-UNI_DTN,DTN,Trường Đại học Nông Lâm - Đại học Thái Nguyên,Công lập,Miền Bắc,Thái Nguyên,VERIFIED,VERIFIED,UNVERIFIED,339,23,52,True
-UNI_DTE,DTE,Trường Đại học Kinh tế và Quản trị kinh doanh - Đại học Thái Nguyên,Công lập,Miền Bắc,Thái Nguyên,VERIFIED,VERIFIED,UNVERIFIED,266,29,56,True
-UNI_TNUS,DTZ,Trường Đại học Công nghệ Thông tin và Truyền thông - ĐH Thái Nguyên,Công lập,Miền Bắc,Thái Nguyên,VERIFIED,VERIFIED,UNVERIFIED,367,40,74,True
-UNI_DTD,DTD,Trường Đại học Khoa học - Đại học Thái Nguyên,Công lập,Miền Bắc,Thái Nguyên,VERIFIED,VERIFIED,UNVERIFIED,408,25,54,True
+UNI_DTY,DTY,Trường Đại học Y - Dược - Đại học Thái Nguyên,Công lập,Miền Bắc,Thái Nguyên,VERIFIED,VERIFIED,PROJECTED,98,9,20,True
+UNI_DTK,DTK,Trường Đại học Kỹ thuật Công nghiệp - Đại học Thái Nguyên,Công lập,Miền Bắc,Thái Nguyên,VERIFIED,VERIFIED,PROJECTED,300,29,51,True
+UNI_DTN,DTN,Trường Đại học Nông Lâm - Đại học Thái Nguyên,Công lập,Miền Bắc,Thái Nguyên,VERIFIED,VERIFIED,PROJECTED,339,23,52,True
+UNI_DTE,DTE,Trường Đại học Kinh tế và Quản trị kinh doanh - Đại học Thái Nguyên,Công lập,Miền Bắc,Thái Nguyên,VERIFIED,VERIFIED,PROJECTED,266,29,56,True
+UNI_TNUS,DTZ,Trường Đại học Công nghệ Thông tin và Truyền thông - ĐH Thái Nguyên,Công lập,Miền Bắc,Thái Nguyên,VERIFIED,VERIFIED,PROJECTED,367,40,74,True
+UNI_DTD,DTD,Trường Đại học Khoa học - Đại học Thái Nguyên,Công lập,Miền Bắc,Thái Nguyên,VERIFIED,VERIFIED,PROJECTED,408,25,54,True
 UNI_DTF,DTF,Trường Đại học Ngoại ngữ - Đại học Thái Nguyên,Công lập,Miền Bắc,Thái Nguyên,VERIFIED,UNVERIFIED,VERIFIED,88,0,6,True
 UNI_BKA,BKA,Đại học Bách khoa Hà Nội,Công lập,Miền Bắc,Hà Nội,VERIFIED,NOT_OFFERED,VERIFIED,881,0,120,True
 UNI_KTS,KSA,Đại học Kinh tế TP. Hồ Chí Minh,Công lập,Miền Nam,TP. Hồ Chí Minh,VERIFIED,UNVERIFIED,PROJECTED,622,0,77,True
@@ -48,212 +48,212 @@ UNI_NTH,NTH,Trường Đại học Ngoại thương (Cơ sở Hà Nội),Công l
 UNI_SPH,SPH,Trường Đại học Sư phạm Hà Nội,Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,VERIFIED,641,0,137,True
 UNI_SP2,SP2,Trường Đại học Sư phạm Hà Nội 2,Công lập,Miền Bắc,Vĩnh Phúc,VERIFIED,VERIFIED,VERIFIED,159,13,38,True
 UNI_SPS,SPS,Trường Đại học Sư phạm TP. Hồ Chí Minh,Công lập,Miền Nam,TP. Hồ Chí Minh,VERIFIED,UNVERIFIED,VERIFIED,531,0,49,True
-UNI_SPK,SPK,Trường Đại học Sư phạm Kỹ thuật TP. Hồ Chí Minh,Công lập,Miền Nam,TP. Hồ Chí Minh,VERIFIED,UNVERIFIED,VERIFIED,1468,0,180,True
+UNI_SPK,SPK,Trường Đại học Sư phạm Kỹ thuật TP. Hồ Chí Minh,Công lập,Miền Nam,TP. Hồ Chí Minh,VERIFIED,UNVERIFIED,VERIFIED,1468,0,156,True
 UNI_SKH,SKH,Trường Đại học Sư phạm Kỹ thuật Hưng Yên,Công lập,Miền Bắc,Hưng Yên,VERIFIED,VERIFIED,VERIFIED,318,29,54,True
-UNI_SKN,SKN,Trường Đại học Sư phạm Kỹ thuật Nam Định,Công lập,Miền Bắc,Nam Định,VERIFIED,VERIFIED,UNVERIFIED,130,17,26,True
+UNI_SKN,SKN,Trường Đại học Sư phạm Kỹ thuật Nam Định,Công lập,Miền Bắc,Nam Định,VERIFIED,VERIFIED,PROJECTED,130,17,26,True
 UNI_SKV,SKV,Trường Đại học Sư phạm Kỹ thuật Vinh,Công lập,Miền Trung,Nghệ An,VERIFIED,VERIFIED,VERIFIED,152,28,29,True
-UNI_HAN,NHF,Trường Đại học Hà Nội,Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,UNVERIFIED,56,0,22,True
-UNI_GHA,GHA,Trường Đại học Giao thông Vận tải,Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,UNVERIFIED,608,0,62,True
-UNI_XDA,XDA,Trường Đại học Xây dựng Hà Nội,Công lập,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,UNVERIFIED,385,37,93,True
-UNI_MDA,MDA,Trường Đại học Mỏ - Địa chất,Công lập,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,UNVERIFIED,608,45,90,True
-UNI_TMA,TMA,Trường Đại học Thương mại,Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,UNVERIFIED,428,0,84,True
-UNI_MHN,MHN,Trường Đại học Mở Hà Nội,Công lập,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,UNVERIFIED,265,2,24,True
+UNI_HAN,NHF,Trường Đại học Hà Nội,Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,PROJECTED,56,0,22,True
+UNI_GHA,GHA,Trường Đại học Giao thông Vận tải,Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,PROJECTED,608,0,62,True
+UNI_XDA,XDA,Trường Đại học Xây dựng Hà Nội,Công lập,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,PROJECTED,385,37,93,True
+UNI_MDA,MDA,Trường Đại học Mỏ - Địa chất,Công lập,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,PROJECTED,608,45,90,True
+UNI_TMA,TMA,Trường Đại học Thương mại,Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,PROJECTED,428,0,46,True
+UNI_MHN,MHN,Trường Đại học Mở Hà Nội,Công lập,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,PROJECTED,265,2,24,True
 UNI_MBS,MBS,Trường Đại học Mở TP. Hồ Chí Minh,Công lập,Miền Nam,TP. Hồ Chí Minh,VERIFIED,VERIFIED,VERIFIED,891,67,113,True
 UNI_TDV,TDV,Trường Đại học Vinh,Công lập,Miền Trung,Nghệ An,VERIFIED,VERIFIED,VERIFIED,389,92,105,True
-UNI_QNU,QNU,Trường Đại học Quy Nhơn,Công lập,Miền Trung,Bình Định,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-UNI_NTU,TSN,Trường Đại học Nha Trang,Công lập,Miền Trung,Khánh Hòa,VERIFIED,UNVERIFIED,UNVERIFIED,618,0,50,True
+UNI_QNU,QNU,Trường Đại học Quy Nhơn,Công lập,Miền Trung,Bình Định,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+UNI_NTU,TSN,Trường Đại học Nha Trang,Công lập,Miền Trung,Khánh Hòa,VERIFIED,UNVERIFIED,PROJECTED,618,0,50,True
 UNI_TTN,TTN,Trường Đại học Tây Nguyên,Công lập,Miền Trung,Đắk Lắk,VERIFIED,VERIFIED,VERIFIED,488,22,63,True
 UNI_DLT,TDL,Trường Đại học Đà Lạt,Công lập,Miền Trung,Lâm Đồng,VERIFIED,VERIFIED,VERIFIED,643,32,76,True
-UNI_DLU,DLU,Trường Đại học Luật Hà Nội,Công lập,Miền Bắc,Hà Nội,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,11,False
-UNI_LPS,LPS,Trường Đại học Luật TP. Hồ Chí Minh,Công lập,Miền Nam,TP. Hồ Chí Minh,VERIFIED,VERIFIED,UNVERIFIED,145,91,17,True
+UNI_DLU,DLU,Trường Đại học Luật Hà Nội,Công lập,Miền Bắc,Hà Nội,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+UNI_LPS,LPS,Trường Đại học Luật TP. Hồ Chí Minh,Công lập,Miền Nam,TP. Hồ Chí Minh,VERIFIED,VERIFIED,PROJECTED,145,91,17,True
 UNI_VHH,HVD,Học viện Quản lý giáo dục,Công lập,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,VERIFIED,4,1,2,True
 UNI_YHB,YHB,Trường Đại học Y Hà Nội,Công lập,Miền Bắc,Hà Nội,VERIFIED,NOT_OFFERED,VERIFIED,94,0,25,True
-UNI_DKH,DKH,Trường Đại học Dược Hà Nội,Công lập,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,UNVERIFIED,16,4,8,True
+UNI_DKH,DKH,Trường Đại học Dược Hà Nội,Công lập,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,PROJECTED,16,4,8,True
 UNI_YDS,YDS,Trường Đại học Y Dược TP. Hồ Chí Minh,Công lập,Miền Nam,TP. Hồ Chí Minh,VERIFIED,NOT_OFFERED,VERIFIED,124,0,28,True
 UNI_TYS,TYS,Trường Đại học Y khoa Phạm Ngọc Thạch,Công lập,Miền Nam,TP. Hồ Chí Minh,VERIFIED,UNVERIFIED,VERIFIED,97,0,32,True
-UNI_YTB,YTB,Trường Đại học Y Dược Thái Bình,Công lập,Miền Bắc,Thái Bình,VERIFIED,UNVERIFIED,UNVERIFIED,43,0,7,True
-UNI_YHP,YHP,Trường Đại học Y Dược Hải Phòng,Công lập,Miền Bắc,Hải Phòng,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,21,False
-UNI_YCT,YCT,Trường Đại học Y Dược Cần Thơ,Công lập,Miền Nam,Cần Thơ,VERIFIED,UNVERIFIED,UNVERIFIED,48,0,13,True
-UNI_YTC,YTC,Trường Đại học Y tế Công cộng,Công lập,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,UNVERIFIED,76,4,12,True
-UNI_YDD,YDD,Trường Đại học Điều dưỡng Nam Định,Công lập,Miền Bắc,Nam Định,VERIFIED,VERIFIED,UNVERIFIED,53,3,6,True
-UNI_YHD,DKY,Trường Đại học Kỹ thuật Y tế Hải Dương,Công lập,Miền Bắc,Hải Dương,VERIFIED,VERIFIED,UNVERIFIED,41,5,10,True
-UNI_YMD,YDN,Trường Đại học Kỹ thuật Y - Dược Đà Nẵng,Công lập,Miền Trung,Đà Nẵng,VERIFIED,VERIFIED,UNVERIFIED,59,8,17,True
-UNI_DCN,DCN,Trường Đại học Công nghiệp Hà Nội,Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,UNVERIFIED,535,0,87,True
-UNI_DCP,IUH,Trường Đại học Công nghiệp TP. Hồ Chí Minh,Công lập,Miền Nam,TP. Hồ Chí Minh,VERIFIED,UNVERIFIED,UNVERIFIED,923,0,72,True
-UNI_DCT,DCT,Trường Đại học Công Thương TP. Hồ Chí Minh,Công lập,Miền Nam,TP. Hồ Chí Minh,VERIFIED,VERIFIED,UNVERIFIED,728,44,123,True
-UNI_DDL,DDL,Trường Đại học Điện lực,Công lập,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,UNVERIFIED,340,38,57,True
-UNI_DKA,DKA,Trường Đại học Kinh tế - Kỹ thuật Công nghiệp,Công lập,Miền Bắc,Hà Nội,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-UNI_DSD,DSD,Trường Đại học Sao Đỏ,Công lập,Miền Bắc,Hải Dương,VERIFIED,UNVERIFIED,UNVERIFIED,4,0,4,True
+UNI_YTB,YTB,Trường Đại học Y Dược Thái Bình,Công lập,Miền Bắc,Thái Bình,VERIFIED,UNVERIFIED,PROJECTED,43,0,7,True
+UNI_YHP,YHP,Trường Đại học Y Dược Hải Phòng,Công lập,Miền Bắc,Hải Phòng,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+UNI_YCT,YCT,Trường Đại học Y Dược Cần Thơ,Công lập,Miền Nam,Cần Thơ,VERIFIED,UNVERIFIED,PROJECTED,48,0,13,True
+UNI_YTC,YTC,Trường Đại học Y tế Công cộng,Công lập,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,PROJECTED,76,4,12,True
+UNI_YDD,YDD,Trường Đại học Điều dưỡng Nam Định,Công lập,Miền Bắc,Nam Định,VERIFIED,VERIFIED,PROJECTED,53,3,6,True
+UNI_YHD,DKY,Trường Đại học Kỹ thuật Y tế Hải Dương,Công lập,Miền Bắc,Hải Dương,VERIFIED,VERIFIED,PROJECTED,41,5,10,True
+UNI_YMD,YDN,Trường Đại học Kỹ thuật Y - Dược Đà Nẵng,Công lập,Miền Trung,Đà Nẵng,VERIFIED,VERIFIED,PROJECTED,59,8,17,True
+UNI_DCN,DCN,Trường Đại học Công nghiệp Hà Nội,Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,PROJECTED,535,0,69,True
+UNI_DCP,IUH,Trường Đại học Công nghiệp TP. Hồ Chí Minh,Công lập,Miền Nam,TP. Hồ Chí Minh,VERIFIED,UNVERIFIED,PROJECTED,923,0,72,True
+UNI_DCT,DCT,Trường Đại học Công Thương TP. Hồ Chí Minh,Công lập,Miền Nam,TP. Hồ Chí Minh,VERIFIED,VERIFIED,PROJECTED,728,44,123,True
+UNI_DDL,DDL,Trường Đại học Điện lực,Công lập,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,PROJECTED,340,38,57,True
+UNI_DKA,DKA,Trường Đại học Kinh tế - Kỹ thuật Công nghiệp,Công lập,Miền Bắc,Hà Nội,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+UNI_DSD,DSD,Trường Đại học Sao Đỏ,Công lập,Miền Bắc,Hải Dương,VERIFIED,UNVERIFIED,PROJECTED,4,0,4,True
 UNI_DVT,DVT,Trường Đại học Công nghiệp Việt Trì,Công lập,Miền Bắc,Phú Thọ,VERIFIED,VERIFIED,VERIFIED,331,266,104,True
 UNI_DQN,DQN,Trường Đại học Công nghiệp Quảng Ninh,Công lập,Miền Bắc,Quảng Ninh,VERIFIED,VERIFIED,VERIFIED,641,40,92,True
-UNI_DVT2,VIU,Trường Đại học Công nghiệp Dệt may Hà Nội,Công lập,Miền Bắc,Hà Nội,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-UNI_HTC,HTC,Học viện Tài chính,Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,UNVERIFIED,85,0,11,True
-UNI_NHH,NHH,Học viện Ngân hàng,Công lập,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,UNVERIFIED,361,45,101,True
-UNI_NHS,NHS,Trường Đại học Ngân hàng TP. Hồ Chí Minh,Công lập,Miền Nam,TP. Hồ Chí Minh,VERIFIED,UNVERIFIED,UNVERIFIED,205,0,25,True
-UNI_DMS,DMS,Trường Đại học Tài chính - Marketing,Công lập,Miền Nam,TP. Hồ Chí Minh,VERIFIED,VERIFIED,UNVERIFIED,395,34,72,True
-UNI_DFA,DFA,Trường Đại học Tài chính - Quản trị kinh doanh,Công lập,Miền Bắc,Hưng Yên,VERIFIED,UNVERIFIED,UNVERIFIED,84,0,7,True
+UNI_DVT2,VIU,Trường Đại học Công nghiệp Dệt may Hà Nội,Công lập,Miền Bắc,Hà Nội,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+UNI_HTC,HTC,Học viện Tài chính,Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,PROJECTED,85,0,11,True
+UNI_NHH,NHH,Học viện Ngân hàng,Công lập,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,PROJECTED,361,45,101,True
+UNI_NHS,NHS,Trường Đại học Ngân hàng TP. Hồ Chí Minh,Công lập,Miền Nam,TP. Hồ Chí Minh,VERIFIED,UNVERIFIED,PROJECTED,205,0,25,True
+UNI_DMS,DMS,Trường Đại học Tài chính - Marketing,Công lập,Miền Nam,TP. Hồ Chí Minh,VERIFIED,VERIFIED,PROJECTED,395,34,72,True
+UNI_DFA,DFA,Trường Đại học Tài chính - Quản trị kinh doanh,Công lập,Miền Bắc,Hưng Yên,VERIFIED,UNVERIFIED,PROJECTED,84,0,7,True
 UNI_DKT,DKT,Trường Đại học Tài chính - Kế toán,Công lập,Miền Trung,Quảng Ngãi,VERIFIED,VERIFIED,VERIFIED,76,32,54,True
-UNI_KTA,KTA,Trường Đại học Kiến trúc Hà Nội,Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,UNVERIFIED,303,0,36,True
-UNI_KTS2,KTS,Trường Đại học Kiến trúc TP. Hồ Chí Minh,Công lập,Miền Nam,TP. Hồ Chí Minh,VERIFIED,UNVERIFIED,UNVERIFIED,221,0,20,True
-UNI_XDM,XDT,Trường Đại học Xây dựng Miền Trung,Công lập,Miền Trung,Phú Yên,VERIFIED,VERIFIED,UNVERIFIED,92,31,47,True
-UNI_XDW,MTU,Trường Đại học Xây dựng Miền Tây,Công lập,Miền Nam,Vĩnh Long,VERIFIED,VERIFIED,UNVERIFIED,100,9,20,True
+UNI_KTA,KTA,Trường Đại học Kiến trúc Hà Nội,Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,PROJECTED,303,0,36,True
+UNI_KTS2,KTS,Trường Đại học Kiến trúc TP. Hồ Chí Minh,Công lập,Miền Nam,TP. Hồ Chí Minh,VERIFIED,UNVERIFIED,PROJECTED,221,0,20,True
+UNI_XDM,XDT,Trường Đại học Xây dựng Miền Trung,Công lập,Miền Trung,Phú Yên,VERIFIED,VERIFIED,PROJECTED,92,31,47,True
+UNI_XDW,MTU,Trường Đại học Xây dựng Miền Tây,Công lập,Miền Nam,Vĩnh Long,VERIFIED,VERIFIED,PROJECTED,100,9,20,True
 UNI_HVN,HVN,Học viện Nông nghiệp Việt Nam,Công lập,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,VERIFIED,433,23,49,True
 UNI_LNH,LNH,Trường Đại học Lâm nghiệp,Công lập,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,VERIFIED,416,26,58,True
-UNI_TLA,TLA,Trường Đại học Thủy lợi,Công lập,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,UNVERIFIED,585,46,86,True
+UNI_TLA,TLA,Trường Đại học Thủy lợi,Công lập,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,PROJECTED,585,46,86,True
 UNI_NLS,NLS,Trường Đại học Nông Lâm TP. Hồ Chí Minh,Công lập,Miền Nam,TP. Hồ Chí Minh,VERIFIED,VERIFIED,VERIFIED,334,56,118,True
-UNI_BVH,BVH,Học viện Công nghệ Bưu chính Viễn thông (Hà Nội),Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,UNVERIFIED,185,0,23,True
-UNI_HHA,HHA,Trường Đại học Hàng hải Việt Nam,Công lập,Miền Bắc,Hải Phòng,VERIFIED,VERIFIED,UNVERIFIED,732,36,130,True
-UNI_GTS,GTS,Trường Đại học Giao thông Vận tải TP. Hồ Chí Minh,Công lập,Miền Nam,TP. Hồ Chí Minh,VERIFIED,UNVERIFIED,UNVERIFIED,571,0,126,True
-UNI_UST,UST,Trường Đại học Khoa học và Công nghệ Hà Nội,Công lập,Miền Bắc,Hà Nội,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-UNI_VGU,VGU,Trường Đại học Việt Đức,Công lập,Miền Nam,Bình Dương,VERIFIED,UNVERIFIED,UNVERIFIED,40,0,22,True
-UNI_HQT,HQT,Học viện Ngoại giao,Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,UNVERIFIED,235,0,20,True
-UNI_HBT,HBT,Học viện Báo chí và Tuyên truyền,Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,UNVERIFIED,441,0,52,True
-UNI_HCH,HCH,Học viện Hành chính Quốc gia,Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,UNVERIFIED,60,0,14,True
-UNI_APD,APD,Học viện Chính sách và Phát triển,Công lập,Miền Bắc,Hà Nội,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-UNI_BPH,HPN,Học viện Phụ nữ Việt Nam,Công lập,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,UNVERIFIED,184,46,34,True
-UNI_HTN,HTN,Học viện Thanh thiếu niên Việt Nam,Công lập,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,UNVERIFIED,140,10,17,True
-UNI_HVTA,HTA,Học viện Tòa án,Công lập,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,UNVERIFIED,8,8,3,True
-UNI_DKS,DKS,Trường Đại học Kiểm sát Hà Nội,Công lập,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,UNVERIFIED,16,30,25,True
-UNI_LDA,LDA,Trường Đại học Công đoàn,Công lập,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,UNVERIFIED,187,17,34,True
+UNI_BVH,BVH,Học viện Công nghệ Bưu chính Viễn thông (Hà Nội),Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,PROJECTED,185,0,23,True
+UNI_HHA,HHA,Trường Đại học Hàng hải Việt Nam,Công lập,Miền Bắc,Hải Phòng,VERIFIED,VERIFIED,PROJECTED,732,36,130,True
+UNI_GTS,GTS,Trường Đại học Giao thông Vận tải TP. Hồ Chí Minh,Công lập,Miền Nam,TP. Hồ Chí Minh,VERIFIED,UNVERIFIED,PROJECTED,571,0,126,True
+UNI_UST,UST,Trường Đại học Khoa học và Công nghệ Hà Nội,Công lập,Miền Bắc,Hà Nội,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+UNI_VGU,VGU,Trường Đại học Việt Đức,Công lập,Miền Nam,Bình Dương,VERIFIED,UNVERIFIED,PROJECTED,40,0,22,True
+UNI_HQT,HQT,Học viện Ngoại giao,Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,PROJECTED,235,0,18,True
+UNI_HBT,HBT,Học viện Báo chí và Tuyên truyền,Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,PROJECTED,441,0,52,True
+UNI_HCH,HCH,Học viện Hành chính Quốc gia,Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,PROJECTED,60,0,14,True
+UNI_APD,APD,Học viện Chính sách và Phát triển,Công lập,Miền Bắc,Hà Nội,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+UNI_BPH,HPN,Học viện Phụ nữ Việt Nam,Công lập,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,PROJECTED,184,46,34,True
+UNI_HTN,HTN,Học viện Thanh thiếu niên Việt Nam,Công lập,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,PROJECTED,140,10,17,True
+UNI_HVTA,HTA,Học viện Tòa án,Công lập,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,PROJECTED,8,8,3,True
+UNI_DKS,DKS,Trường Đại học Kiểm sát Hà Nội,Công lập,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,PROJECTED,16,30,10,True
+UNI_LDA,LDA,Trường Đại học Công đoàn,Công lập,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,PROJECTED,187,17,34,True
 UNI_TDT,DTT,Trường Đại học Tôn Đức Thắng,Công lập,Miền Nam,TP. Hồ Chí Minh,VERIFIED,UNVERIFIED,VERIFIED,41,0,168,True
-UNI_DLX,DLX,Trường Đại học Lao động - Xã hội,Công lập,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,UNVERIFIED,117,28,43,True
-UNI_DNT,DNT,Trường Đại học Nội vụ Hà Nội,Công lập,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,UNVERIFIED,168,23,43,True
+UNI_DLX,DLX,Trường Đại học Lao động - Xã hội,Công lập,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,PROJECTED,117,28,43,True
+UNI_DNT,DNT,Trường Đại học Nội vụ Hà Nội,Công lập,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,PROJECTED,168,23,43,True
 UNI_HMT,MTH,Trường Đại học Mỹ thuật Việt Nam,Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,VERIFIED,4,0,4,True
 UNI_MTS,MTS,Trường Đại học Mỹ thuật TP. Hồ Chí Minh,Công lập,Miền Nam,TP. Hồ Chí Minh,VERIFIED,UNVERIFIED,VERIFIED,6,0,6,True
-UNI_SKD,SKD,Trường Đại học Sân khấu - Điện ảnh Hà Nội,Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,UNVERIFIED,12,0,12,True
-UNI_SKS,SKD-HCM,Trường Đại học Sân khấu - Điện ảnh TP. Hồ Chí Minh,Công lập,Miền Nam,TP. Hồ Chí Minh,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-UNI_HVA,NVH,Học viện Âm nhạc Quốc gia Việt Nam,Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,UNVERIFIED,8,0,8,True
-UNI_NVS,NVS,Nhạc viện TP. Hồ Chí Minh,Công lập,Miền Nam,TP. Hồ Chí Minh,VERIFIED,UNVERIFIED,UNVERIFIED,7,0,7,True
-UNI_HVM,HVM,Học viện Âm nhạc Huế,Công lập,Miền Trung,Thừa Thiên Huế,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-UNI_HVDT,MUA,Học viện Múa Việt Nam,Công lập,Miền Bắc,Hà Nội,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-UNI_VHHN,VHH,Trường Đại học Văn hóa Hà Nội,Công lập,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,UNVERIFIED,485,18,41,True
-UNI_VHS,VHS,Trường Đại học Văn hóa TP. Hồ Chí Minh,Công lập,Miền Nam,TP. Hồ Chí Minh,VERIFIED,VERIFIED,UNVERIFIED,224,14,28,True
-UNI_MTCN,MTC,Trường Đại học Mỹ thuật Công nghiệp,Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,UNVERIFIED,43,0,7,True
+UNI_SKD,SKD,Trường Đại học Sân khấu - Điện ảnh Hà Nội,Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,PROJECTED,12,0,12,True
+UNI_SKS,SKD-HCM,Trường Đại học Sân khấu - Điện ảnh TP. Hồ Chí Minh,Công lập,Miền Nam,TP. Hồ Chí Minh,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+UNI_HVA,NVH,Học viện Âm nhạc Quốc gia Việt Nam,Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,PROJECTED,8,0,8,True
+UNI_NVS,NVS,Nhạc viện TP. Hồ Chí Minh,Công lập,Miền Nam,TP. Hồ Chí Minh,VERIFIED,UNVERIFIED,PROJECTED,7,0,7,True
+UNI_HVM,HVM,Học viện Âm nhạc Huế,Công lập,Miền Trung,Thừa Thiên Huế,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+UNI_HVDT,MUA,Học viện Múa Việt Nam,Công lập,Miền Bắc,Hà Nội,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+UNI_VHHN,VHH,Trường Đại học Văn hóa Hà Nội,Công lập,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,PROJECTED,485,18,41,True
+UNI_VHS,VHS,Trường Đại học Văn hóa TP. Hồ Chí Minh,Công lập,Miền Nam,TP. Hồ Chí Minh,VERIFIED,VERIFIED,PROJECTED,224,14,28,True
+UNI_MTCN,MTC,Trường Đại học Mỹ thuật Công nghiệp,Công lập,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,PROJECTED,43,0,7,True
 UNI_TTBN,TTB,Trường Đại học Thể dục Thể thao Bắc Ninh,Công lập,Miền Bắc,Bắc Ninh,VERIFIED,VERIFIED,VERIFIED,288,33,59,True
-UNI_TTS,TTS,Trường Đại học Thể dục Thể thao TP. Hồ Chí Minh,Công lập,Miền Nam,TP. Hồ Chí Minh,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-UNI_TTD,TTD,Trường Đại học Thể dục Thể thao Đà Nẵng,Công lập,Miền Trung,Đà Nẵng,VERIFIED,VERIFIED,UNVERIFIED,2,1,2,True
+UNI_TTS,TTS,Trường Đại học Thể dục Thể thao TP. Hồ Chí Minh,Công lập,Miền Nam,TP. Hồ Chí Minh,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+UNI_TTD,TTD,Trường Đại học Thể dục Thể thao Đà Nẵng,Công lập,Miền Trung,Đà Nẵng,VERIFIED,VERIFIED,PROJECTED,2,1,2,True
 UNI_HNMU,HNM,Trường Đại học Thủ đô Hà Nội,Công lập,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,VERIFIED,112,22,50,True
 UNI_DSG,SGD,Trường Đại học Sài Gòn,Công lập,Miền Nam,TP. Hồ Chí Minh,VERIFIED,UNVERIFIED,VERIFIED,354,0,48,True
 UNI_THP,THP,Trường Đại học Hải Phòng,Công lập,Miền Bắc,Hải Phòng,VERIFIED,VERIFIED,VERIFIED,268,34,61,True
-UNI_DHL2,UHL,Trường Đại học Hạ Long,Công lập,Miền Bắc,Quảng Ninh,UNVERIFIED,UNVERIFIED,VERIFIED,0,0,41,False
+UNI_DHL2,UHL,Trường Đại học Hạ Long,Công lập,Miền Bắc,Quảng Ninh,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
 UNI_HDT,HDT,Trường Đại học Hồng Đức,Công lập,Miền Trung,Thanh Hóa,VERIFIED,VERIFIED,VERIFIED,430,49,79,True
-UNI_DVB,DVB,"Trường Đại học Văn hóa, Thể thao và Du lịch Thanh Hóa",Công lập,Miền Trung,Thanh Hóa,VERIFIED,VERIFIED,UNVERIFIED,125,23,33,True
+UNI_DVB,DVB,"Trường Đại học Văn hóa, Thể thao và Du lịch Thanh Hóa",Công lập,Miền Trung,Thanh Hóa,VERIFIED,VERIFIED,PROJECTED,125,23,33,True
 UNI_DTH2,DNB,Trường Đại học Hoa Lư,Công lập,Miền Bắc,Ninh Bình,VERIFIED,VERIFIED,VERIFIED,107,4,16,True
-UNI_DTT2,TTr,Trường Đại học Tân Trào,Công lập,Miền Bắc,Tuyên Quang,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
+UNI_DTT2,TTr,Trường Đại học Tân Trào,Công lập,Miền Bắc,Tuyên Quang,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
 UNI_DQN2,DQU,Trường Đại học Quảng Nam,Công lập,Miền Trung,Quảng Nam,VERIFIED,VERIFIED,VERIFIED,112,13,26,True
 UNI_DQB,DQB,Trường Đại học Quảng Bình,Công lập,Miền Trung,Quảng Bình,VERIFIED,VERIFIED,VERIFIED,102,47,31,True
-UNI_DHA2,DHT,Trường Đại học Hà Tĩnh,Công lập,Miền Trung,Hà Tĩnh,VERIFIED,VERIFIED,UNVERIFIED,355,28,61,True
+UNI_DHA2,DHT,Trường Đại học Hà Tĩnh,Công lập,Miền Trung,Hà Tĩnh,VERIFIED,VERIFIED,PROJECTED,355,28,61,True
 UNI_DPY,DPY,Trường Đại học Phú Yên,Công lập,Miền Trung,Phú Yên,VERIFIED,VERIFIED,VERIFIED,93,4,15,True
 UNI_DKH2,UKH,Trường Đại học Khánh Hòa,Công lập,Miền Trung,Khánh Hòa,VERIFIED,VERIFIED,VERIFIED,240,17,41,True
-UNI_DPH,DPH,Trường Đại học Phạm Văn Đồng,Công lập,Miền Trung,Quảng Ngãi,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
+UNI_DPH,DPH,Trường Đại học Phạm Văn Đồng,Công lập,Miền Trung,Quảng Ngãi,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
 UNI_TDM,TDM,Trường Đại học Thủ Dầu Một,Công lập,Miền Nam,Bình Dương,VERIFIED,VERIFIED,VERIFIED,689,46,106,True
-UNI_DDN,DND,Trường Đại học Đồng Nai,Công lập,Miền Nam,Đồng Nai,UNVERIFIED,UNVERIFIED,VERIFIED,0,0,21,False
-UNI_TGU,TGU,Trường Đại học Tiền Giang,Công lập,Miền Nam,Tiền Giang,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-UNI_DTV,DTV,Trường Đại học Trà Vinh,Công lập,Miền Nam,Trà Vinh,VERIFIED,VERIFIED,UNVERIFIED,32,11,21,True
+UNI_DDN,DND,Trường Đại học Đồng Nai,Công lập,Miền Nam,Đồng Nai,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+UNI_TGU,TGU,Trường Đại học Tiền Giang,Công lập,Miền Nam,Tiền Giang,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+UNI_DTV,DTV,Trường Đại học Trà Vinh,Công lập,Miền Nam,Trà Vinh,VERIFIED,VERIFIED,PROJECTED,32,11,21,True
 UNI_SPD,SPD,Trường Đại học Đồng Tháp,Công lập,Miền Nam,Đồng Tháp,VERIFIED,VERIFIED,VERIFIED,284,37,80,True
 UNI_DBL,DBL,Trường Đại học Bạc Liêu,Công lập,Miền Nam,Bạc Liêu,VERIFIED,VERIFIED,VERIFIED,120,14,26,True
-UNI_DKG,DKG,Trường Đại học Kiên Giang,Công lập,Miền Nam,Kiên Giang,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
+UNI_DKG,DKG,Trường Đại học Kiên Giang,Công lập,Miền Nam,Kiên Giang,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
 UNI_FPT,FPT,Trường Đại học FPT,Tư thục,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,VERIFIED,42,0,7,True
-UNI_TLU,DTh,Trường Đại học Thăng Long,Tư thục,Miền Bắc,Hà Nội,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,27,False
-UNI_PKH,PKA,Trường Đại học Phenikaa,Tư thục,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,UNVERIFIED,576,85,146,True
-UNI_DDA,DDA,Trường Đại học Đại Nam,Tư thục,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,UNVERIFIED,354,15,119,True
-UNI_DPD,DPD,Trường Đại học Phương Đông,Tư thục,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,UNVERIFIED,210,16,35,True
-UNI_DKD,DCL,Trường Đại học Kinh doanh và Công nghệ Hà Nội,Tư thục,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,UNVERIFIED,316,38,71,True
-UNI_DNT2,NTU,Trường Đại học Nguyễn Trãi,Tư thục,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,UNVERIFIED,130,11,25,True
-UNI_DDB,DDD,Trường Đại học Đông Đô,Tư thục,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,UNVERIFIED,20,0,5,True
-UNI_DHB,DHB,Trường Đại học Hòa Bình,Tư thục,Miền Bắc,Hà Nội,UNVERIFIED,UNVERIFIED,VERIFIED,0,0,53,False
-UNI_TDO,TDO,Trường Đại học Thành Đô,Tư thục,Miền Bắc,Hà Nội,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-UNI_CMC,CMC,Trường Đại học CMC,Tư thục,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,UNVERIFIED,64,11,30,True
-UNI_UTM,UTM,Trường Đại học Công nghệ và Quản lý Hữu Nghị,Tư thục,Miền Bắc,Hà Nội,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-UNI_DKT2,UKB,Trường Đại học Kinh Bắc,Tư thục,Miền Bắc,Bắc Ninh,VERIFIED,VERIFIED,UNVERIFIED,148,7,28,True
-UNI_QTQ,QTQ,Trường Đại học Quốc tế Bắc Hà,Tư thục,Miền Bắc,Bắc Ninh,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-UNI_CVA,CVA,Trường Đại học Chu Văn An,Tư thục,Miền Bắc,Hưng Yên,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-UNI_LTV,LTV,Trường Đại học Lương Thế Vinh,Tư thục,Miền Bắc,Nam Định,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-UNI_DTH3,CTD,Trường Đại học Thành Đông,Tư thục,Miền Bắc,Hải Dương,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,52,False
-UNI_HPU,HPU,Trường Đại học Quản lý và Công nghệ Hải Phòng,Tư thục,Miền Bắc,Hải Phòng,VERIFIED,VERIFIED,UNVERIFIED,24,7,13,True
-UNI_DTT3,DDT,Trường Đại học Duy Tân,Tư thục,Miền Trung,Đà Nẵng,VERIFIED,VERIFIED,UNVERIFIED,920,73,135,True
-UNI_DDA2,DAD,Trường Đại học Đông Á,Tư thục,Miền Trung,Đà Nẵng,VERIFIED,VERIFIED,VERIFIED,619,57,108,True
-UNI_KTD,KTD,Trường Đại học Kiến trúc Đà Nẵng,Tư thục,Miền Trung,Đà Nẵng,VERIFIED,VERIFIED,UNVERIFIED,294,16,35,True
-UNI_DPX,DPX,Trường Đại học Phú Xuân,Tư thục,Miền Trung,Thừa Thiên Huế,VERIFIED,VERIFIED,UNVERIFIED,144,6,16,True
-UNI_DQT,DQT,Trường Đại học Quang Trung,Tư thục,Miền Trung,Bình Định,VERIFIED,VERIFIED,UNVERIFIED,108,10,23,True
-UNI_TBD,TBD,Trường Đại học Thái Bình Dương,Tư thục,Miền Trung,Khánh Hòa,VERIFIED,VERIFIED,UNVERIFIED,205,16,32,True
-UNI_DYD,DYD,Trường Đại học Yersin Đà Lạt,Tư thục,Miền Trung,Lâm Đồng,VERIFIED,VERIFIED,UNVERIFIED,234,34,34,True
-UNI_DPT,DPT,Trường Đại học Phan Thiết,Tư thục,Miền Trung,Bình Thuận,VERIFIED,VERIFIED,UNVERIFIED,253,15,36,True
-UNI_DVL,DVL,Trường Đại học Văn Lang,Tư thục,Miền Nam,TP. Hồ Chí Minh,VERIFIED,VERIFIED,VERIFIED,1053,59,225,True
-UNI_HUTECH,DKC,Trường Đại học Công nghệ TP. Hồ Chí Minh,Tư thục,Miền Nam,TP. Hồ Chí Minh,VERIFIED,VERIFIED,UNVERIFIED,1075,78,154,True
-UNI_UEF,UEF,Trường Đại học Kinh tế - Tài chính TP. Hồ Chí Minh,Tư thục,Miền Nam,TP. Hồ Chí Minh,VERIFIED,VERIFIED,UNVERIFIED,144,42,78,True
-UNI_DHD,HSU,Trường Đại học Hoa Sen,Tư thục,Miền Nam,TP. Hồ Chí Minh,VERIFIED,VERIFIED,UNVERIFIED,215,31,118,True
-UNI_HIU,HIU,Trường Đại học Quốc tế Hồng Bàng,Tư thục,Miền Nam,TP. Hồ Chí Minh,VERIFIED,VERIFIED,UNVERIFIED,136,40,74,True
-UNI_NTT,NTT,Trường Đại học Nguyễn Tất Thành,Tư thục,Miền Nam,TP. Hồ Chí Minh,VERIFIED,VERIFIED,VERIFIED,1010,73,146,True
-UNI_DSI,SIU,Trường Đại học Quốc tế Sài Gòn,Tư thục,Miền Nam,TP. Hồ Chí Minh,VERIFIED,VERIFIED,VERIFIED,56,14,28,True
-UNI_DGD,GDU,Trường Đại học Gia Định,Tư thục,Miền Nam,TP. Hồ Chí Minh,VERIFIED,VERIFIED,UNVERIFIED,299,25,47,True
-UNI_DTH4,FLI,Trường Đại học Ngoại ngữ - Tin học TP. Hồ Chí Minh,Tư thục,Miền Nam,TP. Hồ Chí Minh,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-UNI_DVH2,DVH,Trường Đại học Văn Hiến,Tư thục,Miền Nam,TP. Hồ Chí Minh,VERIFIED,VERIFIED,UNVERIFIED,570,44,87,True
-UNI_DCD,DSG,Trường Đại học Công nghệ Sài Gòn,Tư thục,Miền Nam,TP. Hồ Chí Minh,VERIFIED,VERIFIED,UNVERIFIED,275,20,28,True
-UNI_UMT,UMT,Trường Đại học Quản lý và Công nghệ TP. Hồ Chí Minh,Tư thục,Miền Nam,TP. Hồ Chí Minh,VERIFIED,VERIFIED,UNVERIFIED,110,10,19,True
-UNI_DBR,BVU,Trường Đại học Bà Rịa - Vũng Tàu,Tư thục,Miền Nam,Bà Rịa - Vũng Tàu,VERIFIED,VERIFIED,UNVERIFIED,612,94,177,True
-UNI_DBD,DBD,Trường Đại học Bình Dương,Tư thục,Miền Nam,Bình Dương,VERIFIED,VERIFIED,UNVERIFIED,136,17,35,True
-UNI_DKB,DKB,Trường Đại học Kinh tế - Kỹ thuật Bình Dương,Tư thục,Miền Nam,Bình Dương,VERIFIED,VERIFIED,UNVERIFIED,97,18,37,True
-UNI_DQI,EIU,Trường Đại học Quốc tế Miền Đông,Tư thục,Miền Nam,Bình Dương,VERIFIED,VERIFIED,UNVERIFIED,124,10,20,True
-UNI_DLA,DLA,Trường Đại học Lạc Hồng,Tư thục,Miền Nam,Đồng Nai,VERIFIED,VERIFIED,UNVERIFIED,120,9,21,True
-UNI_DCN2,DNTU,Trường Đại học Công nghệ Đồng Nai,Tư thục,Miền Nam,Đồng Nai,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,44,False
-UNI_DKE,DKE,Trường Đại học Kinh tế Công nghiệp Long An,Tư thục,Miền Nam,Long An,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-UNI_TTU2,TTU,Trường Đại học Tân Tạo,Tư thục,Miền Nam,Long An,VERIFIED,VERIFIED,UNVERIFIED,133,13,23,True
-UNI_DCV,DCV,Trường Đại học Cửu Long,Tư thục,Miền Nam,Vĩnh Long,VERIFIED,VERIFIED,UNVERIFIED,112,4,12,True
-UNI_DNC,DNC,Trường Đại học Nam Cần Thơ,Tư thục,Miền Nam,Cần Thơ,VERIFIED,VERIFIED,UNVERIFIED,680,45,86,True
-UNI_DTD2,TDU,Trường Đại học Tây Đô,Tư thục,Miền Nam,Cần Thơ,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,3,False
-UNI_DVT3,VTT,Trường Đại học Võ Trường Toản,Tư thục,Miền Nam,Hậu Giang,VERIFIED,VERIFIED,UNVERIFIED,64,8,24,True
-UNI_MTA,MTA,Học viện Kỹ thuật Quân sự,Công lập,Miền Bắc,Hà Nội,UNVERIFIED,NOT_OFFERED,UNVERIFIED,0,0,0,False
+UNI_TLU,DTh,Trường Đại học Thăng Long,Tư thục,Miền Bắc,Hà Nội,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+UNI_PKH,PKA,Trường Đại học Phenikaa,Tư thục,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,PROJECTED,576,85,146,True
+UNI_DDA,DDA,Trường Đại học Đại Nam,Tư thục,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,PROJECTED,354,15,32,True
+UNI_DPD,DPD,Trường Đại học Phương Đông,Tư thục,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,PROJECTED,210,16,35,True
+UNI_DKD,DCL,Trường Đại học Kinh doanh và Công nghệ Hà Nội,Tư thục,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,PROJECTED,316,38,71,True
+UNI_DNT2,NTU,Trường Đại học Nguyễn Trãi,Tư thục,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,PROJECTED,130,11,25,True
+UNI_DDB,DDD,Trường Đại học Đông Đô,Tư thục,Miền Bắc,Hà Nội,VERIFIED,UNVERIFIED,PROJECTED,20,0,5,True
+UNI_DHB,DHB,Trường Đại học Hòa Bình,Tư thục,Miền Bắc,Hà Nội,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+UNI_TDO,TDO,Trường Đại học Thành Đô,Tư thục,Miền Bắc,Hà Nội,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+UNI_CMC,CMC,Trường Đại học CMC,Tư thục,Miền Bắc,Hà Nội,VERIFIED,VERIFIED,PROJECTED,64,11,30,True
+UNI_UTM,UTM,Trường Đại học Công nghệ và Quản lý Hữu Nghị,Tư thục,Miền Bắc,Hà Nội,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+UNI_DKT2,UKB,Trường Đại học Kinh Bắc,Tư thục,Miền Bắc,Bắc Ninh,VERIFIED,VERIFIED,PROJECTED,148,7,28,True
+UNI_QTQ,QTQ,Trường Đại học Quốc tế Bắc Hà,Tư thục,Miền Bắc,Bắc Ninh,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+UNI_CVA,CVA,Trường Đại học Chu Văn An,Tư thục,Miền Bắc,Hưng Yên,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+UNI_LTV,LTV,Trường Đại học Lương Thế Vinh,Tư thục,Miền Bắc,Nam Định,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+UNI_DTH3,CTD,Trường Đại học Thành Đông,Tư thục,Miền Bắc,Hải Dương,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+UNI_HPU,HPU,Trường Đại học Quản lý và Công nghệ Hải Phòng,Tư thục,Miền Bắc,Hải Phòng,VERIFIED,VERIFIED,PROJECTED,24,7,13,True
+UNI_DTT3,DDT,Trường Đại học Duy Tân,Tư thục,Miền Trung,Đà Nẵng,VERIFIED,VERIFIED,PROJECTED,920,73,135,True
+UNI_DDA2,DAD,Trường Đại học Đông Á,Tư thục,Miền Trung,Đà Nẵng,VERIFIED,VERIFIED,PROJECTED,619,57,108,True
+UNI_KTD,KTD,Trường Đại học Kiến trúc Đà Nẵng,Tư thục,Miền Trung,Đà Nẵng,VERIFIED,VERIFIED,PROJECTED,294,16,35,True
+UNI_DPX,DPX,Trường Đại học Phú Xuân,Tư thục,Miền Trung,Thừa Thiên Huế,VERIFIED,VERIFIED,PROJECTED,144,6,16,True
+UNI_DQT,DQT,Trường Đại học Quang Trung,Tư thục,Miền Trung,Bình Định,VERIFIED,VERIFIED,PROJECTED,108,10,23,True
+UNI_TBD,TBD,Trường Đại học Thái Bình Dương,Tư thục,Miền Trung,Khánh Hòa,VERIFIED,VERIFIED,PROJECTED,205,16,32,True
+UNI_DYD,DYD,Trường Đại học Yersin Đà Lạt,Tư thục,Miền Trung,Lâm Đồng,VERIFIED,VERIFIED,PROJECTED,234,34,34,True
+UNI_DPT,DPT,Trường Đại học Phan Thiết,Tư thục,Miền Trung,Bình Thuận,VERIFIED,VERIFIED,PROJECTED,253,15,36,True
+UNI_DVL,DVL,Trường Đại học Văn Lang,Tư thục,Miền Nam,TP. Hồ Chí Minh,VERIFIED,VERIFIED,PROJECTED,1053,59,131,True
+UNI_HUTECH,DKC,Trường Đại học Công nghệ TP. Hồ Chí Minh,Tư thục,Miền Nam,TP. Hồ Chí Minh,VERIFIED,VERIFIED,PROJECTED,1075,78,154,True
+UNI_UEF,UEF,Trường Đại học Kinh tế - Tài chính TP. Hồ Chí Minh,Tư thục,Miền Nam,TP. Hồ Chí Minh,VERIFIED,VERIFIED,PROJECTED,144,42,78,True
+UNI_DHD,HSU,Trường Đại học Hoa Sen,Tư thục,Miền Nam,TP. Hồ Chí Minh,VERIFIED,VERIFIED,PROJECTED,215,31,65,True
+UNI_HIU,HIU,Trường Đại học Quốc tế Hồng Bàng,Tư thục,Miền Nam,TP. Hồ Chí Minh,VERIFIED,VERIFIED,PROJECTED,136,40,74,True
+UNI_NTT,NTT,Trường Đại học Nguyễn Tất Thành,Tư thục,Miền Nam,TP. Hồ Chí Minh,VERIFIED,VERIFIED,PROJECTED,1010,73,146,True
+UNI_DSI,SIU,Trường Đại học Quốc tế Sài Gòn,Tư thục,Miền Nam,TP. Hồ Chí Minh,VERIFIED,VERIFIED,PROJECTED,56,14,28,True
+UNI_DGD,GDU,Trường Đại học Gia Định,Tư thục,Miền Nam,TP. Hồ Chí Minh,VERIFIED,VERIFIED,PROJECTED,299,25,47,True
+UNI_DTH4,FLI,Trường Đại học Ngoại ngữ - Tin học TP. Hồ Chí Minh,Tư thục,Miền Nam,TP. Hồ Chí Minh,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+UNI_DVH2,DVH,Trường Đại học Văn Hiến,Tư thục,Miền Nam,TP. Hồ Chí Minh,VERIFIED,VERIFIED,PROJECTED,570,44,87,True
+UNI_DCD,DSG,Trường Đại học Công nghệ Sài Gòn,Tư thục,Miền Nam,TP. Hồ Chí Minh,VERIFIED,VERIFIED,PROJECTED,275,20,28,True
+UNI_UMT,UMT,Trường Đại học Quản lý và Công nghệ TP. Hồ Chí Minh,Tư thục,Miền Nam,TP. Hồ Chí Minh,VERIFIED,VERIFIED,PROJECTED,110,10,19,True
+UNI_DBR,BVU,Trường Đại học Bà Rịa - Vũng Tàu,Tư thục,Miền Nam,Bà Rịa - Vũng Tàu,VERIFIED,VERIFIED,PROJECTED,612,94,177,True
+UNI_DBD,DBD,Trường Đại học Bình Dương,Tư thục,Miền Nam,Bình Dương,VERIFIED,VERIFIED,PROJECTED,136,17,35,True
+UNI_DKB,DKB,Trường Đại học Kinh tế - Kỹ thuật Bình Dương,Tư thục,Miền Nam,Bình Dương,VERIFIED,VERIFIED,PROJECTED,97,18,37,True
+UNI_DQI,EIU,Trường Đại học Quốc tế Miền Đông,Tư thục,Miền Nam,Bình Dương,VERIFIED,VERIFIED,PROJECTED,124,10,20,True
+UNI_DLA,DLA,Trường Đại học Lạc Hồng,Tư thục,Miền Nam,Đồng Nai,VERIFIED,VERIFIED,PROJECTED,120,9,21,True
+UNI_DCN2,DNTU,Trường Đại học Công nghệ Đồng Nai,Tư thục,Miền Nam,Đồng Nai,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+UNI_DKE,DKE,Trường Đại học Kinh tế Công nghiệp Long An,Tư thục,Miền Nam,Long An,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+UNI_TTU2,TTU,Trường Đại học Tân Tạo,Tư thục,Miền Nam,Long An,VERIFIED,VERIFIED,PROJECTED,133,13,23,True
+UNI_DCV,DCV,Trường Đại học Cửu Long,Tư thục,Miền Nam,Vĩnh Long,VERIFIED,VERIFIED,PROJECTED,112,4,12,True
+UNI_DNC,DNC,Trường Đại học Nam Cần Thơ,Tư thục,Miền Nam,Cần Thơ,VERIFIED,VERIFIED,PROJECTED,680,45,86,True
+UNI_DTD2,TDU,Trường Đại học Tây Đô,Tư thục,Miền Nam,Cần Thơ,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+UNI_DVT3,VTT,Trường Đại học Võ Trường Toản,Tư thục,Miền Nam,Hậu Giang,VERIFIED,VERIFIED,PROJECTED,64,8,24,True
+UNI_MTA,MTA,Học viện Kỹ thuật Quân sự,Công lập,Miền Bắc,Hà Nội,UNVERIFIED,NOT_OFFERED,PROJECTED,0,0,1,False
 UNI_YQH,YQH,Học viện Quân y,Công lập,Miền Bắc,Hà Nội,VERIFIED,NOT_OFFERED,VERIFIED,16,0,3,True
-UNI_DCH,DCH,Học viện Hậu cần,Công lập,Miền Bắc,Hà Nội,VERIFIED,NOT_OFFERED,UNVERIFIED,10,0,1,True
+UNI_DCH,DCH,Học viện Hậu cần,Công lập,Miền Bắc,Hà Nội,VERIFIED,NOT_OFFERED,PROJECTED,10,0,1,True
 UNI_PKH2,PKH,Học viện Phòng không - Không quân,Công lập,Miền Bắc,Hà Nội,VERIFIED,NOT_OFFERED,VERIFIED,16,0,2,True
-UNI_HQH,HQH,Học viện Hải quân,Công lập,Miền Trung,Khánh Hòa,VERIFIED,NOT_OFFERED,UNVERIFIED,10,0,1,True
+UNI_HQH,HQH,Học viện Hải quân,Công lập,Miền Trung,Khánh Hòa,VERIFIED,NOT_OFFERED,PROJECTED,10,0,1,True
 UNI_BPH2,BPH,Học viện Biên phòng,Công lập,Miền Bắc,Hà Nội,VERIFIED,NOT_OFFERED,VERIFIED,11,0,2,True
-UNI_KVA,KVA,Học viện Khoa học Quân sự,Công lập,Miền Bắc,Hà Nội,UNVERIFIED,NOT_OFFERED,UNVERIFIED,0,0,0,False
-UNI_LQN,LQN,Trường Sĩ quan Lục quân 1,Công lập,Miền Bắc,Hà Nội,UNVERIFIED,NOT_OFFERED,UNVERIFIED,0,0,0,False
-UNI_LQS,LQS,Trường Sĩ quan Lục quân 2,Công lập,Miền Nam,Đồng Nai,UNVERIFIED,NOT_OFFERED,UNVERIFIED,0,0,0,False
+UNI_KVA,KVA,Học viện Khoa học Quân sự,Công lập,Miền Bắc,Hà Nội,UNVERIFIED,NOT_OFFERED,PROJECTED,0,0,1,False
+UNI_LQN,LQN,Trường Sĩ quan Lục quân 1,Công lập,Miền Bắc,Hà Nội,UNVERIFIED,NOT_OFFERED,PROJECTED,0,0,1,False
+UNI_LQS,LQS,Trường Sĩ quan Lục quân 2,Công lập,Miền Nam,Đồng Nai,UNVERIFIED,NOT_OFFERED,PROJECTED,0,0,1,False
 UNI_TTH,TTH,Trường Sĩ quan Thông tin,Công lập,Miền Trung,Khánh Hòa,VERIFIED,NOT_OFFERED,VERIFIED,10,0,1,True
 UNI_KQH,KQH,Trường Sĩ quan Không quân,Công lập,Miền Trung,Khánh Hòa,VERIFIED,NOT_OFFERED,VERIFIED,10,0,1,True
-UNI_CNH,CNH,Trường Sĩ quan Công binh,Công lập,Miền Nam,Bình Dương,UNVERIFIED,NOT_OFFERED,UNVERIFIED,0,0,0,False
-UNI_PHH,PHH,Trường Sĩ quan Pháo binh,Công lập,Miền Bắc,Hà Nội,UNVERIFIED,NOT_OFFERED,UNVERIFIED,0,0,0,False
-UNI_TCH,TCH,Trường Sĩ quan Tăng thiết giáp,Công lập,Miền Bắc,Vĩnh Phúc,UNVERIFIED,NOT_OFFERED,UNVERIFIED,0,0,0,False
-UNI_KTH,KTH,Trường Sĩ quan Kỹ thuật Quân sự,Công lập,Miền Nam,TP. Hồ Chí Minh,UNVERIFIED,NOT_OFFERED,UNVERIFIED,0,0,0,False
+UNI_CNH,CNH,Trường Sĩ quan Công binh,Công lập,Miền Nam,Bình Dương,UNVERIFIED,NOT_OFFERED,PROJECTED,0,0,1,False
+UNI_PHH,PHH,Trường Sĩ quan Pháo binh,Công lập,Miền Bắc,Hà Nội,UNVERIFIED,NOT_OFFERED,PROJECTED,0,0,1,False
+UNI_TCH,TCH,Trường Sĩ quan Tăng thiết giáp,Công lập,Miền Bắc,Vĩnh Phúc,UNVERIFIED,NOT_OFFERED,PROJECTED,0,0,1,False
+UNI_KTH,KTH,Trường Sĩ quan Kỹ thuật Quân sự,Công lập,Miền Nam,TP. Hồ Chí Minh,UNVERIFIED,NOT_OFFERED,PROJECTED,0,0,1,False
 UNI_ANH,ANH,Học viện An ninh Nhân dân,Công lập,Miền Bắc,Hà Nội,VERIFIED,NOT_OFFERED,VERIFIED,30,0,5,True
 UNI_CSH,CSH,Học viện Cảnh sát Nhân dân,Công lập,Miền Bắc,Hà Nội,VERIFIED,NOT_OFFERED,VERIFIED,12,0,2,True
 UNI_ANS,ANS,Trường Đại học An ninh Nhân dân,Công lập,Miền Nam,TP. Hồ Chí Minh,VERIFIED,NOT_OFFERED,VERIFIED,12,0,2,True
 UNI_CSS,CSS,Trường Đại học Cảnh sát Nhân dân,Công lập,Miền Nam,TP. Hồ Chí Minh,VERIFIED,NOT_OFFERED,VERIFIED,12,0,1,True
-UNI_PCH,PCH,Trường Đại học Phòng cháy Chữa cháy,Công lập,Miền Bắc,Hà Nội,VERIFIED,NOT_OFFERED,UNVERIFIED,5,0,2,True
-UNI_T08,T08,Trường Đại học Kỹ thuật - Hậu cần CAND,Công lập,Miền Bắc,Bắc Ninh,UNVERIFIED,NOT_OFFERED,UNVERIFIED,0,0,0,False
-UNI_RMIT,RMIT,Trường Đại học RMIT Việt Nam,Quốc tế,Miền Nam,TP. Hồ Chí Minh,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-CD_CM1,CM1,Trường Cao đẳng Sư phạm Trung ương,Công lập,Miền Bắc,Hà Nội,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-CD_CM2,CM2,Trường Cao đẳng Sư phạm Trung ương TP. Hồ Chí Minh,Công lập,Miền Nam,TP. Hồ Chí Minh,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-CD_CM3,CM3,Trường Cao đẳng Sư phạm Trung ương Nha Trang,Công lập,Miền Trung,Khánh Hòa,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-CD_C19,C19,Trường Cao đẳng Sư phạm Bắc Ninh,Công lập,Miền Bắc,Bắc Ninh,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-CD_C18,C18,Trường Cao đẳng Bắc Giang,Công lập,Miền Bắc,Bắc Giang,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-CD_C11,C11,Trường Cao đẳng Cao Bằng,Công lập,Miền Bắc,Cao Bằng,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-CD_C62,C62,Trường Cao đẳng Sư phạm Điện Biên,Công lập,Miền Bắc,Điện Biên,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-CD_C26,C26,Trường Cao đẳng Sư phạm Thái Bình,Công lập,Miền Bắc,Thái Bình,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-CD_C22,C22,Trường Cao đẳng Cộng đồng Hưng Yên,Công lập,Miền Bắc,Hưng Yên,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-CD_C63,C63,Trường Cao đẳng Lai Châu,Công lập,Miền Bắc,Lai Châu,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-CD_C10,C10,Trường Cao đẳng Sư phạm Lạng Sơn,Công lập,Miền Bắc,Lạng Sơn,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-CD_C25,C25,Trường Cao đẳng Sư phạm Nam Định,Công lập,Miền Bắc,Nam Định,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-CD_C23,C23,Trường Cao đẳng Sư phạm Hòa Bình,Công lập,Miền Bắc,Hòa Bình,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-CD_C16,C16,Trường Cao đẳng Vĩnh Phúc,Công lập,Miền Bắc,Vĩnh Phúc,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-CD_C14,C14,Trường Cao đẳng Sơn La,Công lập,Miền Bắc,Sơn La,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-CD_C12,C12,Trường Cao đẳng Thái Nguyên,Công lập,Miền Bắc,Thái Nguyên,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-CD_C33,C33,Trường Cao đẳng Huế,Công lập,Miền Trung,Thừa Thiên Huế,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-CD_C32,C32,Trường Cao đẳng Sư phạm Quảng Trị,Công lập,Miền Trung,Quảng Trị,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-CD_C38,C38,Trường Cao đẳng Kon Tum,Công lập,Miền Trung,Kon Tum,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-CD_C40,C40,Trường Cao đẳng Sư phạm Đắk Lắk,Công lập,Miền Trung,Đắk Lắk,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-CD_C42,C42,Trường Cao đẳng Đà Lạt,Công lập,Miền Trung,Lâm Đồng,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-CD_C47,C47,Trường Cao đẳng Bình Thuận,Công lập,Miền Trung,Bình Thuận,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-CD_C34,C34,Trường Cao đẳng Sư phạm Bà Rịa – Vũng Tàu,Công lập,Miền Nam,Bà Rịa - Vũng Tàu,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-CD_C43,C43,Trường Cao đẳng Bình Phước,Công lập,Miền Nam,Bình Phước,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-CD_C46,C46,Trường Cao đẳng Sư phạm Tây Ninh,Công lập,Miền Nam,Tây Ninh,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-CD_C55,C55,Trường Cao đẳng Cần Thơ,Công lập,Miền Nam,Cần Thơ,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-CD_C53,C53,Trường Cao đẳng Bến Tre,Công lập,Miền Nam,Bến Tre,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-CD_C56,C56,Trường Cao đẳng Vĩnh Long,Công lập,Miền Nam,Vĩnh Long,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-CD_C54,C54,Trường Cao đẳng Sư phạm Kiên Giang,Công lập,Miền Nam,Kiên Giang,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-CD_C64,C64,Trường Cao đẳng Cộng đồng Hậu Giang,Công lập,Miền Nam,Hậu Giang,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-CD_C60,C60,Trường Cao đẳng Cộng đồng Sóc Trăng,Công lập,Miền Nam,Sóc Trăng,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
-CD_C61,C61,Trường Cao đẳng Cộng đồng Cà Mau,Công lập,Miền Nam,Cà Mau,UNVERIFIED,UNVERIFIED,UNVERIFIED,0,0,0,False
+UNI_PCH,PCH,Trường Đại học Phòng cháy Chữa cháy,Công lập,Miền Bắc,Hà Nội,VERIFIED,NOT_OFFERED,PROJECTED,5,0,2,True
+UNI_T08,T08,Trường Đại học Kỹ thuật - Hậu cần CAND,Công lập,Miền Bắc,Bắc Ninh,UNVERIFIED,NOT_OFFERED,PROJECTED,0,0,1,False
+UNI_RMIT,RMIT,Trường Đại học RMIT Việt Nam,Quốc tế,Miền Nam,TP. Hồ Chí Minh,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+CD_CM1,CM1,Trường Cao đẳng Sư phạm Trung ương,Công lập,Miền Bắc,Hà Nội,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+CD_CM2,CM2,Trường Cao đẳng Sư phạm Trung ương TP. Hồ Chí Minh,Công lập,Miền Nam,TP. Hồ Chí Minh,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+CD_CM3,CM3,Trường Cao đẳng Sư phạm Trung ương Nha Trang,Công lập,Miền Trung,Khánh Hòa,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+CD_C19,C19,Trường Cao đẳng Sư phạm Bắc Ninh,Công lập,Miền Bắc,Bắc Ninh,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+CD_C18,C18,Trường Cao đẳng Bắc Giang,Công lập,Miền Bắc,Bắc Giang,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+CD_C11,C11,Trường Cao đẳng Cao Bằng,Công lập,Miền Bắc,Cao Bằng,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+CD_C62,C62,Trường Cao đẳng Sư phạm Điện Biên,Công lập,Miền Bắc,Điện Biên,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+CD_C26,C26,Trường Cao đẳng Sư phạm Thái Bình,Công lập,Miền Bắc,Thái Bình,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+CD_C22,C22,Trường Cao đẳng Cộng đồng Hưng Yên,Công lập,Miền Bắc,Hưng Yên,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+CD_C63,C63,Trường Cao đẳng Lai Châu,Công lập,Miền Bắc,Lai Châu,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+CD_C10,C10,Trường Cao đẳng Sư phạm Lạng Sơn,Công lập,Miền Bắc,Lạng Sơn,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+CD_C25,C25,Trường Cao đẳng Sư phạm Nam Định,Công lập,Miền Bắc,Nam Định,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+CD_C23,C23,Trường Cao đẳng Sư phạm Hòa Bình,Công lập,Miền Bắc,Hòa Bình,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+CD_C16,C16,Trường Cao đẳng Vĩnh Phúc,Công lập,Miền Bắc,Vĩnh Phúc,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+CD_C14,C14,Trường Cao đẳng Sơn La,Công lập,Miền Bắc,Sơn La,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+CD_C12,C12,Trường Cao đẳng Thái Nguyên,Công lập,Miền Bắc,Thái Nguyên,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+CD_C33,C33,Trường Cao đẳng Huế,Công lập,Miền Trung,Thừa Thiên Huế,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+CD_C32,C32,Trường Cao đẳng Sư phạm Quảng Trị,Công lập,Miền Trung,Quảng Trị,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+CD_C38,C38,Trường Cao đẳng Kon Tum,Công lập,Miền Trung,Kon Tum,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+CD_C40,C40,Trường Cao đẳng Sư phạm Đắk Lắk,Công lập,Miền Trung,Đắk Lắk,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+CD_C42,C42,Trường Cao đẳng Đà Lạt,Công lập,Miền Trung,Lâm Đồng,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+CD_C47,C47,Trường Cao đẳng Bình Thuận,Công lập,Miền Trung,Bình Thuận,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+CD_C34,C34,Trường Cao đẳng Sư phạm Bà Rịa – Vũng Tàu,Công lập,Miền Nam,Bà Rịa - Vũng Tàu,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+CD_C43,C43,Trường Cao đẳng Bình Phước,Công lập,Miền Nam,Bình Phước,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+CD_C46,C46,Trường Cao đẳng Sư phạm Tây Ninh,Công lập,Miền Nam,Tây Ninh,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+CD_C55,C55,Trường Cao đẳng Cần Thơ,Công lập,Miền Nam,Cần Thơ,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+CD_C53,C53,Trường Cao đẳng Bến Tre,Công lập,Miền Nam,Bến Tre,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+CD_C56,C56,Trường Cao đẳng Vĩnh Long,Công lập,Miền Nam,Vĩnh Long,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+CD_C54,C54,Trường Cao đẳng Sư phạm Kiên Giang,Công lập,Miền Nam,Kiên Giang,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+CD_C64,C64,Trường Cao đẳng Cộng đồng Hậu Giang,Công lập,Miền Nam,Hậu Giang,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+CD_C60,C60,Trường Cao đẳng Cộng đồng Sóc Trăng,Công lập,Miền Nam,Sóc Trăng,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False
+CD_C61,C61,Trường Cao đẳng Cộng đồng Cà Mau,Công lập,Miền Nam,Cà Mau,UNVERIFIED,UNVERIFIED,PROJECTED,0,0,1,False

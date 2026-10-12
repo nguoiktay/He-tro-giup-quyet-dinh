@@ -49,7 +49,7 @@ function formatTuitionBadge(item) {
     };
   }
 
-  if (item.trangThaiHocPhi === 'UNVERIFIED' || (!item.hocPhiUocTinh && item.hocPhiNam === null && item.hocPhiNam === undefined)) {
+  if (item.trangThaiHocPhi === 'UNVERIFIED' || (!item.hocPhiUocTinh && item.hocPhiNam == null)) {
     return {
       shortText: 'Học phí: Chưa rõ',
       fullText: rawText || 'Chưa có thông tin học phí đã xác minh'

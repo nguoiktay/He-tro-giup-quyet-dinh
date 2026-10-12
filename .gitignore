@@ -12,3 +12,7 @@ data/.jwt_secret
 .idea/
 *.log
 .tempmediaStorage/
+
+data/csv/nguoiDung.csv
+data/csv/hoSoHocSinh.csv
+data/csv/goiYNguyenVong.csv

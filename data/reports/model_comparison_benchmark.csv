@@ -2,4 +2,4 @@
 Baseline 1: Điểm năm trước (Lag 1),1.056,1.5968,0.8633,Naïve Baseline,THPT (Time Series 2-Lag)
 Baseline 2: Trung bình 2 năm (Mean 2Y),1.1367,1.6649,0.8514,Naïve Baseline,THPT (Time Series 2-Lag)
 Baseline 3: Decision Tree đơn lẻ (Depth=6),1.2448,1.6633,0.8516,Single Tree Model,THPT (Time Series 2-Lag)
-Random Forest THPT,1.0411,1.5426,0.8724,Ensemble ML Model,THPT (Time Series 2-Lag)
+Dự báo lai (công thức xu hướng + RF),1.0411,1.5426,0.8724,Hybrid Ensemble,THPT (Time Series 2-Lag)

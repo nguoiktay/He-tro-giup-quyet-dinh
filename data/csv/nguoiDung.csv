@@ -1,3 +1,0 @@
-id,tenDangNhap,matKhau,hoTen,email,soDienThoai,vaiTro,ngayTao
-1,admin,pbkdf2:sha256:600000$626baf4cc803a0ca1d95da3f940aaea4$58bdf7863d93bea1082eb8fb1aa7980069e0ee9bde8666d7ecb272b1963d7f13,Quản Trị Viên Hệ Thống,admin@dss-admission.edu.vn,0988888888,quanTriVien,2026-01-01 08:00:00
-2,hocsinh,pbkdf2:sha256:600000$eee70cb82a81ba4f39b91ad4712071fd$b35caf274be5f4af815f69f077121c6163923ec14fba903b73974e04fa07e158,Nguyễn Văn Thí Sinh,thisinh@gmail.com,0912345678,hocSinh,2026-01-01 08:00:00

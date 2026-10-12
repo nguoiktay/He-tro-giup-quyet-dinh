@@ -36,7 +36,8 @@ STRING_MATCH_FIELDS = {
 
 def infer_nganh_id_from_name(name: str) -> Optional[int]:
     n = str(name).lower()
-    if 'công nghệ thông tin' in n or 'cntt' in n or 'tin học' in n: return 1
+    if 'quản lý đất đai' in n: return None
+    if 'công nghệ thông tin' in n or 'cntt' in n or 'tin học' in n or 'kỹ thuật máy tính' in n or 'máy tính' in n: return 1
     if 'khoa học máy tính' in n: return 2
     if 'mạng máy tính' in n or 'truyền thông dữ liệu' in n: return 3
     if 'kỹ thuật phần mềm' in n or 'phần mềm' in n: return 4
@@ -45,7 +46,7 @@ def infer_nganh_id_from_name(name: str) -> Optional[int]:
     if 'an toàn thông tin' in n or 'an ninh mạng' in n: return 7
     if 'khoa học dữ liệu' in n or 'data science' in n: return 8
     if 'marketing' in n: return 10
-    if 'tài chính' in n or 'ngân hàng' in n: return 11
+    if 'tài chính' in n or 'ngân hàng' in n or 'bảo hiểm' in n or 'hải quan' in n: return 11
     if 'kế toán' in n: return 12
     if 'kiểm toán' in n: return 13
     if 'kinh doanh quốc tế' in n: return 14
@@ -55,29 +56,30 @@ def infer_nganh_id_from_name(name: str) -> Optional[int]:
     if 'điện tử' in n or 'viễn thông' in n or 'kỹ thuật điện' in n: return 18
     if 'tự động hóa' in n or 'điều khiển' in n: return 19
     if 'ô tô' in n or 'động lực' in n: return 20
-    if 'hóa học' in n or 'thực phẩm' in n or 'sinh học' in n or 'hóa sinh' in n: return 21
-    if 'xây dựng' in n or 'giao thông' in n or 'cầu đường' in n: return 22
+    if 'hóa học' in n or 'hoá học' in n or 'thực phẩm' in n or 'sinh học' in n or 'hóa sinh' in n or 'công nghệ sinh học' in n: return 21
+    if 'xây dựng' in n or 'giao thông' in n or 'cầu đường' in n or 'kỹ thuật công trình' in n: return 22
     if 'kiến trúc' in n or 'nội thất' in n or 'quy hoạch' in n: return 23
-    if 'y khoa' in n or 'y học' in n or 'bác sĩ' in n or 'y đa khoa' in n: return 24
+    if 'y khoa' in n or 'y học' in n or 'bác sĩ' in n or 'y đa khoa' in n or 'dự phòng' in n or 'y tế công cộng' in n or 'xét nghiệm' in n or 'dinh dưỡng' in n: return 24
     if 'dược' in n: return 25
     if 'răng' in n: return 26
-    if 'điều dưỡng' in n or 'hộ sinh' in n: return 27
+    if 'điều dưỡng' in n or 'hộ sinh' in n or 'phục hồi chức năng' in n: return 27
     if 'sư phạm toán' in n: return 28
     if 'sư phạm tiếng anh' in n or 'sư phạm anh' in n: return 29
     if 'sư phạm ngữ văn' in n or 'sư phạm văn' in n: return 30
     if 'sư phạm vật lý' in n or 'sư phạm lý' in n: return 31
+    if 'sư phạm' in n or 'tiểu học' in n or 'giáo dục' in n: return 28
     if 'luật kinh tế' in n: return 33
     if 'luật' in n: return 32
-    if 'kinh tế quốc tế' in n: return 35
+    if 'kinh tế quốc tế' in n or 'quan hệ quốc tế' in n: return 35
     if 'kinh tế' in n: return 34
     if 'tiếng anh' in n or 'ngôn ngữ anh' in n: return 36
     if 'tiếng trung' in n or 'ngôn ngữ trung' in n: return 37
     if 'tiếng hàn' in n or 'ngôn ngữ hàn' in n: return 39
     if 'tiếng nhật' in n or 'ngôn ngữ nhật' in n: return 43
     if 'báo chí' in n: return 40
-    if 'truyền thông' in n or 'quan hệ công chúng' in n: return 41
+    if 'truyền thông' in n or 'quan hệ công chúng' in n or 'đồ họa' in n or 'thiết kế' in n: return 41
     if 'mầm non' in n: return 42
-    if 'quản trị' in n or 'kinh doanh' in n or 'khách sạn' in n or 'du lịch' in n or 'nhân lực' in n: return 9
+    if 'quản trị' in n or 'kinh doanh' in n or 'khách sạn' in n or 'du lịch' in n or 'nhân lực' in n or 'bất động sản' in n or 'quản lý công nghiệp' in n: return 9
     return None
 
 inferNganhIdFromName = infer_nganh_id_from_name

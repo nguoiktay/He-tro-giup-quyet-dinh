@@ -34,7 +34,7 @@ class AdmissionService:
         if prog_key:
             matched = cls._hoc_phi_by_prog.get(prog_key)
 
-        if not matched and uni:
+        if not matched and uni and not prog_key:
             u_code = str(uni.get("maTruong", "")).strip().upper()
             if u_code:
                 recs = [
@@ -68,9 +68,16 @@ class AdmissionService:
                 "loaiHocPhi": "CHUA_XAC_DINH",
                 "nguonMinhChung": "Chưa có công bố chính thức hoặc đang cập nhật",
                 "urlNguon": web_url,
-                "ghiChu": "Cần tra cứu trực tiếp tại đề án tuyển sinh hoặc thông báo của trường",
+                "ghiChu": "",
                 "phuongPhapSoSanh": "CHUA_XAC_DINH",
                 "phanLoai": "unverified",
+                "namApDung": None,
+                "khoaApDung": "",
+                "apDungCho2027": False,
+                "canCapNhat2027": False,
+                "mienGiamCoDieuKien": False,
+                "isOfficial": False,
+                "canhBaoNamApDung": ""
             }
 
         def _safe_float(val: Any) -> Optional[float]:
@@ -87,9 +94,19 @@ class AdmissionService:
         t_ky = t_year if matched.get("donViTinh") == "VND_KY" else (0.0 if t_year == 0.0 else None)
         t_trieu = round(t_year / 1_000_000.0, 1) if t_year is not None else None
 
+        status_hp = str(matched.get("trangThaiHocPhi") or "UNVERIFIED").strip().upper()
+        loai_hp = str(matched.get("loaiHocPhi") or "CHUA_XAC_DINH").strip().upper()
+        is_conditional = (loai_hp == "MIEN_GIAM_CO_DIEU_KIEN")
+        is_official = (status_hp == "VERIFIED" and loai_hp == "CHINH_THUC")
+
+        nam_val = matched.get("namApDung")
+        nam_ap_dung = int(nam_val) if pd.notna(nam_val) and str(nam_val).strip().isdigit() else None
+        khoa_ap_dung = str(matched.get("khoaApDung") or "").strip()
+        can_cap_nhat_2027 = bool(nam_ap_dung is not None and nam_ap_dung < config.TARGET_YEAR)
+
         if t_trieu is None:
             phan_loai = "unverified"
-        elif t_year == 0.0 or t_trieu == 0.0 or "miễn" in str(matched.get("loaiHocPhi", "")).lower() or "bao cấp" in str(matched.get("hocPhiDisplay", "")).lower() or "hỗ trợ" in str(matched.get("hocPhiDisplay", "")).lower():
+        elif t_year == 0.0 and is_official and not is_conditional:
             phan_loai = "free_subsidized"
         elif t_trieu <= 20.0:
             phan_loai = "under_20m"
@@ -98,6 +115,8 @@ class AdmissionService:
         else:
             phan_loai = "over_35m"
 
+        canh_bao_nam = f"Mức học phí theo niên khóa {nam_ap_dung} ({khoa_ap_dung or 'chưa rõ khóa'}), cần lưu ý điều chỉnh/trượt giá cho năm tuyển sinh {config.TARGET_YEAR}." if can_cap_nhat_2027 else ""
+
         return {
             "hocPhiKy": t_ky,
             "hocPhiNam": t_year,
@@ -105,13 +124,20 @@ class AdmissionService:
             "hocPhiToiThieu": t_min,
             "hocPhiToiDa": t_max,
             "hocPhiText": matched.get("hocPhiDisplay") or "Chưa có thông tin học phí đã xác minh",
-            "trangThaiHocPhi": matched.get("trangThaiHocPhi") or "UNVERIFIED",
-            "loaiHocPhi": matched.get("loaiHocPhi") or "CHUA_XAC_DINH",
+            "trangThaiHocPhi": status_hp,
+            "loaiHocPhi": loai_hp,
             "nguonMinhChung": matched.get("nguonMinhChung") or "",
             "urlNguon": matched.get("urlNguon") or "",
             "ghiChu": matched.get("ghiChu") or "",
-            "phuongPhapSoSanh": "NGUONG_TRAN_AN_TOAN" if matched.get("trangThaiHocPhi") == "PROJECTED" else "TRUC_TIEP",
+            "phuongPhapSoSanh": "TRUC_TIEP" if is_official else "NGUONG_TRAN_AN_TOAN",
             "phanLoai": phan_loai,
+            "namApDung": nam_ap_dung,
+            "khoaApDung": khoa_ap_dung,
+            "apDungCho2027": (nam_ap_dung == config.TARGET_YEAR),
+            "canCapNhat2027": can_cap_nhat_2027,
+            "mienGiamCoDieuKien": is_conditional,
+            "isOfficial": is_official,
+            "canhBaoNamApDung": canh_bao_nam
         }
 
     @classmethod
@@ -243,10 +269,10 @@ class AdmissionService:
             methodCode=ma_pt,
             combinationCode=ma_th,
         )
-        co_du_bao = fc_info is not None and fc_info.get("predictedCutoff") is not None
+        loai_du_bao = fc_info.get("forecastType") if fc_info else "HISTORICAL_ONLY"
+        co_du_bao = bool(fc_info is not None and fc_info.get("predictedCutoff") is not None and loai_du_bao in ("HYBRID_RF", "BASELINE_LAG1"))
         diem_du_bao = fc_info.get("predictedCutoff") if co_du_bao else None
         diem_so_sanh = diem_du_bao if co_du_bao else diem_chuan_ls
-        loai_du_bao = fc_info.get("forecastType") if fc_info else "HISTORICAL_ONLY"
         nhan_du_bao = (fc_info.get("displayLabel") or fc_info.get("forecastTypeLabel")) if fc_info else f"Điểm chuẩn năm {nam_bc}"
         u_radius = fc_info.get("uncertaintyRadius", 0.5) if fc_info else 0.5
 
@@ -344,7 +370,7 @@ class AdmissionService:
             "diemChuanDuBao": diem_du_bao,
             "loaiDuBao": loai_du_bao,
             "nhanDuBao": nhan_du_bao,
-            "namMucTieu": fc_info.get("targetYear") if co_du_bao else config.TARGET_YEAR,
+            "namMucTieu": config.TARGET_YEAR,
             "phienBanMoHinh": fc_info.get("modelVersion") if co_du_bao else None,
             "khoangTinCay80": f"{fc_info['lowerBound80']} – {fc_info['upperBound80']}" if co_du_bao and fc_info.get("lowerBound80") else None,
             "lyDoChuaCoDuBao": None if co_du_bao else (
