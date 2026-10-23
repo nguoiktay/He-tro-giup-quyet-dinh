@@ -2,7 +2,7 @@ import os
 import datetime
 from typing import Dict, List, Optional, Any
 
-from fastapi import FastAPI, HTTPException, Header, Depends
+from fastapi import FastAPI, HTTPException, Header, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
@@ -11,6 +11,9 @@ from csvDatabase import CsvDatabase
 from scoringService import ScoringService
 from authService import AuthService, hash_password
 from admissionService import AdmissionService
+from mlService import mlServiceInstance
+from geminiService import GeminiService, RateLimiter
+import config
 from schemas import (
     UserRegisterRequest,
     UserLoginRequest,
@@ -21,7 +24,9 @@ from schemas import (
     StudentProfileInput,
     WishlistSaveRequest,
     AdminUserCreateRequest,
-    AdminUserUpdateRequest
+    AdminUserUpdateRequest,
+    ExplainRequest,
+    ChatRequest
 )
 
 VALID_SUBJECT_FIELDS = {
@@ -30,8 +35,8 @@ VALID_SUBJECT_FIELDS = {
 }
 
 app = FastAPI(
-    title="Hệ Thống Hỗ Trợ Đề Xuất Nguyện Vọng Đại Học",
-    description="Hệ thống hỗ trợ tra cứu và đề xuất nguyện vọng đại học theo kết quả thi THPT và học bạ.",
+    title="He ho tro quyet dinh goi y nguyen vong dai hoc cho hoc sinh THPT dua tren du bao diem chuan bang Random Forest, trien khai qua REST API",
+    description="He ho tro quyet dinh goi y nguyen vong dai hoc cho hoc sinh THPT dua tren du bao diem chuan bang Random Forest, trien khai qua REST API",
     version="1.0.0"
 )
 
@@ -111,21 +116,6 @@ def get_my_profile(current_user: Optional[Dict[str, Any]] = Depends(get_current_
 
 getProfile = get_my_profile
 
-
-@app.post("/api/auth/unlock")
-def unlock_account(body: Optional[Dict[str, Any]] = None, admin: Dict[str, Any] = Depends(require_admin)):
-    """Mở khóa tài khoản bị khóa do nhập sai mật khẩu. Chỉ quản trị viên mới có quyền thực hiện."""
-    req_dict = body or {}
-    username = str(req_dict.get("tenDangNhap", req_dict.get("username", ""))).strip()
-    if not username:
-        raise HTTPException(status_code=400, detail="Vui lòng cung cấp tên đăng nhập cần mở khóa.")
-    AuthService.moKhoaTaiKhoan(username)
-    return {"thanhCong": True, "thongBao": f"Đã mở khóa tài khoản '{username}'."}
-
-
-unlockAccount = unlock_account
-
-
 @app.get("/api/admin/stats")
 def get_admin_stats(admin: Dict[str, Any] = Depends(require_admin)):
     users = CsvDatabase.readAll("nguoiDung")
@@ -140,6 +130,8 @@ def get_admin_stats(admin: Dict[str, Any] = Depends(require_admin)):
     so_hoc_sinh = sum(1 for u in users if u.get("vaiTro") == "hocSinh")
     so_admin = sum(1 for u in users if u.get("vaiTro") == "quanTriVien")
 
+    model_info = mlServiceInstance.getModelInfo()
+
     return {
         "thanhCong": True,
         "tongNguoiDung": len(users),
@@ -153,13 +145,13 @@ def get_admin_stats(admin: Dict[str, Any] = Depends(require_admin)):
         "tongHoSo": len(profiles),
         "tongNguyenVong": len(wishlists),
         "moHinhMl": {
-            "thuatToan": "RandomForestRegressor",
-            "soLuongMau": 7280,
-            "r2Score": 0.762,
-            "maeScore": 1.15,
-            "namDuBao": 2027,
-            "namThamChieu": 2026,
-            "trangThai": "Hoạt động bình thường"
+            "thuatToan": model_info["tenPhuongPhap"],
+            "soLuongMau": model_info["soMauHuanLuyen"],
+            "r2Score": model_info["r2"],
+            "maeScore": model_info["mae"],
+            "namDuBao": model_info["namDuBao"],
+            "namThamChieu": model_info["namThamChieu"],
+            "trangThai": model_info["trangThai"]
         }
     }
 
@@ -412,15 +404,16 @@ getBenchmarks = get_benchmarks
 
 
 @app.get("/api/explore-benchmarks")
-def explore_benchmarks(query: Optional[str] = None, limit: int = 50):
+def explore_benchmarks(query: Optional[str] = None, limit: int = 50, nganh: Optional[str] = None):
     clamped = max(1, min(int(limit), 200)) if limit > 0 else 50
     all_unis = {u["id"]: u for u in CsvDatabase.readAll("truongDaiHoc")}
     all_majors = {m["id"]: m for m in CsvDatabase.readAll("nganhHoc")}
     all_combs = {c["id"]: c for c in CsvDatabase.readAll("toHopMon")}
     all_methods = {m["id"]: m for m in CsvDatabase.readAll("phuongThucXetTuyen")}
-    all_benchmarks = CsvDatabase.readAll("diemChuan")
+    all_benchmarks = sorted(CsvDatabase.readAll("diemChuan"), key=lambda b: -int(b.get("nam") or 0))
 
     q = str(query or "").strip().lower()
+    q_nganh = str(nganh or "").strip().lower()
     results = []
 
     for b in all_benchmarks:
@@ -445,6 +438,8 @@ def explore_benchmarks(query: Optional[str] = None, limit: int = 50):
             )
             if not match:
                 continue
+        if q_nganh and q_nganh not in ten_nganh.lower() and q_nganh not in str(m.get("tenNganh", "")).lower():
+            continue
 
         score_val = b.get("diemChuan")
         hp_info = AdmissionService.traCuuHocPhi(programId=b.get("programId"), uni=u, major=m)
@@ -461,7 +456,7 @@ def explore_benchmarks(query: Optional[str] = None, limit: int = 50):
             "tenPhuongThuc": method.get("tenPhuongThuc", "Xét tuyển"),
             "maPhuongThuc": method.get("maPhuongThuc", "PT01"),
             "maToHop": ma_to_hop,
-            "nam": b.get("nam", 2026),
+            "nam": b.get("nam", config.REFERENCE_YEAR),
             "diemChuan": float(score_val) if (score_val is not None and str(score_val).strip() != "") else None,
             "hocPhiUocTinh": hp_info["hocPhiText"],
             "trangThaiHocPhi": hp_info.get("trangThaiHocPhi", "UNVERIFIED"),
@@ -506,13 +501,43 @@ def create_benchmark(req: DiemChuanCreateRequest, admin: Dict[str, Any] = Depend
 createBenchmark = create_benchmark
 
 
+def _kiem_tra_to_hop_ton_tai(danh_sach_ma: List[str]) -> None:
+    hop_le = {c.get("maToHop") for c in CsvDatabase.readAll("toHopMon")}
+    khong_ton_tai = [ma for ma in danh_sach_ma if ma not in hop_le]
+    if khong_ton_tai:
+        raise HTTPException(
+            status_code=422,
+            detail=f"Tổ hợp không tồn tại trong danh mục: {', '.join(khong_ton_tai)}."
+        )
+
+
+def _kiem_tra_du_diem(ho_so: Dict[str, Any]) -> List[str]:
+    ma_pt = (ho_so.get("phuongThucMongMuon") or ["PT01"])[0]
+    diem_mon = ScoringService._extract_diem_mon_hoc(ho_so)
+    ly_do = {
+        ma: ScoringService.lyDoThieuMon(diem_mon, ma)
+        for ma in ho_so["danhSachToHopDaChon"]
+        if ScoringService.tinhDiemToHop(diem_mon, ma) is None
+    }
+    co_gpa = ho_so.get("diemHocBa") is not None
+    if ma_pt == "PT02" and co_gpa:
+        return []
+    if len(ly_do) == len(ho_so["danhSachToHopDaChon"]):
+        chi_tiet = "; ".join(ly_do.values())
+        if ma_pt == "PT02":
+            chi_tiet += " (hoặc nhập điểm trung bình học bạ lớp 12)"
+        raise HTTPException(status_code=422, detail=chi_tiet + ".")
+    return list(ly_do.values())
+
+
 @app.post("/api/calculate-score")
 def calculate_score(req: ScoreCalculationRequest):
+    _kiem_tra_to_hop_ton_tai([req.maToHop])
     diem_to_hop = ScoringService.tinhDiemToHop(req.diemMonHoc, req.maToHop)
     if diem_to_hop is None:
-        raise HTTPException(status_code=400, detail=f"Không đủ điểm các môn bắt buộc của tổ hợp {req.maToHop}")
+        raise HTTPException(status_code=422, detail=ScoringService.lyDoThieuMon(req.diemMonHoc, req.maToHop))
 
-    diem_uu_tien = ScoringService.tinhDiemUuTien(req.khuVuc or "KV3", req.doiTuong or "NONE", diem_to_hop)
+    diem_uu_tien = ScoringService.tinhDiemUuTien(req.khuVuc, req.doiTuong, diem_to_hop)
     diem_xet_tuyen = ScoringService.tinhDiemXetTuyen(diem_to_hop, diem_uu_tien)
 
     return {
@@ -551,10 +576,22 @@ saveStudentProfile = save_student_profile
 @app.post("/api/recommend")
 def recommend_wishes(req: StudentProfileInput):
     profile_dict = req.model_dump()
-    return AdmissionService.deXuatNguyenVong(profile_dict)
+    _kiem_tra_to_hop_ton_tai(profile_dict["danhSachToHopDaChon"])
+    canh_bao = _kiem_tra_du_diem(profile_dict)
+    result = AdmissionService.deXuatNguyenVong(profile_dict)
+    result["canhBaoToHop"] = canh_bao
+    return result
 
 
 recommendWishes = recommend_wishes
+
+
+@app.get("/api/model-info")
+def get_model_info():
+    return mlServiceInstance.getModelInfo()
+
+
+getModelInfo = get_model_info
 
 
 @app.get("/api/compare-methods/{truongDaiHocId}/{nganhHocId}")
@@ -628,6 +665,119 @@ def get_wishlist_history(user: Dict[str, Any] = Depends(require_auth)):
 getWishlistHistory = get_wishlist_history
 
 
+gemini = GeminiService()
+geminiRateLimiter = RateLimiter()
+
+_SUBJECT_SCHEMA = {f: {"type": "number", "description": f"Điểm môn {ScoringService.TEN_MON[f]} (0-10)"}
+                   for f in ScoringService.TEN_MON}
+_RECOMMEND_FIELDS = (
+    "thuTuUuTien", "tenTruong", "maTruong", "tenChuongTrinh", "maToHop", "khuVuc", "diemXetTuyen",
+    "diemChuanThamChieu", "namThamChieu", "diemChuanDuBao", "nhomNguyenVong", "chiSoThuanLoi", "hocPhiUocTinh",
+)
+
+
+def _tool_tra_cuu_diem_chuan(tu_khoa: str, nganh: Optional[str] = None, so_luong: int = 10) -> List[Dict[str, Any]]:
+    rows = explore_benchmarks(query=tu_khoa, nganh=nganh, limit=max(1, min(int(so_luong), 20)))
+    keep = ("tenTruong", "maTruong", "tenChuongTrinh", "maToHop", "maPhuongThuc", "nam", "diemChuan", "hocPhiUocTinh")
+    return [{k: r.get(k) for k in keep} for r in rows]
+
+
+def _tool_tinh_diem(ma_to_hop: str, khu_vuc: str = "KV3", doi_tuong: str = "NONE", **diem_mon: float) -> Dict[str, Any]:
+    return calculate_score(ScoreCalculationRequest(
+        diemMonHoc=diem_mon, maToHop=ma_to_hop, khuVuc=khu_vuc, doiTuong=doi_tuong))
+
+
+def _tool_goi_y(ma_to_hop: str, phuong_thuc: str = "PT01", khu_vuc_uu_tien: str = "KV3",
+                khu_vuc_mong_muon: Optional[str] = None, nganh_mong_muon: Optional[str] = None,
+                ngan_sach: Optional[float] = None, diem_hoc_ba: Optional[float] = None,
+                **diem_mon: float) -> Dict[str, Any]:
+    profile = StudentProfileInput(
+        **diem_mon, diemHocBa=diem_hoc_ba, phuongThucMongMuon=phuong_thuc, danhSachToHopDaChon=[ma_to_hop],
+        khuVucUuTien=khu_vuc_uu_tien, khuVucMongMuon=khu_vuc_mong_muon, nganhMongMuon=nganh_mong_muon,
+        nganSach=ngan_sach,
+    )
+    res = recommend_wishes(profile)
+    return {
+        "thongBao": res.get("thongBao"),
+        "danhSach": [{k: w.get(k) for k in _RECOMMEND_FIELDS} for w in res.get("danhSachTongHop", [])[:10]],
+        "tongSoGoiY": res.get("tongSoGoiY"),
+    }
+
+
+def _tool_thong_tin_mo_hinh() -> Dict[str, Any]:
+    info = mlServiceInstance.getModelInfo()
+    return {k: info.get(k) for k in ("tenPhuongPhap", "namDuBao", "r2", "mae", "khoangTinCay", "doPhuChuongTrinh", "ghiChu")}
+
+
+gemini.register_tool(
+    "tra_cuu_diem_chuan",
+    "Tra cứu điểm chuẩn đã công bố theo tên/mã trường, tên ngành hoặc mã tổ hợp.",
+    {"type": "object", "properties": {
+        "tu_khoa": {"type": "string", "description": "Một cụm ngắn: tên trường (vd 'Bách khoa Hà Nội'), mã trường (vd 'BKA') hoặc mã tổ hợp"},
+        "nganh": {"type": "string", "description": "Lọc thêm theo tên ngành, vd 'Công nghệ thông tin'"},
+        "so_luong": {"type": "integer", "description": "Số dòng tối đa (1-20); kết quả xếp năm mới nhất trước"},
+    }, "required": ["tu_khoa"]},
+    _tool_tra_cuu_diem_chuan,
+)
+gemini.register_tool(
+    "tinh_diem_xet_tuyen",
+    "Tính điểm xét tuyển THPT theo tổ hợp, gồm điểm ưu tiên khu vực/đối tượng.",
+    {"type": "object", "properties": {
+        "ma_to_hop": {"type": "string", "description": "Mã tổ hợp, ví dụ A00, D01"},
+        "khu_vuc": {"type": "string", "enum": ["KV1", "KV2-NT", "KV2", "KV3"]},
+        "doi_tuong": {"type": "string", "enum": ["NONE", "UT1", "UT2"]},
+        **_SUBJECT_SCHEMA,
+    }, "required": ["ma_to_hop"]},
+    _tool_tinh_diem,
+)
+gemini.register_tool(
+    "goi_y_nguyen_vong",
+    "Gợi ý tối đa 10 nguyện vọng hàng đầu theo điểm của học sinh (PT01 điểm thi THPT, PT02 học bạ).",
+    {"type": "object", "properties": {
+        "ma_to_hop": {"type": "string"},
+        "phuong_thuc": {"type": "string", "enum": ["PT01", "PT02"]},
+        "khu_vuc_uu_tien": {"type": "string", "enum": ["KV1", "KV2-NT", "KV2", "KV3"]},
+        "khu_vuc_mong_muon": {"type": "string", "description": "Miền Bắc, Miền Trung hoặc Miền Nam"},
+        "nganh_mong_muon": {"type": "string"},
+        "ngan_sach": {"type": "number", "description": "Học phí tối đa, triệu đồng/năm"},
+        "diem_hoc_ba": {"type": "number", "description": "Điểm trung bình học bạ lớp 12 (PT02)"},
+        **_SUBJECT_SCHEMA,
+    }, "required": ["ma_to_hop"]},
+    _tool_goi_y,
+)
+gemini.register_tool(
+    "thong_tin_mo_hinh",
+    "Độ chính xác và giới hạn của mô hình dự báo điểm chuẩn (MAE, R², sai số, độ phủ).",
+    None,
+    _tool_thong_tin_mo_hinh,
+)
+
+
+def _kiem_tra_gioi_han_goi(request: Request) -> None:
+    client_ip = request.client.host if request.client else "unknown"
+    if not geminiRateLimiter.allow(client_ip):
+        raise HTTPException(status_code=429, detail="Bạn đã gửi quá nhiều yêu cầu tới trợ lý AI. Vui lòng thử lại sau 1 phút.")
+
+
+@app.post("/api/explain")
+def explain_recommendation(req: ExplainRequest, request: Request):
+    _kiem_tra_gioi_han_goi(request)
+    return {"thanhCong": True, **gemini.giaiThichNguyenVong(req.nguyenVong)}
+
+
+explainRecommendation = explain_recommendation
+
+
+@app.post("/api/chat")
+def chat(req: ChatRequest, request: Request):
+    _kiem_tra_gioi_han_goi(request)
+    lich_su = [t.model_dump() for t in req.lichSu]
+    return {"thanhCong": True, **gemini.hoiDap(req.cauHoi, lich_su)}
+
+
+chatWithAssistant = chat
+
+
 FRONTEND_DIR = os.path.join(os.path.dirname(__file__), "frontend")
 if os.path.exists(FRONTEND_DIR):
     app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="static")
@@ -646,5 +796,5 @@ if os.path.exists(FRONTEND_DIR):
 
 if __name__ == "__main__":
     import uvicorn
-    print("Hệ thống đề xuất nguyện vọng đại học đang khởi động trên http://127.0.0.1:8000")
+    print("He thong de xuat nguyen vong dai hoc dang khoi dong tren http://127.0.0.1:8000")
     uvicorn.run("app:app", host="127.0.0.1", port=8000, reload=True)

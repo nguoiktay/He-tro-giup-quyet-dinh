@@ -218,6 +218,8 @@ class CsvDatabase:
             if not os.path.exists(cls.FILE_PATHS["nguoiDung"]):
                 default_users = []
                 if config.ENV != "production":
+                    import sys
+                    print("\n[CANH BAO BAO MAT] Dang khoi tao tai khoan phat trien mac dinh (admin/hocsinh). Hay doi mat khau ngay hoac dat ENV=production khi trien khai thuc te!\n", file=sys.stderr)
                     default_users = [
                         {
                             "id": 1,
@@ -543,7 +545,7 @@ class CsvDatabase:
     def insert(cls, tableName: str, data: Dict[str, Any]) -> Dict[str, Any]:
         file_path = cls.FILE_PATHS.get(tableName)
         if not file_path:
-            raise ValueError(f"Bảng {tableName} không tồn tại.")
+            raise ValueError(f"Bang {tableName} khong ton tai.")
 
         cols = cls.COLUMNS[tableName]
         with _lock:

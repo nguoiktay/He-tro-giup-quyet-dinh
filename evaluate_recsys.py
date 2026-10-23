@@ -82,7 +82,7 @@ def generate_extended_cohort() -> List[Dict[str, Any]]:
 
             p = {
                 "id": c_id,
-                "ten": f"Hồ sơ {comb} - {sc}đ",
+                "ten": f"Ho so {comb} - {sc}d",
                 "pt": "PT01",
                 "toHop": comb,
                 "score": sc,
@@ -107,11 +107,6 @@ def generate_extended_cohort() -> List[Dict[str, Any]]:
 
 
 def load_actual_ground_truth(data_dir: str) -> Dict[str, float]:
-    """Nạp điểm chuẩn thực tế 2026 từ file forecast hoặc diemChuan.
-    Chỉ lấy những chương trình có điểm chuẩn thực tế đặt được (> 0).
-    QUAN TRọNG: Chỉ có các chương trình nằm trong tập này mới được dùng
-    làm ground-truth để tính Precision và Brier.
-    """
     actual_map = {}
     fc_path = os.path.join(data_dir, "processed", "forecast_records_2026.csv")
     if os.path.exists(fc_path):
@@ -139,7 +134,7 @@ def load_actual_ground_truth(data_dir: str) -> Dict[str, float]:
 
 def evaluate_system():
     print("=" * 80)
-    print("ĐÁNH GIÁ ĐỘC LẬP HỆ THỐNG RA QUYẾT ĐỊNH TUYỂN SINH (DSS EVALUATION BENCHMARK)")
+    print("DANH GIA DOC LAP HE THONG RA QUYET DINH TUYEN SINH (DSS EVALUATION BENCHMARK)")
     print("=" * 80)
 
     data_dir = os.path.join(os.path.dirname(__file__), "data")
@@ -148,10 +143,10 @@ def evaluate_system():
     total_programs = len({b.get("programId") or b.get("id") for b in benchmarks})
 
     actual_map = load_actual_ground_truth(data_dir)
-    print(f"-> Đã nạp dữ liệu điểm chuẩn thực tế kiểm thử: {len(actual_map):,} chương trình.")
+    print(f"-> Da nap du lieu diem chuan thuc te kiem thu: {len(actual_map):,} chuong trinh.")
 
     cohort = generate_extended_cohort()
-    print(f"-> Quy mô tập kiểm thử độc lập: {len(cohort)} hồ sơ trên đúng 14 tổ hợp môn chính thức (16.0 – 29.2 điểm).")
+    print(f"-> Quy mo tap kiem thu doc lap: {len(cohort)} ho so tren dung 14 to hop mon chinh thuc (16.0 - 29.2 diem).")
 
     all_recommended_programs = set()
     precision_at_10_list = []
@@ -170,7 +165,7 @@ def evaluate_system():
         "80-100%": {"total": 0, "hits": 0, "sum_p": 0.0}
     }
 
-    tier_counts = {"Thử sức": 0, "Vừa sức": 0, "An toàn": 0, "Khác": 0}
+    tier_counts = {"Thử sức": 0, "Vừa sức": 0, "An toàn": 0, "Khac": 0}
     actual_executed_count = 0
 
     for p in cohort:
@@ -242,7 +237,7 @@ def evaluate_system():
             if tier in tier_counts:
                 tier_counts[tier] += 1
             else:
-                tier_counts["Khác"] += 1
+                tier_counts["Khac"] += 1
 
             if 1 <= idx <= 5 and tier == "Thử sức":
                 strategic_matches += 1
@@ -277,15 +272,15 @@ def evaluate_system():
     avg_majors = float(np.mean(diversity_major_list)) if diversity_major_list else 0.0
     total_wishes_evaluated = sum(b["total"] for b in prob_bins.values())
 
-    print(f"\n1. CHẤT LƯỢNG ĐỀ XUẤT VÀ XẼP HẠNG (THEO GROUND-TRUTH NĂM ĐỘC LẬP):")
-    print(f"  - Số kịch bản thực sự chạy:                             {actual_executed_count} / {len(cohort)}")
-    print(f"  - Precision@10 (Tỷ lệ cơ hội tuyển sinh khả thi Top-10): {avg_p10:.4f} ({avg_p10*100:.1f}%)")
-    print(f"  - Precision@20 (Tỷ lệ cơ hội tuyển sinh khả thi toàn bộ): {avg_p20:.4f} ({avg_p20*100:.1f}%)")
-    print(f"  - NDCG@10 (Chất lượng phân bổ thứ tự tối ưu):           {avg_ndcg10:.4f}")
-    print(f"  - Portfolio Strategy Alignment (Khớp chuẩn 25/50/25):    {avg_alignment:.1f}%")
+    print(f"\n1. CHAT LUONG DE XUAT VA XEP HANG (THEO GROUND-TRUTH NAM DOC LAP):")
+    print(f"  - So kich ban thuc su chay:                             {actual_executed_count} / {len(cohort)}")
+    print(f"  - Precision@10 (Ty le co hoi tuyen sinh kha thi Top-10): {avg_p10:.4f} ({avg_p10*100:.1f}%)")
+    print(f"  - Precision@20 (Ty le co hoi tuyen sinh kha thi toan bo): {avg_p20:.4f} ({avg_p20*100:.1f}%)")
+    print(f"  - NDCG@10 (Chat luong phan bo thu tu toi uu):           {avg_ndcg10:.4f}")
+    print(f"  - Portfolio Strategy Alignment (Khop chuan 25/50/25):    {avg_alignment:.1f}%")
 
-    print(f"\n2. ĐỘ HIỆU CHUẨN CHỈ SỐ THUẬN LỢI (CALIBRATION & BRIER SCORE):")
-    print(f"  - Brier Score (Càng thấp càng chuẩn xác, tối ưu < 0.20): {avg_brier:.4f}")
+    print(f"\n2. DO HIEU CHUAN CHI SO THUAN LOI (CALIBRATION & BRIER SCORE):")
+    print(f"  - Brier Score (Cang thap cang chuan xac, toi uu < 0.20): {avg_brier:.4f}")
     calibration_report = {}
     for b_key, b_val in prob_bins.items():
         if b_val["total"] > 0:
@@ -296,21 +291,21 @@ def evaluate_system():
                 "chisoDuBaoTB": round(pred_mean, 1),
                 "tyLeDatThucTe": round(emp_rate, 1)
             }
-            print(f"  - Khoảng [{b_key:7}]: N = {b_val['total']:4d} | Chỉ số TB: {pred_mean:5.1f}% | Thực tế đạt: {emp_rate:5.1f}%")
+            print(f"  - Khoang [{b_key:7}]: N = {b_val['total']:4d} | Chi so TB: {pred_mean:5.1f}% | Thuc te dat: {emp_rate:5.1f}%")
 
-    print(f"\n3. ĐA DẠNG HÓA VÀ ĐỘ PHỦ DANH MỤC THỰC TẾ (COVERAGE & DIVERSITY):")
-    print(f"  - Số trường ĐH trung bình trong Top-10:                {avg_unis:.1f} trường (Ràng buộc max 3 CT/trường)")
-    print(f"  - Số ngành học trung bình trong Top-10:                 {avg_majors:.1f} ngành")
-    print(f"  - Số chương trình độc lập được tiếp cận:                {len(all_recommended_programs)} / {total_programs}")
-    print(f"  - Độ phủ danh mục toàn quốc (Cohort Coverage):          {cohort_coverage:.2f}%")
+    print(f"\n3. DA DANG HOA VA DO PHU DANH MUC THUC TE (COVERAGE & DIVERSITY):")
+    print(f"  - So truong DH trung binh trong Top-10:                {avg_unis:.1f} truong (Rang buoc max 3 CT/truong)")
+    print(f"  - So nganh hoc trung binh trong Top-10:                 {avg_majors:.1f} nganh")
+    print(f"  - So chuong trinh doc lap duoc tiep can:                {len(all_recommended_programs)} / {total_programs}")
+    print(f"  - Do phu danh muc toan quoc (Cohort Coverage):          {cohort_coverage:.2f}%")
 
     report_data = {
         "benchmark_type": "independent_cohort_ground_truth_evaluation",
-        "description": "Tính Precision dựa trên delta so với điểm tham chiếu (có dùng dữ liệu 2026). Brier Score chỉ tính cho ngưỡng vọng có đáp án thực tế. Chưa thực hiện backtest hoàn toàn (≤ 2025 → dự đoán 2026).",
+        "description": "Tinh Precision dua tren delta so voi diem tham chieu (co dung du lieu 2026). Brier Score chi tinh cho nguong vong co dap an thuc te. Chua thuc hien backtest hoan toan (≤ 2025 → du doan 2026).",
         "limitations": [
-            "Precision@10/20 dùng actual_map làm fallback cho ngưỡng vọng không có điểm chuẩn thực tế - kết quả có thể lạc quan hơn thực tế",
-            "Hệ thống dùng dữ liệu 2026 làm tham chiếu điểm chuẩn - ground-truth và tham chiếu chưa độc lập hoàn toàn",
-            "Cần thực hiện backtest: huấn luyện trên dữ liệu ≤ 2025, dự đoán 2026, so sánh với điểm thực tế 2026 chưa tham gia huấn luyện"
+            "Precision@10/20 dung actual_map lam fallback cho nguong vong khong co diem chuan thuc te - ket qua co the lac quan hon thuc te",
+            "He thong dung du lieu 2026 lam tham chieu diem chuan - ground-truth va tham chieu chua doc lap hoan toan",
+            "Can thuc hien backtest: huan luyen tren du lieu ≤ 2025, du doan 2026, so sanh voi diem thuc te 2026 chua tham gia huan luyen"
         ],
         "cohort_scenarios_count": len(cohort),
         "actual_executed_count": actual_executed_count,
@@ -322,7 +317,7 @@ def evaluate_system():
             "ndcg_at_10": round(avg_ndcg10, 4),
             "portfolio_alignment_pct": round(avg_alignment, 1),
             "brier_score": round(avg_brier, 4),
-            "brier_score_note": f"Tính trên {total_wishes_evaluated} ngưỡng vọng có đáp án thực tế (bỏ qua ngưỡng vọng không có ground-truth)",
+            "brier_score_note": f"Tinh tren {total_wishes_evaluated} nguong vong co dap an thuc te (bo qua nguong vong khong co ground-truth)",
             "cohort_coverage_pct": round(cohort_coverage, 2),
             "unique_programs_covered": len(all_recommended_programs),
             "total_programs_catalog": total_programs,
@@ -339,7 +334,7 @@ def evaluate_system():
     with open(report_file, "w", encoding="utf-8") as f:
         json.dump(report_data, f, indent=2, ensure_ascii=False)
 
-    print(f"\n-> Đã lưu báo cáo hợp nhất độc lập chuẩn xác vào: {report_file}")
+    print(f"\n-> Da luu bao cao hop nhat doc lap chuan xac vao: {report_file}")
     print("=" * 80)
 
 

@@ -25,9 +25,9 @@ def load_datasets(data_dir: str) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFra
     um_path = os.path.join(data_dir, "metadata", "universities_master.csv")
 
     if not os.path.exists(thpt_path):
-        raise FileNotFoundError(f"Không tìm thấy file: {thpt_path}")
+        raise FileNotFoundError(f"Khong tim thay file: {thpt_path}")
     if not os.path.exists(hb_path):
-        raise FileNotFoundError(f"Không tìm thấy file: {hb_path}")
+        raise FileNotFoundError(f"Khong tim thay file: {hb_path}")
 
     df_thpt = pd.read_csv(thpt_path, low_memory=False)
     df_hb = pd.read_csv(hb_path, low_memory=False)
@@ -37,13 +37,114 @@ def load_datasets(data_dir: str) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFra
     return df_thpt, df_hb, df_up, df_um
 
 
+BLEND_WEIGHT_GRID = [0.0, 0.15, 0.3, 0.5, 0.7, 1.0]
+REVERSION_COEF_GRID = [0.0, -0.06, -0.12, -0.18, -0.24, -0.30]
+
+
+def _metrics(y_true, y_pred) -> Dict[str, float]:
+    return {
+        "MAE": round(float(mean_absolute_error(y_true, y_pred)), 4),
+        "RMSE": round(float(np.sqrt(mean_squared_error(y_true, y_pred))), 4),
+        "R2": round(float(r2_score(y_true, y_pred)), 4),
+    }
+
+
+def _bootstrap_mae_diff(y_true, pred_a, pred_b, n_boot: int = 2000, seed: int = 42) -> Dict[str, float]:
+    err_a = np.abs(np.asarray(y_true) - np.asarray(pred_a))
+    err_b = np.abs(np.asarray(y_true) - np.asarray(pred_b))
+    diff = err_a - err_b
+    rng = np.random.default_rng(seed)
+    idx = rng.integers(0, len(diff), size=(n_boot, len(diff)))
+    boot = diff[idx].mean(axis=1)
+    return {
+        "mae_diff": round(float(diff.mean()), 4),
+        "ci95_low": round(float(np.quantile(boot, 0.025)), 4),
+        "ci95_high": round(float(np.quantile(boot, 0.975)), 4),
+        "p_a_better": round(float(np.mean(boot < 0)), 4),
+    }
+
+
+def compare_hybrid_variants(
+    model: RFTrendResidualRegressor,
+    X_val: pd.DataFrame, y_val: pd.Series,
+    X_test: pd.DataFrame, y_test: pd.Series,
+    report_dir: str,
+) -> Dict[str, Any]:
+    comp_val = model.predict_components(X_val)
+    comp_test = model.predict_components(X_test)
+    combine = RFTrendResidualRegressor.combine
+
+    grid_rows = []
+    for bw in BLEND_WEIGHT_GRID:
+        for rc in REVERSION_COEF_GRID:
+            p_val = combine(comp_val["lag1"], comp_val["delta_rf"], comp_val["trend"], bw, rc)
+            p_test = combine(comp_test["lag1"], comp_test["delta_rf"], comp_test["trend"], bw, rc)
+            m_val, m_test = _metrics(y_val, p_val), _metrics(y_test, p_test)
+            grid_rows.append({
+                "blend_weight": bw, "reversion_coef": rc,
+                "val_MAE": m_val["MAE"], "val_RMSE": m_val["RMSE"],
+                "test_MAE": m_test["MAE"], "test_RMSE": m_test["RMSE"],
+            })
+    df_grid = pd.DataFrame(grid_rows).sort_values(["val_MAE", "val_RMSE"]).reset_index(drop=True)
+    df_grid["val_rank"] = np.arange(1, len(df_grid) + 1)
+    df_grid.to_csv(os.path.join(report_dir, "hybrid_param_search.csv"), index=False, encoding="utf-8-sig")
+    best = df_grid.iloc[0]
+
+    def _pred(comp, bw, rc):
+        return combine(comp["lag1"], comp["delta_rf"], comp["trend"], bw, rc)
+
+    variants = {
+        "Lag-1 (diem nam truoc)": (comp_val["lag1"], comp_test["lag1"]),
+        "Trung binh 2 nam": (X_val["score_rolling_mean_2y"].fillna(X_val["score_lag_1"]).to_numpy(),
+                             X_test["score_rolling_mean_2y"].fillna(X_test["score_lag_1"]).to_numpy()),
+        "RF thuan tren phan du (blend=1.0)": (_pred(comp_val, 1.0, 0.0), _pred(comp_test, 1.0, 0.0)),
+        f"Cong thuc hoi quy thuan (blend=0, coef={model.reversion_coef})": (
+            _pred(comp_val, 0.0, model.reversion_coef), _pred(comp_test, 0.0, model.reversion_coef)),
+        f"Ban lai dang dung (blend={model.blend_weight}, coef={model.reversion_coef})": (
+            _pred(comp_val, model.blend_weight, model.reversion_coef),
+            _pred(comp_test, model.blend_weight, model.reversion_coef)),
+        f"Ban lai tot nhat tren validation (blend={best.blend_weight}, coef={best.reversion_coef})": (
+            _pred(comp_val, best.blend_weight, best.reversion_coef),
+            _pred(comp_test, best.blend_weight, best.reversion_coef)),
+    }
+    lag1_test = comp_test["lag1"]
+    var_rows = []
+    for name, (p_val, p_test) in variants.items():
+        m_val, m_test = _metrics(y_val, p_val), _metrics(y_test, p_test)
+        boot = _bootstrap_mae_diff(y_test, p_test, lag1_test)
+        var_rows.append({
+            "Phuong phap": name,
+            "Val MAE": m_val["MAE"], "Val RMSE": m_val["RMSE"], "Val R2": m_val["R2"],
+            "Test MAE": m_test["MAE"], "Test RMSE": m_test["RMSE"], "Test R2": m_test["R2"],
+            "Test MAE - Lag1": boot["mae_diff"],
+            "CI95 thap": boot["ci95_low"], "CI95 cao": boot["ci95_high"],
+            "P(tot hon Lag1)": boot["p_a_better"],
+        })
+    df_var = pd.DataFrame(var_rows)
+    df_var.to_csv(os.path.join(report_dir, "model_variants_comparison.csv"), index=False, encoding="utf-8-sig")
+
+    current = df_grid[(df_grid["blend_weight"] == model.blend_weight) & (df_grid["reversion_coef"] == model.reversion_coef)]
+    current_rank = int(current["val_rank"].iloc[0]) if not current.empty else None
+    print("\nSo sanh bien the mo hinh (validation 2025 / test 2026):")
+    print(df_var[["Phuong phap", "Val MAE", "Test MAE", "Test MAE - Lag1", "CI95 thap", "CI95 cao"]].to_string(index=False))
+    print(f"Tham so tot nhat tren validation: blend={best.blend_weight}, coef={best.reversion_coef} "
+          f"(val MAE={best.val_MAE}); tham so dang dung xep hang {current_rank}/{len(df_grid)}")
+    return {
+        "best_blend_weight": float(best.blend_weight),
+        "best_reversion_coef": float(best.reversion_coef),
+        "current_val_rank": current_rank,
+        "grid_size": len(df_grid),
+    }
+
+
 def train_thpt_branch(
     df_thpt: pd.DataFrame,
     df_up: pd.DataFrame,
     df_um: pd.DataFrame,
-    save_path: Optional[str] = None
+    save_path: Optional[str] = None,
+    write_reports: bool = True
 ) -> Dict[str, Any]:
-    print("\nHuấn luyện mô hình điểm thi THPT: Dự báo lai (công thức xu hướng + RF)")
+    print("\nHuan luyen mo hinh diem thi THPT: ")
 
     if not df_up.empty:
         up_sub = df_up[["program_id", "major_group_id", "program_type"]].drop_duplicates("program_id")
@@ -57,10 +158,10 @@ def train_thpt_branch(
     val_df = eligible[eligible["split"] == "validation"].copy().dropna(subset=["score_lag_1", "benchmark_score"])
     test_df = eligible[eligible["split"] == "test"].copy().dropna(subset=["score_lag_1", "benchmark_score"])
 
-    print(f"Tổng số mẫu TRAIN_READY: {len(eligible):,}")
-    print(f"  - Train (năm <= 2024):       {len(train_df):,} mẫu")
-    print(f"  - Validation (năm 2025):     {len(val_df):,} mẫu")
-    print(f"  - Test (năm 2026):           {len(test_df):,} mẫu")
+    print(f"Tong so mau TRAIN_READY: {len(eligible):,}")
+    print(f"  - Train (nam <= 2024):       {len(train_df):,} mau")
+    print(f"  - Validation (nam 2025):     {len(val_df):,} mau")
+    print(f"  - Test (nam 2026):           {len(test_df):,} mau")
 
     feature_cols = [
         "score_lag_1", "score_lag_2", "score_diff_lag", "score_rolling_mean_2y"
@@ -78,7 +179,7 @@ def train_thpt_branch(
         m_cv.fit(X_train.iloc[tr_idx], y_train.iloc[tr_idx])
         p_cv = m_cv.predict(X_train.iloc[va_idx])
         cv_scores.append(mean_absolute_error(y_train.iloc[va_idx], p_cv))
-    print(f"Cross-Validation 5-Fold MAE trên Train: {np.mean(cv_scores):.4f} (±{np.std(cv_scores):.4f})")
+    print(f"Cross-Validation 5-Fold MAE tren Train: {np.mean(cv_scores):.4f} (+/-{np.std(cv_scores):.4f})")
 
     model = RFTrendResidualRegressor(n_estimators=250, max_depth=6, min_samples_leaf=20, blend_weight=0.15)
     model.fit(X_train, y_train)
@@ -112,13 +213,13 @@ def train_thpt_branch(
     rmse_dt = np.sqrt(mean_squared_error(y_test, y_pred_dt))
     r2_dt = r2_score(y_test, y_pred_dt)
 
-    print(f"\nKết quả so sánh trên tập kiểm thử 2026 (N = {len(X_test):,}):")
-    headers = ["Phương pháp / Mô hình", "Phân loại", "Test MAE", "Test RMSE", "Test R2"]
+    print(f"\nKet qua so sanh tren tap kiem thu 2026 (N = {len(X_test):,}):")
+    headers = ["Phuong phap / Mo hinh", "Phan loai", " MAE", " RMSE", " R2"]
     rows = [
-        ["Baseline 1: Điểm năm trước (Lag 1)", "Naïve Baseline", f"{mae_b1:.4f}", f"{rmse_b1:.4f}", f"{r2_b1:.4f}"],
-        ["Baseline 2: Trung bình 2 năm (Mean 2Y)", "Naïve Baseline", f"{mae_b2:.4f}", f"{rmse_b2:.4f}", f"{r2_b2:.4f}"],
-        ["Baseline 3: Decision Tree đơn lẻ (Depth=6)", "Single Tree", f"{mae_dt:.4f}", f"{rmse_dt:.4f}", f"{r2_dt:.4f}"],
-        ["Dự báo lai (công thức xu hướng + RF)", "Hybrid Ensemble", f"{mae_rf:.4f}", f"{rmse_rf:.4f}", f"{r2_rf:.4f}"]
+        ["Baseline 1: Diem nam truoc (Lag 1)", "Naive Baseline", f"{mae_b1:.4f}", f"{rmse_b1:.4f}", f"{r2_b1:.4f}"],
+        ["Baseline 2: Trung binh 2 nam (Mean 2Y)", "Naive Baseline", f"{mae_b2:.4f}", f"{rmse_b2:.4f}", f"{r2_b2:.4f}"],
+        ["Baseline 3: Decision Tree don le (Depth=6)", "Single Tree", f"{mae_dt:.4f}", f"{rmse_dt:.4f}", f"{r2_dt:.4f}"],
+        ["Du bao lai (cong thuc xu huong + RF)", "Hybrid Ensemble", f"{mae_rf:.4f}", f"{rmse_rf:.4f}", f"{r2_rf:.4f}"]
     ]
     col_w = [42, 18, 12, 12, 12]
     print("".join(h.ljust(col_w[i]) for i, h in enumerate(headers)))
@@ -126,8 +227,8 @@ def train_thpt_branch(
     for r in rows:
         print("".join(c.ljust(col_w[i]) for i, c in enumerate(r)))
 
-    print(f"- Tập thẩm định (2025): MAE={mae_val:.4f}, RMSE={rmse_val:.4f}, R2={r2_val:.4f}, Khoảng tin cậy 80% = ±{q80:.2f} điểm")
-    print(f"- Tập kiểm thử (2026): Dự báo lai MAE={mae_rf:.4f} < Baseline Lag-1 MAE={mae_b1:.4f} (R2={r2_rf:.4f})")
+    print(f"- Tap tham dinh 2025: MAE={mae_val:.4f}, RMSE={rmse_val:.4f}, R2={r2_val:.4f}, Khoang tin cay 80% = +/-{q80:.2f} diem")
+    print(f"- Tap kiem thu 2026: Du bao lai MAE={mae_rf:.4f} < Baseline Lag-1 MAE={mae_b1:.4f} (R2={r2_rf:.4f})")
 
     residuals_test = np.abs(y_test - y_pred_rf)
     test_cov = float(np.mean(residuals_test <= q80))
@@ -135,23 +236,43 @@ def train_thpt_branch(
     if save_path:
         os.makedirs(os.path.dirname(save_path), exist_ok=True)
         joblib.dump(model, save_path)
-        print(f"\n[OK] Đã lưu mô hình THPT vào: {save_path}")
+        print(f"\n[OK] Da luu mo hinh THPT vao: {save_path}")
 
     report_dir = os.path.join(os.path.dirname(__file__), "data", "reports")
     os.makedirs(report_dir, exist_ok=True)
+    search = compare_hybrid_variants(model, X_val, y_val, X_test, y_test, report_dir)
+    if not write_reports:
+        return {"model": model, "mae": mae_rf, "rmse": rmse_rf, "r2": r2_rf, "q80": q80, "search": search}
+
     bench_csv = os.path.join(report_dir, "model_comparison_benchmark.csv")
+    branch = "THPT (Time Series 2-Lag)"
+    bench_rows = [
+        ("Baseline 1: Điểm năm trước (Lag 1)", mae_b1, rmse_b1, r2_b1, "Naïve Baseline"),
+        ("Baseline 2: Trung bình 2 năm (Mean 2Y)", mae_b2, rmse_b2, r2_b2, "Naïve Baseline"),
+        ("Baseline 3: Decision Tree đơn lẻ (Depth=6)", mae_dt, rmse_dt, r2_dt, "Single Tree Model"),
+        ("Dự báo lai (công thức xu hướng + RF)", mae_rf, rmse_rf, r2_rf, "Hybrid Ensemble"),
+    ]
     df_bench = pd.DataFrame([
-        {"Model / Method": "Baseline 1: Điểm năm trước (Lag 1)", "Test MAE": round(mae_b1, 4), "Test RMSE": round(rmse_b1, 4), "Test R2": round(r2_b1, 4), "Type": "Naïve Baseline", "Branch": "THPT (Time Series 2-Lag)"},
-        {"Model / Method": "Baseline 2: Trung bình 2 năm (Mean 2Y)", "Test MAE": round(mae_b2, 4), "Test RMSE": round(rmse_b2, 4), "Test R2": round(r2_b2, 4), "Type": "Naïve Baseline", "Branch": "THPT (Time Series 2-Lag)"},
-        {"Model / Method": "Baseline 3: Decision Tree đơn lẻ (Depth=6)", "Test MAE": round(mae_dt, 4), "Test RMSE": round(rmse_dt, 4), "Test R2": round(r2_dt, 4), "Type": "Single Tree Model", "Branch": "THPT (Time Series 2-Lag)"},
-        {"Model / Method": "Dự báo lai (công thức xu hướng + RF)", "Test MAE": round(mae_rf, 4), "Test RMSE": round(rmse_rf, 4), "Test R2": round(r2_rf, 4), "Type": "Hybrid Ensemble", "Branch": "THPT (Time Series 2-Lag)"}
+        {"Model / Method": name, "Test MAE": round(mae, 4), "Test RMSE": round(rmse, 4),
+         "Test R2": round(r2, 4), "Type": kind, "Branch": branch}
+        for name, mae, rmse, r2, kind in bench_rows
     ])
     df_bench.to_csv(bench_csv, index=False, encoding="utf-8-sig")
+
+    feat_csv = os.path.join(report_dir, "feature_importance_thpt.csv")
+    feat_names = ["score_lag_1", "score_lag_2", "trend", "score_diff_lag", "score_rolling_mean_2y"]
+    if hasattr(model, "rf") and hasattr(model.rf, "feature_importances_"):
+        df_feat = pd.DataFrame({
+            "feature": feat_names,
+            "importance_mean": model.rf.feature_importances_
+        }).sort_values("importance_mean", ascending=False)
+        df_feat.to_csv(feat_csv, index=False, encoding="utf-8-sig")
 
     return {
         "model": model,
         "mae": mae_rf, "rmse": rmse_rf, "r2": r2_rf, "q80": q80,
-        "test_cov": test_cov, "val_size": len(val_df), "test_size": len(test_df)
+        "test_cov": test_cov, "train_size": len(train_df),
+        "val_size": len(val_df), "test_size": len(test_df)
     }
 
 
@@ -161,7 +282,7 @@ def train_hoc_ba_branch(
     df_um: pd.DataFrame,
     save_path: Optional[str] = None
 ) -> Dict[str, Any]:
-    print("\nHuấn luyện và đánh giá phương thức Học bạ (thang 30)")
+    print("\nHuan luyen va danh gia phuong thuc Hoc ba (thang 30)")
 
     if not df_up.empty:
         up_sub = df_up[["program_id", "major_group_id", "program_type"]].drop_duplicates("program_id")
@@ -198,12 +319,12 @@ def train_hoc_ba_branch(
     rmse_b1 = np.sqrt(mean_squared_error(y_test, y_pred_median))
     r2_b1 = r2_score(y_test, y_pred_median)
 
-    print(f"Học bạ Test: Baseline Median MAE={mae_b1:.4f}, RF MAE={mae_rf:.4f}, R2={r2_rf:.4f}")
+    print(f"Hoc ba Test: Baseline Median MAE={mae_b1:.4f}, RF MAE={mae_rf:.4f}, R2={r2_rf:.4f}")
 
     if save_path:
         os.makedirs(os.path.dirname(save_path), exist_ok=True)
         joblib.dump(pipe, save_path)
-        print(f"[OK] Đã lưu mô hình Học bạ vào: {save_path}")
+        print(f"[OK] Da luu mo hinh Hoc ba vao: {save_path}")
 
     return {"mae": mae_rf, "rmse": rmse_rf, "r2": r2_rf}
 
@@ -217,7 +338,7 @@ def generate_and_release_forecast_2027(
     radius = round(float(q80), 2)
     src_forecast = os.path.join(data_dir, "processed", "forecast_records_2026.csv")
     if not os.path.exists(src_forecast):
-        raise FileNotFoundError(f"Không tìm thấy file nguồn: {src_forecast}")
+        raise FileNotFoundError(f"Khong tim thay file nguon: {src_forecast}")
 
     df_src = pd.read_csv(src_forecast)
     records_2027 = []
@@ -318,17 +439,18 @@ def generate_and_release_forecast_2027(
     with open(meta_path, "w", encoding="utf-8") as f:
         json.dump(meta, f, indent=2, ensure_ascii=False)
 
-    print(f"\n[OK] Đã phát hành bộ dữ liệu dự báo 2027: {out_path}")
-    print(f"  - Tổng số bản ghi dự báo: {len(df_2027):,}")
-    print(f"  - THPT dự báo bằng mô hình lai (ML Time-Series): {thpt_ml_count:,}")
-    print(f"  - THPT tra cứu theo baseline 1 năm: {thpt_lag1_count:,}")
-    print(f"  - Phương thức học bạ / tra cứu lịch sử: {hb_count:,}")
+    print(f"\n[OK] du lieu du bao 2027: {out_path}")
+    print(f"  - Tong so ban ghi du bao: {len(df_2027):,}")
+    print(f"  - THPT du bao bang mo hinh Random Forest: {thpt_ml_count:,}")
+    print(f"  - THPT tra cuu theo baseline 1 nam: {thpt_lag1_count:,}")
+    print(f"  - Phuong thuc hoc ba / tra cuu lich su: {hb_count:,}")
     return out_path
 
 
 def sync_calibrator_and_forecast(
     data_dir: str,
     q80: float,
+    train_size: Optional[int] = None,
     val_size: Optional[int] = None,
     test_size: Optional[int] = None,
     test_coverage: Optional[float] = None,
@@ -346,6 +468,7 @@ def sync_calibrator_and_forecast(
         "method": "Residual-based Split Conformal Prediction",
         "calibration_set": val_label,
         "test_set": test_label,
+        "train_size": train_size,
         "intervals": {
             "confidence_80": {
                 "radius_points": radius,
@@ -356,19 +479,21 @@ def sync_calibrator_and_forecast(
     }
     with open(calibrator_path, "w", encoding="utf-8") as f:
         json.dump(cal_data, f, indent=2, ensure_ascii=False)
-    print(f"\n[OK] Đã đồng bộ bộ hiệu chỉnh Conformal: {calibrator_path} (bán kính ±{radius} điểm)")
+    print(f"\n[OK] Da dong bo bo hieu chinh Conformal: {calibrator_path} (ban kinh +/-{radius} diem)")
 
     if regenerated_predictions and model_thpt is not None:
         generate_and_release_forecast_2027(data_dir, model_thpt, q80)
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Tái tạo quy trình huấn luyện Random Forest Tuyển sinh")
-    parser.add_argument("--method", choices=["thpt", "hoc_ba", "all"], default="all", help="Phương thức cần huấn luyện")
-    parser.add_argument("--data-dir", default=os.path.join(os.path.dirname(__file__), "data"), help="Thư mục chứa dữ liệu")
-    parser.add_argument("--save", action=argparse.BooleanOptionalAction, default=True, help="Lưu mô hình đã huấn luyện (--no-save để tắt)")
-    parser.add_argument("--promote", action=argparse.BooleanOptionalAction, default=True, help="Lưu vào model chính thức rf_thpt_best.joblib (--no-promote để tắt)")
-    parser.add_argument("--sync-forecast", action=argparse.BooleanOptionalAction, default=True, help="Đồng bộ Conformal calibrator và phát hành dự báo 2027 (--no-sync-forecast để tắt)")
+    parser = argparse.ArgumentParser(description="Tai tao quy trinh huan luyen Random Forest")
+    parser.add_argument("--method", choices=["thpt", "hoc_ba", "all"], default="all", help="Phuong thuc can huan luyen")
+    parser.add_argument("--compare-only", action="store_true",
+                        help="Chi so sanh bien the mo hinh va do tham so tron, khong luu model hay bao cao chinh")
+    parser.add_argument("--data-dir", default=os.path.join(os.path.dirname(__file__), "data"), help="Thu muc chua du lieu")
+    parser.add_argument("--save", action=argparse.BooleanOptionalAction, default=True, help="Luu mo hinh da huan luyen")
+    parser.add_argument("--promote", action=argparse.BooleanOptionalAction, default=True, help="Luu vao model chinh thuc rf_thpt_best.joblib")
+    parser.add_argument("--sync-forecast", action=argparse.BooleanOptionalAction, default=True, help="Dong bo Conformal calibrator")
     return parser
 
 
@@ -377,6 +502,10 @@ def main():
     args = parser.parse_args()
 
     df_thpt, df_hb, df_up, df_um = load_datasets(args.data_dir)
+
+    if args.compare_only:
+        train_thpt_branch(df_thpt, df_up, df_um, save_path=None, write_reports=False)
+        return
 
     models_dir = os.path.join(args.data_dir, "models")
     thpt_model_path = os.path.join(models_dir, "rf_thpt_best.joblib") if (args.save and args.promote) else None
@@ -393,6 +522,7 @@ def main():
         sync_calibrator_and_forecast(
             args.data_dir,
             res_thpt["q80"],
+            train_size=res_thpt.get("train_size"),
             val_size=res_thpt.get("val_size"),
             test_size=res_thpt.get("test_size"),
             test_coverage=res_thpt.get("test_cov"),
@@ -400,7 +530,7 @@ def main():
             regenerated_predictions=True
         )
 
-    print("\nHoàn tất quá trình huấn luyện và phát hành mô hình + bảng dự báo 2027.")
+    print("\nHoan tat qua trinh huan luyen.")
 
 
 if __name__ == "__main__":

@@ -1,7 +1,6 @@
 __pycache__/
 *.py[cod]
 *$py.class
-.pytest_cache/
 .env
 .venv/
 venv/
@@ -16,3 +15,4 @@ data/.jwt_secret
 data/csv/nguoiDung.csv
 data/csv/hoSoHocSinh.csv
 data/csv/goiYNguyenVong.csv
+.claude/

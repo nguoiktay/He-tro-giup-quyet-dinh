@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hệ thống đề xuất và lựa chọn nguyện vọng đại học tối ưu cho học sinh THPT sử dụng thuật toán Random Forest</title>
-  <meta name="description" content="Hệ thống đề xuất và lựa chọn nguyện vọng đại học tối ưu cho học sinh THPT sử dụng thuật toán Random Forest theo điểm thi THPT và điểm học bạ.">
-  <link rel="stylesheet" href="styles.css">
+  <title>Hệ hỗ trợ quyết định gợi ý nguyện vọng đại học cho học sinh THPT dựa trên dự báo điểm chuẩn bằng Random Forest, triển khai qua REST API</title>
+  <meta name="description" content="Hệ hỗ trợ quyết định gợi ý nguyện vọng đại học cho học sinh THPT dựa trên dự báo điểm chuẩn bằng Random Forest, triển khai qua REST API.">
+  <link rel="stylesheet" href="styles.css?v=4">
 </head>
 <body>
 
@@ -18,8 +18,8 @@
           </svg>
         </div>
         <div class="brand-texts">
-          <span class="brand-title">Tuyển Sinh+</span>
-          <span class="brand-subtitle">Hệ thống đề xuất và lựa chọn nguyện vọng đại học tối ưu cho học sinh THPT sử dụng thuật toán Random Forest</span>
+          <span class="brand-title">Hệ hỗ trợ quyết định gợi ý nguyện vọng đại học</span>
+          <span class="brand-subtitle">cho học sinh THPT dựa trên dự báo điểm chuẩn bằng Random Forest, triển khai qua REST API</span>
         </div>
       </a>
 
@@ -54,11 +54,11 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/>
             </svg>
-            <span>Hệ thống đề xuất và lựa chọn nguyện vọng đại học tối ưu cho học sinh THPT sử dụng thuật toán Random Forest</span>
+            <span>Hệ hỗ trợ quyết định gợi ý nguyện vọng đại học cho học sinh THPT dựa trên dự báo điểm chuẩn bằng Random Forest, triển khai qua REST API</span>
           </div>
           <h1 class="hero-title">
             Tư vấn chọn nguyện vọng <br>
-            <span>đại học</span>
+            đại học
           </h1>
           <p class="hero-subtitle">
             Ứng dụng công nghệ và dữ liệu tuyển sinh để giúp bạn lựa chọn nguyện vọng phù hợp, hỗ trợ so sánh các lựa chọn theo điểm và sở thích.
@@ -176,11 +176,11 @@
       <div class="breadcrumb">
         <a href="#home" class="btn-crumb-home">Trang chủ</a>
         <span>&gt;</span>
-        <span class="active">Nhập thông tin xét tuyển</span>
+        <span class="active" style="color: #0f172a;">Nhập thông tin xét tuyển</span>
       </div>
 
       <div class="page-title-header">
-        <h1>Nhập thông tin <span>xét tuyển</span></h1>
+        <h1>Nhập thông tin xét tuyển</h1>
         <p>Cung cấp thông tin của bạn để hệ thống phân tích và gợi ý những ngành học, trường đại học phù hợp nhất.</p>
       </div>
 
@@ -361,10 +361,38 @@
                 <label class="form-label">Ngành yêu thích</label>
                 <div class="input-with-icon">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                    <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
                   </svg>
-                  <input type="text" class="form-input-text" id="filter-fav-major" placeholder="Tìm ngành bạn quan tâm...">
+                  <select class="form-select" id="filter-fav-major">
+                    <option value="">Bất kỳ ngành nào (Tất cả ngành)</option>
+                    <option value="Công nghệ thông tin">Công nghệ thông tin</option>
+                    <option value="Khoa học máy tính">Khoa học máy tính</option>
+                    <option value="Kỹ thuật phần mềm">Kỹ thuật phần mềm</option>
+                    <option value="Trí tuệ nhân tạo">Trí tuệ nhân tạo</option>
+                    <option value="An toàn thông tin">An toàn thông tin</option>
+                    <option value="Khoa học dữ liệu">Khoa học dữ liệu</option>
+                    <option value="Quản trị kinh doanh">Quản trị kinh doanh</option>
+                    <option value="Marketing">Marketing</option>
+                    <option value="Tài chính - Ngân hàng">Tài chính - Ngân hàng</option>
+                    <option value="Kế toán">Kế toán</option>
+                    <option value="Kinh doanh quốc tế">Kinh doanh quốc tế</option>
+                    <option value="Logistics và Quản lý chuỗi cung ứng">Logistics và Quản lý chuỗi cung ứng</option>
+                    <option value="Kỹ thuật cơ điện tử">Kỹ thuật cơ điện tử</option>
+                    <option value="Kỹ thuật điều khiển và tự động hóa">Kỹ thuật điều khiển và tự động hóa</option>
+                    <option value="Kỹ thuật ô tô">Kỹ thuật ô tô</option>
+                    <option value="Y khoa">Y khoa</option>
+                    <option value="Dược học">Dược học</option>
+                    <option value="Răng - Hàm - Mặt">Răng - Hàm - Mặt</option>
+                    <option value="Điều dưỡng">Điều dưỡng</option>
+                    <option value="Sư phạm Toán học">Sư phạm Toán học</option>
+                    <option value="Sư phạm Tiếng Anh">Sư phạm Tiếng Anh</option>
+                    <option value="Luật">Luật</option>
+                    <option value="Luật kinh tế">Luật kinh tế</option>
+                    <option value="Kinh tế">Kinh tế</option>
+                    <option value="Ngôn ngữ Anh">Ngôn ngữ Anh</option>
+                    <option value="Truyền thông đa phương tiện">Truyền thông đa phương tiện</option>
+                  </select>
                 </div>
               </div>
 
@@ -425,8 +453,8 @@
                 </svg>
               </div>
               <div class="info-tip-text">
-                <h6>Không tìm thấy ngành mình yêu thích?</h6>
-                <p>Bạn vẫn có thể để trống các bộ lọc này. Hệ thống sẽ gợi ý danh sách phù hợp nhất dựa trên thông tin bạn cung cấp.</p>
+                <h6>Không chọn ngành cụ thể?</h6>
+                <p>Bạn có thể chọn &ldquo;Bất kỳ ngành nào (Tất cả ngành)&rdquo; để hệ thống tự động gợi ý toàn bộ các ngành phù hợp nhất với điểm của bạn.</p>
               </div>
             </div>
           </div>
@@ -438,7 +466,7 @@
       <div class="breadcrumb">
         <a href="#home" class="btn-crumb-home">Trang chủ</a>
         <span>&gt;</span>
-        <span class="active">Kết quả khuyến nghị</span>
+        <span class="active" style="color: #0f172a;">Kết quả khuyến nghị</span>
       </div>
 
       <div class="page-title-header">
@@ -549,6 +577,9 @@
             </div>
           </div>
 
+          <p class="model-confidence-note" id="model-confidence-note" hidden></p>
+          <p class="model-confidence-note warning" id="combination-warning-note" hidden></p>
+
           <div class="recommendations-list" id="recommendations-cards-slot">
           </div>
         </div>
@@ -565,7 +596,7 @@
       </button>
 
       <div class="page-title-header">
-        <h1>So sánh và sắp xếp <span>nguyện vọng</span></h1>
+        <h1>So sánh và sắp xếp nguyện vọng</h1>
         <p>Đối chiếu thông tin các ngành học bạn quan tâm và sắp xếp thứ tự nguyện vọng phù hợp với mục tiêu của mình.</p>
       </div>
 
@@ -648,11 +679,11 @@
       <div class="breadcrumb">
         <a href="#home" class="btn-crumb-home">Trang chủ</a>
         <span>&gt;</span>
-        <span class="active">Tra cứu điểm chuẩn</span>
+        <span class="active" style="color: #0f172a;">Tra cứu điểm chuẩn</span>
       </div>
 
       <div class="page-title-header">
-        <h1>Tra cứu điểm chuẩn <span>toàn quốc</span></h1>
+        <h1>Tra cứu điểm chuẩn toàn quốc</h1>
         <p>Tìm kiếm và so sánh điểm chuẩn các trường đại học, ngành học qua các năm.</p>
       </div>
 
@@ -696,12 +727,12 @@
       <div class="breadcrumb">
         <a href="#home" class="btn-crumb-home">Trang chủ</a>
         <span>&gt;</span>
-        <span class="active">Giới thiệu hệ thống</span>
+        <span class="active" style="color: #0f172a;">Giới thiệu hệ thống</span>
       </div>
 
       <div class="page-title-header">
-        <h1>Giới thiệu hệ thống <span>Tuyển Sinh+</span></h1>
-        <p>Hệ thống trợ giúp quyết định tuyển sinh sử dụng dữ liệu lịch sử và mô hình Random Forest.</p>
+        <h1>Giới thiệu hệ thống</h1>
+        <p>Hệ hỗ trợ quyết định gợi ý nguyện vọng đại học cho học sinh THPT dựa trên dự báo điểm chuẩn bằng Random Forest, triển khai qua REST API.</p>
       </div>
 
       <div class="form-card">
@@ -709,7 +740,7 @@
           Mục tiêu của hệ thống
         </h3>
         <p style="color: var(--text-muted); line-height: 1.7; margin-bottom: 1.5rem;">
-          Tuyển Sinh+ hỗ trợ học sinh THPT và phụ huynh tra cứu, định hướng và sắp xếp danh sách nguyện vọng xét tuyển đại học. Hệ thống dựa trên dữ liệu điểm chuẩn các năm và mô hình Random Forest để tính toán mức độ thuận lợi và xếp hạng thứ tự ưu tiên cho từng nguyện vọng.
+          Hệ thống hỗ trợ học sinh THPT và phụ huynh tra cứu, định hướng và sắp xếp danh sách nguyện vọng xét tuyển đại học. Hệ thống dựa trên dữ liệu điểm chuẩn các năm và mô hình Random Forest để tính toán mức độ thuận lợi và xếp hạng thứ tự ưu tiên cho từng nguyện vọng.
         </p>
 
         <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--text-main);">
@@ -730,7 +761,7 @@
 
       <div class="page-title-header" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
         <div>
-          <h1 style="color:#0f172a;">Bảng Điều Khiển <span style="color:#0f172a;">Quản Trị Hệ Thống</span></h1>
+          <h1 style="color:#0f172a;">Bảng Điều Khiển Quản Trị Hệ Thống</h1>
           <p style="color:#475569;">Trung tâm kiểm soát người dùng, phân quyền, quản lý tổ hợp, phương thức, điểm chuẩn và mô hình AI.</p>
         </div>
         <div style="display:flex; gap:0.5rem; align-items:center;">
@@ -785,8 +816,8 @@
         <div class="admin-kpi-card">
           <div class="admin-kpi-info">
             <div class="admin-kpi-label">Mô hình Random Forest</div>
-            <div class="admin-kpi-val" id="admin-stat-ai-r2">R² 0.762</div>
-            <div class="admin-kpi-sub">7,280 kịch bản huấn luyện</div>
+            <div class="admin-kpi-val" id="admin-stat-ai-r2">R² 0.8724</div>
+            <div class="admin-kpi-sub" id="admin-stat-ai-sub">11,182 kịch bản huấn luyện</div>
           </div>
         </div>
       </div>
@@ -986,15 +1017,15 @@
               </div>
               <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-light); padding-bottom:0.5rem;">
                 <span style="color:#0f172a;">Hệ số xác định R² Score:</span>
-                <span style="font-weight:700; color:#0f172a;">0.762</span>
+                <span style="font-weight:700; color:#0f172a;" id="admin-spec-r2">0.8724</span>
               </div>
               <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-light); padding-bottom:0.5rem;">
                 <span style="color:#0f172a;">Sai số tuyệt đối trung bình (MAE):</span>
-                <span style="font-weight:700; color:#0f172a;">1.15 điểm</span>
+                <span style="font-weight:700; color:#0f172a;" id="admin-spec-mae">1.0411 điểm</span>
               </div>
               <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-light); padding-bottom:0.5rem;">
                 <span style="color:#0f172a;">Số lượng mẫu đào tạo:</span>
-                <span style="font-weight:700; color:#0f172a;">7,280 kịch bản</span>
+                <span style="font-weight:700; color:#0f172a;" id="admin-spec-samples">11,182 kịch bản</span>
               </div>
               <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-light); padding-bottom:0.5rem;">
                 <span style="color:#0f172a;">Năm tham chiếu / Mục tiêu:</span>
@@ -1034,7 +1065,7 @@
   </main>
 
   <footer class="site-footer">
-    <p>© 2026 Tuyển Sinh+ - Hệ thống đề xuất và lựa chọn nguyện vọng đại học tối ưu cho học sinh THPT sử dụng thuật toán Random Forest</p>
+    <p>© 2026 Hệ hỗ trợ quyết định gợi ý nguyện vọng đại học cho học sinh THPT dựa trên dự báo điểm chuẩn bằng Random Forest, triển khai qua REST API</p>
     <p style="margin-top: 0.35rem; font-size: 0.8rem; color: var(--text-light);">
       Dữ liệu tuyển sinh chính thức • Mô hình Random Forest cho phương thức THPT
     </p>
@@ -1138,6 +1169,21 @@
       </form>
     </div>
   </div>
+
+  <button class="chat-toggle" id="chat-toggle" aria-expanded="false" aria-controls="chat-panel">Hỏi trợ lý AI</button>
+  <section class="chat-panel" id="chat-panel" hidden aria-label="Trợ lý AI tuyển sinh">
+    <header class="chat-header">
+      <span>Trợ lý tuyển sinh</span>
+      <button type="button" class="chat-close" id="chat-close" aria-label="Đóng">×</button>
+    </header>
+    <div class="chat-messages" id="chat-messages">
+      <div class="chat-msg model">Chào bạn! Mình có thể tra điểm chuẩn, tính điểm xét tuyển hoặc gợi ý nguyện vọng. Số liệu được lấy từ hệ thống. Bạn đừng nhập họ tên, email hay số điện thoại nhé.</div>
+    </div>
+    <form class="chat-form" id="chat-form">
+      <input type="text" id="chat-input" maxlength="1000" placeholder="Ví dụ: Điểm chuẩn Bách khoa ngành CNTT?" autocomplete="off">
+      <button type="submit" class="btn-primary">Gửi</button>
+    </form>
+  </section>
 
   <script src="app.js"></script>
 </body>

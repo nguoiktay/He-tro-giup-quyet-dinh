@@ -1,0 +1,237 @@
+{
+  "moTa": "Gợi ý cho năm 2026 chỉ dùng dữ liệu đến 2025, đối chiếu với điểm chuẩn 2026 thật.",
+  "phamVi": "Chỉ đánh giá được các nguyện vọng có điểm chuẩn 2026 thật cùng chương trình, tổ hợp, phương thức, thang điểm. Tỷ lệ đỗ và Brier tính trên tập đó.",
+  "banKinh80HieuChinh2025": 2.2,
+  "tuoiMocToiDa": 0,
+  "hoSoGiaLap": {
+    "PT01": {
+      "toHop": [
+        "A00",
+        "A01",
+        "B00",
+        "C00",
+        "D01"
+      ],
+      "tongDiem": [
+        15,
+        29
+      ]
+    },
+    "PT02": {
+      "toHop": [
+        "A00",
+        "D01"
+      ],
+      "tongDiem": [
+        18,
+        29
+      ]
+    },
+    "ghiChu": "Các môn bằng nhau, KV3, không ưu tiên, không lọc khu vực/ngành/học phí."
+  },
+  "nguongNhom": {
+    "An toàn": 0.8,
+    "Vừa sức": 0.4,
+    "Thử sức": 0.15
+  },
+  "ketQua": {
+    "PT01_duBaoLai": {
+      "soNguyenVong": 1500,
+      "soCoDiemChuan2026": 1360,
+      "tyLeKhopDiemChuan2026": 0.9067,
+      "phanBoNamThamChieu": {
+        "2025": 1500
+      },
+      "tyLeKhopTheoNamThamChieu": {
+        "2025": 0.9067
+      },
+      "brierScore": 0.1322,
+      "theoNhom": {
+        "An toàn": {
+          "soNguyenVong": 338,
+          "tyLeDoThucTe": 0.9645,
+          "chiSoThuanLoiTrungBinh": 0.9109
+        },
+        "Vừa sức": {
+          "soNguyenVong": 538,
+          "tyLeDoThucTe": 0.8234,
+          "chiSoThuanLoiTrungBinh": 0.6925
+        },
+        "Thử sức": {
+          "soNguyenVong": 310,
+          "tyLeDoThucTe": 0.3774,
+          "chiSoThuanLoiTrungBinh": 0.3372
+        },
+        "Rủi ro cao": {
+          "soNguyenVong": 174,
+          "tyLeDoThucTe": 0.0805,
+          "chiSoThuanLoiTrungBinh": 0.0533
+        }
+      },
+      "hieuChinhChiSoThuanLoi": [
+        {
+          "khoang": "(-0.001, 0.15]",
+          "soNguyenVong": 174,
+          "duDoanTrungBinh": 0.0533,
+          "tyLeDoThucTe": 0.0805
+        },
+        {
+          "khoang": "(0.15, 0.3]",
+          "soNguyenVong": 90,
+          "duDoanTrungBinh": 0.2445,
+          "tyLeDoThucTe": 0.3222
+        },
+        {
+          "khoang": "(0.3, 0.4]",
+          "soNguyenVong": 220,
+          "duDoanTrungBinh": 0.3751,
+          "tyLeDoThucTe": 0.4
+        },
+        {
+          "khoang": "(0.4, 0.5]",
+          "soNguyenVong": 61,
+          "duDoanTrungBinh": 0.4595,
+          "tyLeDoThucTe": 0.6066
+        },
+        {
+          "khoang": "(0.5, 0.6]",
+          "soNguyenVong": 43,
+          "duDoanTrungBinh": 0.5459,
+          "tyLeDoThucTe": 0.6744
+        },
+        {
+          "khoang": "(0.6, 0.7]",
+          "soNguyenVong": 80,
+          "duDoanTrungBinh": 0.6526,
+          "tyLeDoThucTe": 0.825
+        },
+        {
+          "khoang": "(0.7, 0.8]",
+          "soNguyenVong": 354,
+          "duDoanTrungBinh": 0.7594,
+          "tyLeDoThucTe": 0.8785
+        },
+        {
+          "khoang": "(0.8, 0.9]",
+          "soNguyenVong": 160,
+          "duDoanTrungBinh": 0.8731,
+          "tyLeDoThucTe": 0.925
+        },
+        {
+          "khoang": "(0.9, 1.0]",
+          "soNguyenVong": 178,
+          "duDoanTrungBinh": 0.9448,
+          "tyLeDoThucTe": 1.0
+        }
+      ],
+      "tyLeHoSoCoItNhat1NVDo": 1.0,
+      "tyLeHoSoCoNVAnToanDo": 0.8667,
+      "soNVDoTrungBinhMoiHoSo": 12.0,
+      "maeDiemSoSanhVsThat": 1.2854,
+      "maeDiemSoSanhVsThatCoDuBao": 1.2854
+    },
+    "PT01_duBaoLag1": {
+      "soNguyenVong": 1500,
+      "soCoDiemChuan2026": 1359,
+      "tyLeKhopDiemChuan2026": 0.906,
+      "phanBoNamThamChieu": {
+        "2025": 1500
+      },
+      "tyLeKhopTheoNamThamChieu": {
+        "2025": 0.906
+      },
+      "brierScore": 0.1322,
+      "theoNhom": {
+        "An toàn": {
+          "soNguyenVong": 345,
+          "tyLeDoThucTe": 0.9768,
+          "chiSoThuanLoiTrungBinh": 0.913
+        },
+        "Vừa sức": {
+          "soNguyenVong": 552,
+          "tyLeDoThucTe": 0.7862,
+          "chiSoThuanLoiTrungBinh": 0.6838
+        },
+        "Thử sức": {
+          "soNguyenVong": 300,
+          "tyLeDoThucTe": 0.3167,
+          "chiSoThuanLoiTrungBinh": 0.3365
+        },
+        "Rủi ro cao": {
+          "soNguyenVong": 162,
+          "tyLeDoThucTe": 0.0802,
+          "chiSoThuanLoiTrungBinh": 0.0523
+        }
+      },
+      "hieuChinhChiSoThuanLoi": [
+        {
+          "khoang": "(-0.001, 0.15]",
+          "soNguyenVong": 162,
+          "duDoanTrungBinh": 0.0523,
+          "tyLeDoThucTe": 0.0802
+        },
+        {
+          "khoang": "(0.15, 0.3]",
+          "soNguyenVong": 98,
+          "duDoanTrungBinh": 0.26,
+          "tyLeDoThucTe": 0.398
+        },
+        {
+          "khoang": "(0.3, 0.4]",
+          "soNguyenVong": 202,
+          "duDoanTrungBinh": 0.3736,
+          "tyLeDoThucTe": 0.2772
+        },
+        {
+          "khoang": "(0.4, 0.5]",
+          "soNguyenVong": 79,
+          "duDoanTrungBinh": 0.4869,
+          "tyLeDoThucTe": 0.6329
+        },
+        {
+          "khoang": "(0.5, 0.6]",
+          "soNguyenVong": 49,
+          "duDoanTrungBinh": 0.5349,
+          "tyLeDoThucTe": 0.551
+        },
+        {
+          "khoang": "(0.6, 0.7]",
+          "soNguyenVong": 57,
+          "duDoanTrungBinh": 0.6503,
+          "tyLeDoThucTe": 0.5965
+        },
+        {
+          "khoang": "(0.7, 0.8]",
+          "soNguyenVong": 367,
+          "duDoanTrungBinh": 0.7512,
+          "tyLeDoThucTe": 0.8801
+        },
+        {
+          "khoang": "(0.8, 0.9]",
+          "soNguyenVong": 177,
+          "duDoanTrungBinh": 0.8782,
+          "tyLeDoThucTe": 0.9548
+        },
+        {
+          "khoang": "(0.9, 1.0]",
+          "soNguyenVong": 168,
+          "duDoanTrungBinh": 0.9497,
+          "tyLeDoThucTe": 1.0
+        }
+      ],
+      "tyLeHoSoCoItNhat1NVDo": 1.0,
+      "tyLeHoSoCoNVAnToanDo": 0.8667,
+      "soNVDoTrungBinhMoiHoSo": 11.72,
+      "maeDiemSoSanhVsThat": 1.2315,
+      "maeDiemSoSanhVsThatCoDuBao": 1.2315
+    },
+    "PT02_traCuuDiemChuan2025": {
+      "soNguyenVong": 480,
+      "soCoDiemChuan2026": 0,
+      "phanBoNamThamChieu": {
+        "2025": 480
+      },
+      "ghiChu": "Không nguyện vọng nào khớp được điểm chuẩn 2026 (mã chương trình năm 2025 và 2026 không trùng nhau), nên không đánh giá được."
+    }
+  }
+}

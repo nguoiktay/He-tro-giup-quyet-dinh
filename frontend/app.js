@@ -1,3 +1,5 @@
+const API_BASE = '';
+
 let currentMethod = 'PT01';
 let currentProfile = {
   hoTen: 'Phạm Minh Anh',
@@ -25,6 +27,36 @@ function escapeHtml(str) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
+}
+
+function formatApiError(data, fallback) {
+  if (!data) return fallback;
+  const detail = data.detail;
+  if (Array.isArray(detail)) {
+    return detail.map(d => String(d.msg || '').replace(/^Value error, /, '')).filter(Boolean).join(' ') || fallback;
+  }
+  return detail || data.thongBao || fallback;
+}
+
+async function loadModelInfo() {
+  const box = document.getElementById('model-confidence-note');
+  if (!box) return;
+  try {
+    const res = await fetch(`${API_BASE}/api/model-info`);
+    if (!res.ok) return;
+    const info = await res.json();
+    const ci = info.khoangTinCay || {};
+    const cov = info.doPhuChuongTrinh || {};
+    const pct = v => (v === null || v === undefined) ? '?' : `${(v * 100).toFixed(1)}%`;
+    box.textContent =
+      `Độ tin cậy dự báo ${info.namDuBao}: điểm chuẩn dự báo có sai số ±${ci.banKinhDiem} điểm ` +
+      `(mức danh nghĩa ${pct(ci.mucTinCayDanhNghia)}, độ phủ thực tế trên tập kiểm thử ${pct(ci.doPhuThucTe)}; ` +
+      `MAE ${info.mae}, R² ${info.r2}). Mô hình chỉ dự báo ${cov.duBaoMoHinh}/${cov.tongBanGhi} bản ghi điểm chuẩn ` +
+      `(${cov.soTruongCoDuBao} trường); phần còn lại so với điểm chuẩn đã công bố.`;
+    box.hidden = false;
+  } catch (err) {
+    box.hidden = true;
+  }
 }
 
 function formatTuitionBadge(item) {
@@ -132,14 +164,17 @@ document.addEventListener('DOMContentLoaded', () => {
   initAdminPanelEvents();
   initCatalogsFromApi();
   loadInitialState();
+  loadModelInfo();
+  initChatWidget();
 });
 
 async function initCatalogsFromApi() {
   try {
-    const [combsRes, regionsRes, typesRes] = await Promise.all([
+    const [combsRes, regionsRes, typesRes, majorsRes] = await Promise.all([
       fetch(`${API_BASE}/api/combinations`).catch(() => null),
       fetch(`${API_BASE}/api/regions`).catch(() => null),
-      fetch(`${API_BASE}/api/university-types`).catch(() => null)
+      fetch(`${API_BASE}/api/university-types`).catch(() => null),
+      fetch(`${API_BASE}/api/majors?limit=200`).catch(() => null)
     ]);
 
     if (combsRes && combsRes.ok) {
@@ -170,6 +205,40 @@ async function initCatalogsFromApi() {
         const curVal = typeSelect.value;
         typeSelect.innerHTML = '<option value="">Tất cả loại trường</option>' +
           types.map(t => `<option value="${escapeHtml(t)}"${t === curVal ? ' selected' : ''}>${escapeHtml(t)}</option>`).join('');
+      }
+    }
+
+    if (majorsRes && majorsRes.ok) {
+      const majors = await majorsRes.json();
+      const majorSelect = document.getElementById('filter-fav-major');
+      if (majorSelect && Array.isArray(majors) && majors.length > 0) {
+        const curVal = majorSelect.value;
+        const groups = {};
+        majors.forEach(m => {
+          const groupName = m.nhomNganh || 'Khác';
+          if (!groups[groupName]) groups[groupName] = [];
+          groups[groupName].push(m);
+        });
+
+        let html = '<option value="">Bất kỳ ngành nào (Tất cả ngành)</option>';
+        Object.keys(groups).sort((a, b) => a.localeCompare(b, 'vi')).forEach(grp => {
+          html += `<optgroup label="${escapeHtml(grp)}">`;
+          groups[grp].forEach(m => {
+            const isSel = (m.tenNganh === curVal) ? ' selected' : '';
+            const codeSuffix = m.maNganh && m.maNganh !== 'UNKNOWN' ? ` (${escapeHtml(m.maNganh)})` : '';
+            html += `<option value="${escapeHtml(m.tenNganh)}"${isSel}>${escapeHtml(m.tenNganh)}${codeSuffix}</option>`;
+          });
+          html += '</optgroup>';
+        });
+        majorSelect.innerHTML = html;
+
+        const resGroupSelect = document.getElementById('res-filter-group');
+        if (resGroupSelect) {
+          const curGroupVal = resGroupSelect.value;
+          const distinctGroups = Object.keys(groups).sort((a, b) => a.localeCompare(b, 'vi'));
+          resGroupSelect.innerHTML = '<option value="">Tất cả nhóm ngành</option>' +
+            distinctGroups.map(g => `<option value="${escapeHtml(g)}"${g === curGroupVal ? ' selected' : ''}>${escapeHtml(g)}</option>`).join('');
+        }
       }
     }
   } catch (err) {
@@ -524,17 +593,23 @@ async function handleCalculateAndRecommend() {
     const data = await res.json();
     if (res.ok && data) {
       window.canKiemTraHocPhi = data.danhSachCanKiemTraHocPhi || [];
+      const warnBox = document.getElementById('combination-warning-note');
+      if (warnBox) {
+        const warnings = data.canhBaoToHop || [];
+        warnBox.textContent = warnings.length ? `Bỏ qua: ${warnings.join('; ')}.` : '';
+        warnBox.hidden = warnings.length === 0;
+      }
       if (data.danhSachTongHop && data.danhSachTongHop.length > 0) {
         rawRecommendations = data.danhSachTongHop;
       } else if (window.canKiemTraHocPhi.length > 0) {
         rawRecommendations = [];
       } else {
-        const errMsg = data.detail || data.thongBao || 'Không tìm thấy chương trình phù hợp với thông tin đã nhập.';
+        const errMsg = formatApiError(data, 'Không tìm thấy chương trình phù hợp với thông tin đã nhập.');
         showResultsError(errMsg);
         return;
       }
     } else {
-      const errMsg = (data && (data.detail || data.thongBao)) || 'Không tìm thấy chương trình phù hợp với thông tin đã nhập.';
+      const errMsg = formatApiError(data, 'Không tìm thấy chương trình phù hợp với thông tin đã nhập.');
       showResultsError(errMsg);
       return;
     }
@@ -612,7 +687,25 @@ function showLoadingState() {
 
 function showResultsError(msg) {
   const slot = document.getElementById('recommendations-cards-slot');
-  if (slot) slot.innerHTML = `<div style="background:#fff3f3;border:1px solid #fca5a5;border-radius:12px;padding:2rem;color:#dc2626;text-align:center;">${msg}</div>`;
+  if (slot) {
+    slot.innerHTML = `
+      <div style="background:#ffffff; border:1px solid var(--border-light); border-radius:16px; padding:2.5rem 2rem; text-align:center; max-width:680px; margin:2rem auto; box-shadow:0 4px 20px rgba(0,0,0,0.04);">
+        <div style="width:56px; height:56px; margin:0 auto 1.25rem; background:#eff6ff; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#2563eb;">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+        </div>
+        <h4 style="font-size:1.2rem; font-weight:700; color:var(--text-main); margin-bottom:0.75rem;">Thông báo từ hệ thống</h4>
+        <p style="font-size:0.95rem; color:var(--text-muted); line-height:1.65; margin-bottom:1.75rem;">${escapeHtml(msg)}</p>
+        <div style="display:flex; justify-content:center; gap:1rem; flex-wrap:wrap;">
+          <button onclick="switchView('view-profile')" class="btn-primary" style="padding:0.75rem 1.5rem; border-radius:8px; font-weight:600; cursor:pointer;">
+            Thay đổi tổ hợp xét tuyển
+          </button>
+        </div>
+      </div>`;
+  }
   const cb = document.getElementById('rec-count-badge');
   if (cb) cb.textContent = '0 kết quả';
 }
@@ -670,7 +763,7 @@ function renderRecommendationCards(items) {
     return;
   }
 
-  slot.innerHTML = items.map((item, idx) => {
+  let html = items.map((item, idx) => {
     const avatarInfo = UNI_AVATARS[item.maTruong] || UNI_AVATARS['DEFAULT'];
     const delta = item.delta !== undefined ? item.delta : Math.round((currentProfile.tongDiem - item.diemChuanThamChieu) * 100) / 100;
 
@@ -754,6 +847,8 @@ function renderRecommendationCards(items) {
               Chỉ tiêu: ${escapeHtml(item.chiTieu)}
             </span>` : ''}
           </div>
+          ${item.lyDoDeXuat ? `<p class="rec-reason"><strong>Vì sao đề xuất:</strong> ${escapeHtml(item.lyDoDeXuat)}</p>` : ''}
+          <p class="rec-ai-explain" id="ai-explain-${idx}" hidden></p>
         </div>
 
         <div class="rec-score-metrics">
@@ -780,6 +875,7 @@ function renderRecommendationCards(items) {
 
         <div class="rec-action-buttons">
           <button class="btn-rec-detail" onclick="openProgramDetails(${idx})">Xem chi tiết</button>
+          <button class="btn-rec-detail" id="btn-ai-explain-${idx}" onclick="explainRecommendation(${idx})">AI giải thích</button>
           <button class="btn-rec-save ${isSaved ? 'saved' : ''}" onclick="toggleSaveWishlistItem(${idx})">
             ${isSaved ? 'Đã lưu' : 'Lưu nguyện vọng'}
           </button>
@@ -1000,7 +1096,7 @@ window.openProgramDetails = async function (idx) {
       <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem; font-size:0.9rem;">
         <span style="color:var(--text-muted);">Hình thức tham chiếu:</span>
         <span style="font-weight:700; color:${item.coDuBao ? 'var(--primary)' : 'var(--text-muted)'};">
-          ${item.coDuBao ? `Dự báo năm ${item.namMucTieu || 2027}: ${Number(item.diemChuanDuBao).toFixed(2)}${item.khoangTinCay80 ? ` (±${escapeHtml(item.khoangTinCay80)})` : ''}` : `Tra cứu điểm chuẩn công bố`}
+          ${item.coDuBao ? `Dự báo năm ${item.namMucTieu || 2027}: ${Number(item.diemChuanDuBao).toFixed(2)}${item.khoangTinCay80 ? ` (khoảng 80%: ${escapeHtml(item.khoangTinCay80)})` : ''}` : `Tra cứu điểm chuẩn công bố`}
         </span>
       </div>
       <div style="display:flex; justify-content:space-between; font-size:0.9rem; flex-wrap:wrap; gap:0.25rem;">
@@ -1550,8 +1646,15 @@ async function loadAdminDashboard() {
         if (majEl) majEl.textContent = data.tongNganh;
         if (bmEl) bmEl.textContent = Number(data.tongDiemChuan).toLocaleString('vi-VN');
         if (profEl) profEl.textContent = `${data.tongHoSo} hồ sơ`;
-        if (profSub) profSub.textContent = `${data.tongNguyenVong} nguyện vọng đã lưu`;
         if (r2El && data.moHinhMl) r2El.textContent = `R² ${data.moHinhMl.r2Score}`;
+        const aiSubEl = document.getElementById('admin-stat-ai-sub');
+        if (aiSubEl && data.moHinhMl) aiSubEl.textContent = `${Number(data.moHinhMl.soLuongMau).toLocaleString('vi-VN')} kịch bản huấn luyện`;
+        const specR2El = document.getElementById('admin-spec-r2');
+        if (specR2El && data.moHinhMl) specR2El.textContent = data.moHinhMl.r2Score;
+        const specMaeEl = document.getElementById('admin-spec-mae');
+        if (specMaeEl && data.moHinhMl) specMaeEl.textContent = `${data.moHinhMl.maeScore} điểm`;
+        const specSamplesEl = document.getElementById('admin-spec-samples');
+        if (specSamplesEl && data.moHinhMl) specSamplesEl.textContent = `${Number(data.moHinhMl.soLuongMau).toLocaleString('vi-VN')} kịch bản`;
       }
     } else {
       const uSub = document.getElementById('admin-stat-users-sub');
@@ -2172,6 +2275,104 @@ function initAdminPanelEvents() {
       }
     });
   }
+}
+
+async function postJsonWithTimeout(url, body, timeoutMs = 20000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      signal: controller.signal
+    });
+    const data = await res.json().catch(() => null);
+    return { ok: res.ok, status: res.status, data };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+window.explainRecommendation = async function (idx) {
+  const item = displayedRecommendations[idx];
+  const box = document.getElementById(`ai-explain-${idx}`);
+  const btn = document.getElementById(`btn-ai-explain-${idx}`);
+  if (!item || !box) return;
+  box.hidden = false;
+  box.textContent = 'Đang tạo lời giải thích...';
+  if (btn) btn.disabled = true;
+  try {
+    const { ok, data } = await postJsonWithTimeout(`${API_BASE}/api/explain`, { nguyenVong: item });
+    if (!ok) {
+      box.textContent = formatApiError(data, 'Không tạo được lời giải thích.');
+      return;
+    }
+    const note = data.nguon === 'du_phong' ? ' (Trợ lý AI chưa sẵn sàng, đang hiển thị giải thích của hệ thống.)' : '';
+    box.textContent = data.giaiThich + note;
+  } catch (err) {
+    box.textContent = item.lyDoDeXuat || 'Không kết nối được máy chủ.';
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+};
+
+const chatHistory = [];
+
+function appendChatMessage(role, text) {
+  const list = document.getElementById('chat-messages');
+  if (!list) return null;
+  const el = document.createElement('div');
+  el.className = `chat-msg ${role}`;
+  el.textContent = text;
+  list.appendChild(el);
+  list.scrollTop = list.scrollHeight;
+  return el;
+}
+
+function initChatWidget() {
+  const toggle = document.getElementById('chat-toggle');
+  const panel = document.getElementById('chat-panel');
+  const form = document.getElementById('chat-form');
+  const input = document.getElementById('chat-input');
+  if (!toggle || !panel || !form || !input) return;
+
+  const setOpen = (open) => {
+    panel.hidden = !open;
+    toggle.setAttribute('aria-expanded', String(open));
+    if (open) input.focus();
+  };
+  toggle.addEventListener('click', () => setOpen(panel.hidden));
+  document.getElementById('chat-close')?.addEventListener('click', () => setOpen(false));
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const question = input.value.trim();
+    if (!question) return;
+    input.value = '';
+    appendChatMessage('user', question);
+    const pending = appendChatMessage('model pending', 'Đang trả lời...');
+    const sendBtn = form.querySelector('button');
+    if (sendBtn) sendBtn.disabled = true;
+    try {
+      const { ok, data } = await postJsonWithTimeout(`${API_BASE}/api/chat`, {
+        cauHoi: question,
+        lichSu: chatHistory.slice(-8)
+      }, 45000);
+      const answer = ok ? data.traLoi : formatApiError(data, 'Trợ lý AI đang bận, vui lòng thử lại.');
+      pending.textContent = answer;
+      pending.className = 'chat-msg model';
+      if (ok && data.nguon === 'gemini') {
+        chatHistory.push({ vaiTro: 'user', noiDung: question }, { vaiTro: 'model', noiDung: answer });
+      }
+    } catch (err) {
+      pending.textContent = 'Hết thời gian chờ hoặc mất kết nối. Vui lòng thử lại.';
+      pending.className = 'chat-msg model';
+    } finally {
+      if (sendBtn) sendBtn.disabled = false;
+      input.focus();
+    }
+  });
 }
 
 

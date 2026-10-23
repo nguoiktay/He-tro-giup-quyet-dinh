@@ -1,4 +1,5 @@
 import time
+import unicodedata
 from typing import Dict, List, Any, Optional
 import pandas as pd
 
@@ -115,7 +116,7 @@ class AdmissionService:
         else:
             phan_loai = "over_35m"
 
-        canh_bao_nam = f"Mức học phí theo niên khóa {nam_ap_dung} ({khoa_ap_dung or 'chưa rõ khóa'}), cần lưu ý điều chỉnh/trượt giá cho năm tuyển sinh {config.TARGET_YEAR}." if can_cap_nhat_2027 else ""
+        canh_bao_nam = f"Muc hoc phi theo nien khoa {nam_ap_dung} ({khoa_ap_dung or 'chua ro khoa'}), can luu y dieu chinh/truot gia cho nam tuyen sinh {config.TARGET_YEAR}." if can_cap_nhat_2027 else ""
 
         return {
             "hocPhiKy": t_ky,
@@ -250,6 +251,21 @@ class AdmissionService:
         if kv_target and uni_khu_vuc != kv_target:
             return None
 
+        if nganh_target:
+            t_target = unicodedata.normalize("NFC", str(nganh_target or "")).strip().lower()
+            t_nganh = unicodedata.normalize("NFC", str(major.get("tenNganh", "") or "")).strip().lower()
+            t_prg = unicodedata.normalize("NFC", str(dc.get("tenChuongTrinh", "") or "")).strip().lower()
+            t_nhom = unicodedata.normalize("NFC", str(major.get("nhomNganh", "") or "")).strip().lower()
+
+            match_major = (
+                (t_target in t_nganh)
+                or (t_target in t_prg)
+                or (t_target == t_nhom)
+                or (bool(t_nhom) and t_nhom in t_target)
+            )
+            if not match_major:
+                return None
+
         rule_id = dc.get("calculationRuleId", "RULE_THPT_STD_30" if ma_pt == "PT01" else "RULE_HB_STD_30")
         scale = dc.get("scoreScale", "SCALE_30")
         ket_qua = ScoringService.tinhDiemXetTuyenChuongTrinh(ho_so, ma_pt, ma_th, rule_id, scale)
@@ -324,6 +340,20 @@ class AdmissionService:
             config.WEIGHT_DIEM_THUAN_LOI * diem_thuan_loi + config.WEIGHT_SO_THICH * score_so_thich, 1
         )
 
+        ly_do_de_xuat = cls._build_ly_do_de_xuat(
+            diem_xet_tuyen=diem_xet_tuyen,
+            diem_so_sanh=diem_so_sanh,
+            co_du_bao=co_du_bao,
+            fc_info=fc_info,
+            nam_bc=nam_bc,
+            du_bao=du_bao,
+            nganh_target=nganh_target,
+            kv_target=kv_target,
+            hp_text=hp_info["hocPhiText"],
+            hp_trieu=hp_trieu,
+            ngan_sach=ngan_sach,
+        )
+
         chi_tieu_val = dc.get("chiTieu")
         chi_tieu_clean = int(chi_tieu_val) if chi_tieu_val not in (None, "", "None", "null") and not pd.isna(chi_tieu_val) else None
 
@@ -374,8 +404,8 @@ class AdmissionService:
             "phienBanMoHinh": fc_info.get("modelVersion") if co_du_bao else None,
             "khoangTinCay80": f"{fc_info['lowerBound80']} – {fc_info['upperBound80']}" if co_du_bao and fc_info.get("lowerBound80") else None,
             "lyDoChuaCoDuBao": None if co_du_bao else (
-                "Phương thức học bạ sử dụng điểm chuẩn chính thức công bố" if ma_pt == "PT02"
-                else "Chương trình chưa có đủ dữ liệu chuỗi thời gian để xây dựng mô hình dự báo"
+                "Phuong thuc hoc ba su dung diem chuan chinh thuc cong bo" if ma_pt == "PT02"
+                else "Chuong trinh chua co du du lieu chuoi thoi gian de xay dung mo hinh du bao"
             ),
             "cachTinhDiem": ket_qua.get("cachTinh", ""),
             "delta": du_bao["delta"],
@@ -387,7 +417,51 @@ class AdmissionService:
             "nhomNguyenVong": du_bao.get("nhomNguyenVong", "Vừa sức"),
             "mucDoPhuHop": du_bao["mucDoPhuHop"],
             "mucDoRuiRo": du_bao["mucDoRuiRo"],
+            "lyDoDeXuat": ly_do_de_xuat,
         }
+
+    @staticmethod
+    def _build_ly_do_de_xuat(
+        diem_xet_tuyen: float,
+        diem_so_sanh: float,
+        co_du_bao: bool,
+        fc_info: Optional[Dict[str, Any]],
+        nam_bc: Any,
+        du_bao: Dict[str, Any],
+        nganh_target: str,
+        kv_target: Optional[str],
+        hp_text: str,
+        hp_trieu: Optional[float],
+        ngan_sach: Any,
+    ) -> str:
+        delta = du_bao["delta"]
+        if co_du_bao and fc_info:
+            moc = f"điểm chuẩn dự báo {config.TARGET_YEAR} ({diem_so_sanh:.2f}, sai số ±{fc_info.get('uncertaintyRadius', 0.5)})"
+        else:
+            moc = f"điểm chuẩn năm {nam_bc} ({diem_so_sanh:.2f})"
+        if delta > 0:
+            so_sanh = f"cao hơn {moc} {delta:.2f} điểm"
+        elif delta < 0:
+            so_sanh = f"thấp hơn {moc} {abs(delta):.2f} điểm"
+        else:
+            so_sanh = f"bằng {moc}"
+
+        phan = [
+            f"Điểm xét tuyển {diem_xet_tuyen:.2f} {so_sanh}",
+            f"chỉ số thuận lợi {du_bao['chiSoThuanLoi']:.1f}% nên xếp nhóm {du_bao['nhomNguyenVong']}",
+        ]
+        if nganh_target:
+            phan.append(f"khớp ngành bạn quan tâm ('{nganh_target}')")
+        if kv_target:
+            phan.append(f"thuộc khu vực {kv_target}")
+        if hp_trieu is not None:
+            try:
+                ns_val = float(ngan_sach) if ngan_sach not in (None, "") else 0.0
+            except (ValueError, TypeError):
+                ns_val = 0.0
+            if ns_val > 0:
+                phan.append(f"học phí {hp_text} nằm trong ngân sách {ns_val:g} triệu/năm")
+        return "; ".join(phan) + "."
 
     @staticmethod
     def _score_nganh(nganh_target: str, major: Dict, dc: Dict) -> float:
@@ -535,8 +609,42 @@ class AdmissionService:
         tong_hop: List[Dict],
         can_kiem_tra: List[Dict],
         has_verified_under_budget: bool,
+        ho_so: Optional[Dict] = None,
+        all_benchmarks: Optional[List] = None,
+        all_combs: Optional[Dict] = None,
+        all_majors: Optional[Dict] = None,
+        pt_id: Optional[int] = None,
+        danh_sach_th: Optional[List[str]] = None,
     ) -> str:
+        nganh_mong_muon = str((ho_so or {}).get("nganhMongMuon") or "").strip()
         if not tong_hop:
+            if nganh_mong_muon:
+                target_norm = unicodedata.normalize("NFC", nganh_mong_muon).strip().lower()
+                avail_combs = set()
+                if all_benchmarks and all_majors and all_combs:
+                    combs_by_id = {c.get("id"): c.get("maToHop", "") for c in all_combs.values() if isinstance(c, dict)}
+                    for b in all_benchmarks:
+                        if pt_id is None or int(b.get("phuongThucXetTuyenId", -1)) == int(pt_id):
+                            m = all_majors.get(b.get("nganhHocId"), {})
+                            t_n = unicodedata.normalize("NFC", str(m.get("tenNganh", "") or "")).strip().lower()
+                            t_p = unicodedata.normalize("NFC", str(b.get("tenChuongTrinh", "") or "")).strip().lower()
+                            if target_norm in t_n or target_norm in t_p:
+                                th_code = combs_by_id.get(b.get("toHopMonId"))
+                                if th_code:
+                                    avail_combs.add(th_code)
+
+                comb_str = ", ".join(danh_sach_th) if danh_sach_th else "đã chọn"
+                if avail_combs:
+                    sorted_combs = ", ".join(sorted(list(avail_combs))[:6])
+                    return (
+                        f"Ngành '{nganh_mong_muon}' hiện không có chương trình tuyển sinh theo tổ hợp {comb_str}. "
+                        f"Dữ liệu cho thấy ngành này đang xét tuyển qua các tổ hợp: {sorted_combs}. "
+                        f"Gợi ý: Bạn có thể đổi sang một trong các tổ hợp trên nếu có điểm, hoặc chọn 'Bất kỳ ngành nào (Tất cả ngành)' để xem các ngành tuyển sinh theo tổ hợp {comb_str}."
+                    )
+                return (
+                    f"Không tìm thấy chương trình đào tạo ngành '{nganh_mong_muon}' phù hợp với tổ hợp môn hoặc điều kiện điểm đã chọn. "
+                    "Gợi ý: Thử chọn thêm tổ hợp xét tuyển khác phổ biến của ngành này hoặc chọn 'Bất kỳ ngành nào (Tất cả ngành)'."
+                )
             return (
                 "Chưa tìm thấy nguyện vọng phù hợp với điều kiện điểm hoặc tài chính. "
                 "Vui lòng thử mở rộng vùng khu vực, nới lỏng ngân sách học phí hoặc chọn thêm tổ hợp môn."
@@ -566,6 +674,9 @@ class AdmissionService:
         else:
             thong_bao = f"Đã đề xuất {len(tong_hop)} nguyện vọng phù hợp với phổ điểm ({ts_count} Thử sức, {vs_count} Vừa sức, {at_count} An toàn)."
 
+        if nganh_mong_muon:
+            thong_bao += f" (Hệ thống đã lọc chính xác theo ngành yêu thích: '{nganh_mong_muon}')."
+
         if can_kiem_tra and not has_verified_under_budget:
             thong_bao += f" Lưu ý: Có {len(can_kiem_tra)} chương trình chưa công bố biểu phí chính thức cần kiểm tra thêm."
 
@@ -587,10 +698,11 @@ class AdmissionService:
         all_combs = {c["maToHop"]: c for c in CsvDatabase.readAll("toHopMon")}
         all_unis = {u["id"]: u for u in CsvDatabase.readAll("truongDaiHoc")}
         all_majors = {m["id"]: m for m in CsvDatabase.readAll("nganhHoc")}
-        all_benchmarks = CsvDatabase.readAll("diemChuan")
-
         thong_tin_pt = all_methods.get(ma_pt, {"id": 1, "maPhuongThuc": "PT01", "tenPhuongThuc": "Thi THPT"})
         pt_id = thong_tin_pt.get("id")
+        all_benchmarks, nam_toi_thieu, so_ct_bo_qua = cls._loc_diem_chuan_gan_day(
+            CsvDatabase.readAll("diemChuan"), pt_id
+        )
 
         raw_kv = hoSoHocSinh.get("khuVucMongMuon")
         kv_target = str(raw_kv).strip() if (raw_kv and str(raw_kv).strip() != "Toàn quốc") else None
@@ -608,7 +720,16 @@ class AdmissionService:
             x.get("trangThaiHocPhi") == "VERIFIED" and x.get("hocPhiNam") is not None
             for x in tong_hop
         )
-        thong_bao = cls._build_thong_bao(tong_hop, can_kiem_tra, has_verified)
+        thong_bao = cls._build_thong_bao(
+            tong_hop, can_kiem_tra, has_verified, hoSoHocSinh,
+            all_benchmarks=all_benchmarks, all_combs=all_combs, all_majors=all_majors,
+            pt_id=pt_id, danh_sach_th=danh_sach_th,
+        )
+        if so_ct_bo_qua and tong_hop:
+            thong_bao += (
+                f" Đã bỏ qua {so_ct_bo_qua} chương trình chỉ có điểm chuẩn trước năm {nam_toi_thieu} "
+                "vì không còn đủ tin cậy làm mốc."
+            )
 
         seen_ck_keys = set()
         unique_ck = []
@@ -640,7 +761,26 @@ class AdmissionService:
             "ketQuaTungPhuongThuc": ket_qua_tung_pt,
             "phuongThucDangChon": ma_pt,
             "soLuongToHopDaChon": len(danh_sach_th),
+            "namThamChieuToiThieu": nam_toi_thieu,
+            "soChuongTrinhBoQuaDoDiemCu": so_ct_bo_qua,
         }
+
+    @staticmethod
+    def _loc_diem_chuan_gan_day(benchmarks: List[Dict], pt_id: Optional[int]) -> tuple[List[Dict], Optional[int], int]:
+        if config.MAX_REFERENCE_AGE < 0:
+            return benchmarks, None, 0
+        nam_toi_thieu = config.REFERENCE_YEAR - config.MAX_REFERENCE_AGE
+        giu, ct_cu, ct_moi = [], set(), set()
+        for b in benchmarks:
+            cung_pt = pt_id is not None and int(b.get("phuongThucXetTuyenId", -1)) == int(pt_id)
+            key = (b.get("truongDaiHocId"), str(b.get("programId") or b.get("nganhHocId")))
+            if int(b.get("nam", 0) or 0) >= nam_toi_thieu:
+                giu.append(b)
+                if cung_pt:
+                    ct_moi.add(key)
+            elif cung_pt:
+                ct_cu.add(key)
+        return giu, nam_toi_thieu, len(ct_cu - ct_moi)
 
     @staticmethod
     def _empty_recommendation_result(thong_bao: str) -> Dict[str, Any]:

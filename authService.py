@@ -275,7 +275,7 @@ def create_admin_account(
             "matKhau": new_hash,
             "vaiTro": "quanTriVien"
         })
-        return {"thanhCong": True, "thongBao": f"Đã cập nhật mật khẩu cho quản trị viên '{ten_clean}'."}
+        return {"thanhCong": True, "thongBao": f"Da cap nhat mat khau cho quan tri vien '{ten_clean}'."}
 
     return AuthService.dangKy(
         tenDangNhap=ten_clean,
@@ -288,13 +288,13 @@ def create_admin_account(
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Quản lý tài khoản quản trị viên qua dòng lệnh CLI")
+    parser = argparse.ArgumentParser(description="Quan ly tai khoan quan tri vien qua dong lenh CLI")
     subparsers = parser.add_subparsers(dest="command")
 
-    admin_parser = subparsers.add_parser("create-admin", help="Tạo hoặc cập nhật tài khoản quản trị viên")
-    admin_parser.add_argument("--username", required=True, help="Tên đăng nhập admin")
-    admin_parser.add_argument("--password", required=True, help="Mật khẩu admin")
-    admin_parser.add_argument("--name", default="Quản Trị Viên Hệ Thống", help="Họ và tên")
+    admin_parser = subparsers.add_parser("create-admin", help="Tao hoac cap nhat tai khoan quan tri vien")
+    admin_parser.add_argument("--username", required=True, help="Ten dang nhap admin")
+    admin_parser.add_argument("--password", required=True, help="Mat khau admin")
+    admin_parser.add_argument("--name", default="Quản Trị Viên Hệ Thống", help="Ho va ten")
     admin_parser.add_argument("--email", default="admin@dss-admission.edu.vn", help="Email")
 
     args = parser.parse_args()

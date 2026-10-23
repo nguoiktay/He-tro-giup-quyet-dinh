@@ -3,6 +3,29 @@ import re
 from pydantic import BaseModel, Field, field_validator
 from typing import Dict, List, Optional, Any, Union
 
+KHU_VUC_HOP_LE = ("KV1", "KV2-NT", "KV2", "KV3")
+DOI_TUONG_HOP_LE = ("NONE", "UT1", "UT2")
+
+
+def _chuan_hoa_khu_vuc(v: Optional[str]) -> str:
+    if v is None or not str(v).strip():
+        return "KV3"
+    clean = str(v).strip().upper().replace("_", "-")
+    if clean not in KHU_VUC_HOP_LE:
+        raise ValueError(f"Khu vực ưu tiên '{v}' không hợp lệ. Chỉ chấp nhận: {', '.join(KHU_VUC_HOP_LE)}.")
+    return clean
+
+
+def _chuan_hoa_doi_tuong(v: Optional[str]) -> str:
+    if v is None or not str(v).strip():
+        return "NONE"
+    clean = str(v).strip().upper()
+    if clean == "KHONG":
+        clean = "NONE"
+    if clean not in DOI_TUONG_HOP_LE:
+        raise ValueError(f"Đối tượng ưu tiên '{v}' không hợp lệ. Chỉ chấp nhận: {', '.join(DOI_TUONG_HOP_LE)}.")
+    return clean
+
 
 class UserRegisterRequest(BaseModel):
     tenDangNhap: str = Field(..., min_length=3, max_length=50)
@@ -82,6 +105,21 @@ class ScoreCalculationRequest(BaseModel):
                     raise ValueError(f"Điểm môn '{mon}' phải là số hữu hạn trong thang điểm từ 0.0 đến 10.0.")
         return v
 
+    @field_validator("maToHop")
+    @classmethod
+    def validate_ma_to_hop(cls, v: str) -> str:
+        return v.strip().upper()
+
+    @field_validator("khuVuc")
+    @classmethod
+    def validate_khu_vuc(cls, v: Optional[str]) -> str:
+        return _chuan_hoa_khu_vuc(v)
+
+    @field_validator("doiTuong")
+    @classmethod
+    def validate_doi_tuong(cls, v: Optional[str]) -> str:
+        return _chuan_hoa_doi_tuong(v)
+
 
 class StudentProfileInput(BaseModel):
     id: Optional[int] = None
@@ -124,6 +162,29 @@ class StudentProfileInput(BaseModel):
             if not math.isfinite(v) or v < 0.0 or v > 10.0:
                 raise ValueError("Điểm môn học phải nằm trong thang điểm từ 0.0 đến 10.0")
         return v
+
+    @field_validator("khuVucUuTien")
+    @classmethod
+    def validate_khu_vuc_uu_tien(cls, v: Optional[str]) -> str:
+        return _chuan_hoa_khu_vuc(v)
+
+    @field_validator("doiTuongUuTien")
+    @classmethod
+    def validate_doi_tuong_uu_tien(cls, v: Optional[str]) -> str:
+        return _chuan_hoa_doi_tuong(v)
+
+    @field_validator("nganSach")
+    @classmethod
+    def validate_ngan_sach(cls, v: Optional[float]) -> Optional[float]:
+        if v is not None and (not math.isfinite(v) or v < 0.0):
+            raise ValueError("Ngân sách học phí (triệu đồng/năm) phải là số không âm.")
+        return v
+
+    @field_validator("danhSachToHopDaChon")
+    @classmethod
+    def validate_danh_sach_to_hop(cls, v: Optional[List[str]]) -> List[str]:
+        items = [str(t).strip().upper() for t in (v or []) if t and str(t).strip()]
+        return list(dict.fromkeys(items)) or ["A00"]
 
     @field_validator("diemDanhGiaNangLuc")
     @classmethod
@@ -205,3 +266,17 @@ class AdminUserUpdateRequest(BaseModel):
     vaiTro: Optional[str] = None
     matKhau: Optional[str] = None
 
+
+
+class ExplainRequest(BaseModel):
+    nguyenVong: Dict[str, Any]
+
+
+class ChatTurn(BaseModel):
+    vaiTro: str = Field(..., pattern="^(user|model)$")
+    noiDung: str = Field(..., max_length=2000)
+
+
+class ChatRequest(BaseModel):
+    cauHoi: str = Field(..., min_length=1, max_length=1000)
+    lichSu: List[ChatTurn] = Field(default_factory=list, max_length=16)

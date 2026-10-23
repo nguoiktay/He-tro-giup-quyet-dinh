@@ -1,4 +1,5 @@
 import os
+import json
 import math
 import joblib
 import numpy as np
@@ -12,19 +13,32 @@ import config
 
 RF_THPT_PATH = os.path.join(os.path.dirname(__file__), "data", "models", "rf_thpt_best.joblib")
 RF_HOC_BA_PATH = os.path.join(os.path.dirname(__file__), "data", "models", "rf_hoc_ba_metadata.joblib")
+DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
+RF_THPT_METADATA_PATH = os.path.join(DATA_DIR, "models", "rf_thpt_metadata.json")
+CALIBRATOR_PATH = os.path.join(DATA_DIR, "models", "conformal_calibrator_thpt.json")
+BENCHMARK_REPORT_PATH = os.path.join(DATA_DIR, "reports", "model_comparison_benchmark.csv")
+FEATURE_IMPORTANCE_PATH = os.path.join(DATA_DIR, "reports", "feature_importance_thpt.csv")
+HYBRID_MODEL_LABEL = "Dự báo lai (công thức xu hướng + RF)"
 FORECAST_RECORDS_PATH = os.path.join(os.path.dirname(__file__), "data", "processed", f"forecast_records_{config.TARGET_YEAR}.csv")
 if not os.path.exists(FORECAST_RECORDS_PATH):
     FORECAST_RECORDS_PATH = os.path.join(os.path.dirname(__file__), "data", "processed", "forecast_records_2026.csv")
 
 
 class RFTrendResidualRegressor(BaseEstimator, RegressorMixin):
-    def __init__(self, n_estimators=250, max_depth=6, min_samples_leaf=20, blend_weight=0.15, random_state=42):
+
+    def __init__(self, n_estimators=250, max_depth=6, min_samples_leaf=20, blend_weight=0.15,
+                 reversion_coef=-0.18, random_state=42):
         self.n_estimators = n_estimators
         self.max_depth = max_depth
         self.min_samples_leaf = min_samples_leaf
         self.blend_weight = blend_weight
+        self.reversion_coef = reversion_coef
         self.random_state = random_state
         self.rf = None
+
+    def __setstate__(self, state):
+        state.setdefault("reversion_coef", -0.18)
+        super().__setstate__(state)
 
     def fit(self, X, y):
         df_x = pd.DataFrame(X).copy()
@@ -65,9 +79,26 @@ class RFTrendResidualRegressor(BaseEstimator, RegressorMixin):
         })
 
         delta_rf = self.rf.predict(feats)
-        rev = -0.18 * trend
-        comb_delta = self.blend_weight * delta_rf + (1.0 - self.blend_weight) * rev
-        return (lag1 + comb_delta).to_numpy()
+        return self.combine(lag1.to_numpy(), delta_rf, trend.to_numpy(), self.blend_weight, self.reversion_coef)
+
+    def predict_components(self, X) -> Dict[str, np.ndarray]:
+        df_x = pd.DataFrame(X).copy()
+        median_lag = df_x["score_lag_1"].median() if not df_x.empty and df_x["score_lag_1"].notna().any() else 24.0
+        lag1 = df_x["score_lag_1"].fillna(median_lag)
+        trend = lag1 - df_x["score_lag_2"].fillna(lag1)
+        feats = pd.DataFrame({
+            "score_lag_1": lag1,
+            "score_lag_2": df_x["score_lag_2"].fillna(lag1),
+            "trend": trend,
+            "score_diff_lag": df_x.get("score_diff_lag", pd.Series(0, index=df_x.index)).fillna(0),
+            "rolling": df_x.get("score_rolling_mean_2y", lag1).fillna(lag1)
+        })
+        return {"lag1": lag1.to_numpy(), "delta_rf": self.rf.predict(feats), "trend": trend.to_numpy()}
+
+    @staticmethod
+    def combine(lag1, delta_rf, trend, blend_weight: float, reversion_coef: float):
+        rev = reversion_coef * trend
+        return lag1 + blend_weight * delta_rf + (1.0 - blend_weight) * rev
 
 
 class MlService:
@@ -148,23 +179,113 @@ class MlService:
             if self.model_thpt is not None:
                 return {
                     "sanSang": True,
-                    "phuongPhap": "Dự báo lai (công thức xu hướng + RF)",
-                    "cheDo": "Dự báo kết hợp tra cứu lịch sử",
-                    "thongBao": "Mô hình dự báo lai THPT đang hoạt động."
+                    "phuongPhap": "Du bao lai (cong thuc xu huong + RF)",
+                    "cheDo": "Du bao ket hop tra cuu lich su",
+                    "thongBao": "Mo hinh du bao lai THPT dang hoat dong."
                 }
             return {
                 "sanSang": False,
-                "phuongPhap": "Chưa có mô hình",
-                "cheDo": "Tra cứu điểm chuẩn lịch sử",
-                "thongBao": "Mô hình của phương thức THPT chưa sẵn sàng. Vui lòng chạy train.py để huấn luyện."
+                "phuongPhap": "Chua co mo hinh",
+                "cheDo": "Tra cuu diem chuan lich su",
+                "thongBao": "Mo hinh cua phuong thuc THPT chua san sang. Vui long chay train.py de huan luyen."
             }
         else:
             return {
                 "sanSang": False,
-                "phuongPhap": "Tra cứu điểm chuẩn chính thức",
-                "cheDo": "Tra cứu điểm chuẩn chính thức",
-                "thongBao": "Phương thức học bạ sử dụng điểm chuẩn chính thức do không có chuỗi thời gian liên tục."
+                "phuongPhap": "Tra cuu diem chuan chinh thuc",
+                "cheDo": "Tra cuu diem chuan chinh thuc",
+                "thongBao": "Phuong thuc hoc ba su dung diem chuan chinh thuc do khong co chuoi thoi gian lien tuc."
             }
+
+    def getModelInfo(self) -> Dict[str, Any]:
+
+        def _read_json(path: str) -> Dict[str, Any]:
+            try:
+                with open(path, encoding="utf-8") as f:
+                    return json.load(f)
+            except (OSError, ValueError):
+                return {}
+
+        def _read_csv(path: str) -> Optional[pd.DataFrame]:
+            try:
+                return pd.read_csv(path, encoding="utf-8-sig")
+            except (OSError, ValueError):
+                return None
+
+        meta = _read_json(RF_THPT_METADATA_PATH)
+        cal = _read_json(CALIBRATOR_PATH)
+        ci80 = cal.get("intervals", {}).get("confidence_80", {})
+
+        so_sanh = []
+        chi_so_mo_hinh: Dict[str, Optional[float]] = {"r2": None, "mae": None, "rmse": None}
+        df_bench = _read_csv(BENCHMARK_REPORT_PATH)
+        if df_bench is not None and "Model / Method" in df_bench.columns:
+            for _, r in df_bench.iterrows():
+                row = {
+                    "phuongPhap": str(r["Model / Method"]).strip(),
+                    "loai": str(r.get("Type", "")).strip(),
+                    "mae": float(r["Test MAE"]) if pd.notna(r.get("Test MAE")) else None,
+                    "rmse": float(r["Test RMSE"]) if pd.notna(r.get("Test RMSE")) else None,
+                    "r2": float(r["Test R2"]) if pd.notna(r.get("Test R2")) else None,
+                }
+                so_sanh.append(row)
+                if row["phuongPhap"] == HYBRID_MODEL_LABEL:
+                    chi_so_mo_hinh = {"r2": row["r2"], "mae": row["mae"], "rmse": row["rmse"]}
+
+        feature_importance = []
+        df_feat = _read_csv(FEATURE_IMPORTANCE_PATH)
+        if df_feat is not None and {"feature", "importance_mean"} <= set(df_feat.columns):
+            feature_importance = [
+                {"dacTrung": str(r["feature"]), "doQuanTrong": round(float(r["importance_mean"]), 4)}
+                for _, r in df_feat.iterrows()
+            ]
+
+        tong = int(meta.get("total_records") or 0)
+        so_rf = int(meta.get("thpt_ml_predictions") or 0)
+        so_lag1 = int(meta.get("thpt_lag1_fallbacks") or 0)
+        so_tra_cuu = int(meta.get("hoc_ba_lookups") or 0)
+        so_truong_rf = None
+        if self.forecast_df is not None and "forecast_status" in self.forecast_df.columns:
+            rf_rows = self.forecast_df[self.forecast_df["forecast_status"] == "PREDICTED_TIME_SERIES"]
+            so_truong_rf = int(rf_rows["university_code"].nunique())
+
+        return {
+            "thanhCong": True,
+            "phienBan": meta.get("model_name", "RFTrendResidualRegressor"),
+            "tenPhuongPhap": HYBRID_MODEL_LABEL,
+            "scikitLearn": meta.get("scikit_learn_version"),
+            "trangThai": "Hoat dong" if self.model_thpt_verified else "Chua nap duoc mo hinh",
+            "namDuBao": meta.get("target_year", config.TARGET_YEAR),
+            "namThamChieu": config.REFERENCE_YEAR,
+            "dacTrungDauVao": meta.get("input_features", []),
+            "soMauHuanLuyen": cal.get("train_size"),
+            "tapHieuChinh": cal.get("calibration_set"),
+            "tapKiemThu": cal.get("test_set"),
+            "r2": chi_so_mo_hinh["r2"],
+            "mae": chi_so_mo_hinh["mae"],
+            "rmse": chi_so_mo_hinh["rmse"],
+            "khoangTinCay": {
+                "mucTinCayDanhNghia": ci80.get("nominal_coverage", 0.8),
+                "banKinhDiem": ci80.get("radius_points", meta.get("calibrated_radius_80")),
+                "doPhuThucTe": ci80.get("empirical_test_coverage"),
+                "phuongPhap": cal.get("method"),
+            },
+            "doPhuChuongTrinh": {
+                "tongBanGhi": tong,
+                "duBaoMoHinh": so_rf,
+                "uocLuongNamTruoc": so_lag1,
+                "traCuuDiemChuan": so_tra_cuu,
+                "tyLeDuBaoMoHinh": round(so_rf / tong, 4) if tong else None,
+                "soTruongCoDuBao": so_truong_rf,
+            },
+            "featureImportance": feature_importance,
+            "soSanhPhuongPhap": so_sanh,
+            "ghiChu": (
+                f"Chỉ {so_rf:,}/{tong:,} bản ghi điểm chuẩn ({so_truong_rf or '?'} trường) được dự báo bằng mô hình; "
+                "các bản ghi còn lại dùng điểm năm trước hoặc tra cứu điểm chuẩn chính thức đã công bố. "
+                f"Điểm dự báo có sai số ±{ci80.get('radius_points', '?')} điểm ở mức tin cậy danh nghĩa 80%."
+            ),
+        }
 
     def getForecastInfo(
         self,
@@ -198,8 +319,10 @@ class MlService:
             req_case = str(admissionCaseId).strip().upper() if admissionCaseId else ""
             if req_case and req_case != "CHUA_RO":
                 c_case = str(c.get("admission_case_id", "")).strip().upper()
-                if not c_case or c_case == "CHUA_RO" or c_case != req_case:
-                    continue
+                if c_case and c_case != "CHUA_RO":
+                    case_matched = (c_case == req_case) or (req_case in c_case) or (c_case in req_case)
+                    if not case_matched:
+                        continue
 
             if target_comb and target_comb not in c["combination_tokens"]:
                 continue
